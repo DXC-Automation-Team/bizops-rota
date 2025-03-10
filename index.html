@@ -458,9 +458,9 @@
                     const updatedFileContents = JSON.stringify(fileContents, null, 2);
 
                     const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
-
+                    const filePath = `Development/Data/${file}`;
                     // Get the File ID for the specific file
-                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${file}`, {
+                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
                         headers: {
                             Authorization: `Bearer ${tokenResponse.accessToken}`
                         }
