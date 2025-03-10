@@ -460,7 +460,7 @@
                     const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
 
                     // Get the File ID for the specific file
-                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
+                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${file}`, {
                         headers: {
                             Authorization: `Bearer ${tokenResponse.accessToken}`
                         }
