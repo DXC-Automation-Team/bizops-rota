@@ -183,7 +183,7 @@
     </div>
 
     <button onclick="signIn()">Sign In</button>
-    <button onclick="fetchData('team-info.json')">Fetch Data</button>
+    <button onclick="fetchFileContents('team-info.json')">Fetch Data</button>
     <button id="append">Append</button>
 
     <script src="assets/jquery/jquery-3.7.1.min.js"></script>
@@ -219,7 +219,7 @@
             .on('click', '#append', function(){
                 let data = { data1: 1 };
                 appendToFile('team-info.json', data);
-                fetchData('team-info.json')
+                fetchFileContents('team-info.json')
             })
             async function init(){
                 // checkBrowser();
