@@ -440,7 +440,6 @@
                     var fileContents = await contentResponse.text();
                     fileContents = JSON.parse(fileContents);
                     console.log("File contents:", fileContents);
-                    console.log("file type:", typeof fileContents);
                     return fileContents;
                 } catch (error) {
                     console.error("Error fetching file contents:", error);
@@ -450,13 +449,13 @@
             async function appendToFile(file, dataToAppend) {
                 try {
                     var fileContents = await fetchFileContents(file);
-                    let jsonData = JSON.parse(fileContents);
+                    // let jsonData = JSON.parse(fileContents);
 
                     // Append new data to the JSON object
-                    jsonData['property'] = dataToAppend;
+                    fileContents['property'] = dataToAppend;
 
                     // Convert JSON back to string
-                    const updatedFileContents = JSON.stringify(jsonData, null, 2);
+                    const updatedFileContents = JSON.stringify(fileContents, null, 2);
 
                     const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
 
