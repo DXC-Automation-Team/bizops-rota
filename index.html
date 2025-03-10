@@ -9,8 +9,7 @@
     <link rel="stylesheet" href="assets/css/theme.css">
     <link href='https://fonts.googleapis.com/css?family=Anaheim' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-    <title> SPP Things </title>
+    <title>SPP BizOps Rota</title>
 
 </head>
 <body>
@@ -152,7 +151,7 @@
                 
             </div>
             <div class="d-none page" id="team-info-page">
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
@@ -183,10 +182,10 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="d-none page" id="employee-info-page">
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
                         <table class="table table-striped table-hover">
                             <thead>
@@ -215,10 +214,10 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="d-none page" id="shift-info-page">
-                <div class="card">
+                <!-- <div class="card">
                     <div class="card-body">
                         <table class="table table-striped table-hover">
                             <thead>
@@ -259,7 +258,7 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="d-none page" id="PUTIL-target-page">
                 <div class="card">
@@ -497,13 +496,13 @@
         </div>
         <div class="offcanvas-body">
             <div class="list-group list-group-flush">
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active" target="rotas-page">ROTAs</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="team-info-page">Team Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="employee-info-page">Employee Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="shift-info-page">Shift Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="PUTIL-target-page">PUTIL Target</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="SPP-cutoffs-page">SPP Cutoffs</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action " target="submission-logs-page">Submission Logs</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="rotas-page">ROTAs</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="team-info-page">Team Info</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="employee-info-page">Employee Info</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="shift-info-page">Shift Info</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="PUTIL-target-page">PUTIL Target</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="SPP-cutoffs-page">SPP Cutoffs</button>
+                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="submission-logs-page">Submission Logs</button>
 
             </div>        
         </div>
@@ -533,6 +532,13 @@
             .on('click', '#extract', function(){
                 getTableData('Reference', 'tbl_Employee');
                 // getNamedRangeData('Sheet1', 'NamedRange1');
+            })
+            .on('click', '#references .list-group-item', function(){
+                let page = $(this).attr('target');
+                if($(this).attr('loaded') == 'false'){
+                    loadContent('#'+page, 'aside/'+page+'.html');
+                    $(this).attr('loaded', 'true');
+                }
             })
 
             async function init(){
@@ -664,81 +670,16 @@
                 // Append the table to .tab-pane.fade .card-body
                 $('#rota-'+(month)+' .card-body').append(table);
             }
-            function checkFileInput(event) {
-                var fileInput = document.getElementById("rotaFile");
-                if (fileInput.files.length > 0) {
-                    readExcelFile(event);
-                } else {
-                    alert("No file selected.");
-                }
+            
+            function loadContent(elementId, filePath) {
+                $(elementId).load(filePath, function(response, status, xhr) {
+                    if (status == "success") {
+                        $(elementId).show(); // Show the content once loaded
+                    } else if (status == "error") {
+                        $(elementId).html("Failed to load content.");
+                    }
+                });
             }
-
-            function readExcelFile(event) {
-                var file = event.target.files[0];
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var data = new Uint8Array(e.target.result);
-                    workbook = XLSX.read(data, {type: 'array'});
-                    $('.upload-text').toggleClass('d-none');
-                    
-                };
-
-                reader.readAsArrayBuffer(file);
-            }
-
-            function getNamedRangeData(sheetName, rangeName) {
-                if (!workbook) {
-                    alert("Workbook not loaded!");
-                    return;
-                }
-
-                var sheet = workbook.Sheets[sheetName];
-                if (!sheet) {
-                    alert("Sheet not found!");
-                    return;
-                }
-
-                var range = sheet[rangeName];
-                if (!range) {
-                    alert("Named range not found!");
-                    return;
-                }
-
-                var data = XLSX.utils.sheet_to_json(sheet, {range: range, header: 1});
-                console.log('Named Range Data:', data);
-                return data;
-            }
-
-            function getTableData(sheetName, tableName) {
-                if (!workbook) {
-                    alert("Workbook not loaded!");
-                    return;
-                }
-                // Get the specified sheet
-                const worksheet = workbook.Sheets[sheetName];
-                if (!worksheet) {
-                    throw new Error(`Sheet ${sheetName} not found`);
-                }
-
-                // Get the defined table by its name
-                
-                // Get the defined names
-                const definedNames = workbook.Workbook.Names;
-                const table = definedNames.find(name => name.Name === tableName);
-                console.log("names:"+JSON.stringify(definedNames))
-                return;
-                if (!table) {
-                    throw new Error(`Table ${tableName} not found`);
-                }
-                // Extract table data from the defined range
-                const tableData = XLSX.utils.sheet_to_json(worksheet, { range: table.ref, header: 1 });
-                            
-                console.log(tableData)
-                return tableData;
-            }
-
-
         });
     </script>
 </body>
