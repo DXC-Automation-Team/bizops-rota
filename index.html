@@ -183,7 +183,7 @@
     </div>
 
     <button onclick="signIn()">Sign In</button>
-    <button onclick="fetchFileContents('team-info.json')">Fetch Data</button>
+    <button id="fettch">Fetch Data</button>
     <button id="append">Append</button>
 
     <script src="assets/jquery/jquery-3.7.1.min.js"></script>
@@ -215,6 +215,9 @@
                     loadContent('#'+page, 'aside/'+page+'.html');
                     $(this).attr('loaded', 'true');
                 }
+            })
+            .on('click', '#fettch', function(){
+                fetchFileContents('team-info.json')
             })
             .on('click', '#append', function(){
                 let data = { data1: 1 };
@@ -435,6 +438,7 @@
                     });
 
                     const fileContents = await contentResponse.text();
+                    JSON.parse(fileContents);
                     console.log("File contents:", fileContents);
                     return fileContents;
                 } catch (error) {
