@@ -440,6 +440,7 @@
                     var fileContents = await contentResponse.text();
                     fileContents = JSON.parse(fileContents);
                     console.log("File contents:", fileContents);
+                    console.log("File type", typeof fileContents);
                     return fileContents;
                 } catch (error) {
                     console.error("Error fetching file contents:", error);
@@ -449,7 +450,6 @@
             async function appendToFile(file, dataToAppend) {
                 try {
                     var fileContents = await fetchFileContents(file);
-                    // let jsonData = JSON.parse(fileContents);
 
                     // Append new data to the JSON object
                     fileContents['property'] = dataToAppend;
