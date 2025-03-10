@@ -352,37 +352,7 @@
                     }
                 });
             }
-            getFileContents()
-            function getFileContents(){
-                /* $.ajax({
-                    url: "https://dxcportal.sharepoint.com/_api/web/GetFileByServerRelativeUrl('/sites/ciROTASchedule/Shared Documents/Development/Logs/todo.txt')/$value",
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json; odata=verbose"
-                    },
-                    success: function(data) {
-                        console.log(data); // Process the retrieved file contents
-                    },
-                    error: function(error) {
-                        console.error(error);
-                    }
-                }); */
-                $.ajax({
-                    url: "https://dxcportal.sharepoint.com/_api/web/GetFileByServerRelativeUrl('/sites/ciROTASchedule/Shared Documents/Development/Logs/todo.txt')/ListItemAllFields",
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json; odata=verbose"
-                    },
-                    success: function(data) {
-                        console.log(data.d); // Check the permission level and other details
-                    },
-                    error: function(error) {
-                        console.error(error);
-                    }
-                });
-
-
-            }
+            
         });
     </script>
     <script src="https://alcdn.msauth.net/browser/2.16.1/js/msal-browser.min.js"></script>
