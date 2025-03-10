@@ -580,7 +580,7 @@
             function checkDatabaseExists(dbName) {
                 return new Promise((resolve, reject) => {
                     //force users to use edge
-                    var isEdge = /Edge\/\d./i.test(navigator.userAgent);
+                    var isEdge = /Edg\/\d./i.test(navigator.userAgent);
                     if(!isEdge){
                         $("body").html(`
                             <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
