@@ -181,7 +181,8 @@
     </div>
 
     <button onclick="signIn()">Sign In</button>
-
+    <button onclick="fetchData('team-info.json')">Fetch Data</button>
+    <button id="append">Append</button>
 
     <script src="assets/jquery/jquery-3.7.1.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -213,7 +214,11 @@
                     $(this).attr('loaded', 'true');
                 }
             })
-
+            .on('click', '#append', function(){
+                let data = { data1: 1 };
+                appendToFile('team-info.json', data);
+                fetchData('team-info.json')
+            })
             async function init(){
                 // checkBrowser();
                 let d = new Date();
@@ -373,42 +378,47 @@
                     scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
                 });
                 console.log("Login successful:", loginResponse);
-                fetchData(); // Fetch data after successful login
+                fetchData("team-info.json"); // Fetch data after successful login
             } catch (error) {
                 console.error("Login error:", error);
             }
         }
 
-        async function fetchData() {
+        async function getSiteAndDriveDetails() {
+            const account = msalInstance.getAllAccounts()[0];
+            const tokenResponse = await msalInstance.acquireTokenSilent({
+                scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
+                account: account
+            });
+
+            // Get the Site ID
+            const siteResponse = await fetch("https://graph.microsoft.com/v1.0/sites?search=ciROTASchedule", {
+                headers: {
+                    Authorization: `Bearer ${tokenResponse.accessToken}`
+                }
+            });
+
+            const siteData = await siteResponse.json();
+            const siteId = siteData.value[0].id;
+
+            // Get the Drive ID for the document library
+            const driveResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`, {
+                headers: {
+                    Authorization: `Bearer ${tokenResponse.accessToken}`
+                }
+            });
+
+            const driveData = await driveResponse.json();
+            const driveId = driveData.value[0].id; // Assuming the first drive is the document library
+
+            return { siteId, driveId, tokenResponse };
+        }
+
+        async function fetchFileContents(file) {
             try {
-                const account = msalInstance.getAllAccounts()[0];
-                const tokenResponse = await msalInstance.acquireTokenSilent({
-                    scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
-                    account: account
-                });
-
-                // Get the Site ID
-                const siteResponse = await fetch("https://graph.microsoft.com/v1.0/sites?search=ciROTASchedule", {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.accessToken}`
-                    }
-                });
-
-                const siteData = await siteResponse.json();
-                const siteId = siteData.value[0].id;
-
-                // Get the Drive ID for the document library
-                const driveResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`, {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.accessToken}`
-                    }
-                });
-
-                const driveData = await driveResponse.json();
-                const driveId = driveData.value[0].id; // Assuming the first drive is the document library
-
+                const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
+                const filePath = `Development/Data/${file}`;
                 // Get the File ID for the specific file
-                const filePath = "Development/Logs/todo.txt";
                 const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
                     headers: {
                         Authorization: `Bearer ${tokenResponse.accessToken}`
@@ -427,10 +437,51 @@
 
                 const fileContents = await contentResponse.text();
                 console.log("File contents:", fileContents);
+                return fileContents;
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching file contents:", error);
             }
         }
+
+        async function appendToFile(file, dataToAppend) {
+            try {
+                const fileContents = await fetchFileContents(file);
+                let jsonData = JSON.parse(fileContents);
+
+                // Append new data to the JSON object
+                jsonData.push(dataToAppend);
+
+                // Convert JSON back to string
+                const updatedFileContents = JSON.stringify(jsonData, null, 2);
+
+                const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
+
+                // Get the File ID for the specific file
+                const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.accessToken}`
+                    }
+                });
+
+                const fileData = await fileResponse.json();
+                const fileId = fileData.id;
+
+                // Update the file with the new contents
+                await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${fileId}/content`, {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: updatedFileContents
+                });
+
+                console.log("File updated successfully.");
+            } catch (error) {
+                console.error("Error appending to file:", error);
+            }
+        }
+
 
 
 
