@@ -455,7 +455,7 @@
             async function appendToFile(file, dataToAppend) {
                 try {
                     var fileContents = await fetchFileContents(file);
-
+                    console.log("data to append", dataToAppend);
                     // Append new data to the JSON object
                     fileContents['property'] = dataToAppend;
 
