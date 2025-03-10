@@ -441,7 +441,7 @@
                     console.log("File contents:", fileContents);
                     console.log("File type", typeof fileContents);
                     
-                    fileContents = JSON.parse(fileContents);
+                    fileContents = JSON.parse(fileContents || "{}");
 
                     console.log("Parsed File contents:", fileContents);
                     console.log("Parsed File type", typeof fileContents);
