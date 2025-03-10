@@ -81,6 +81,20 @@
                 </div>
             </div>
         </div>
+        <!-- Cover Modal -->
+        <div class="modal fade" id="coverModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Notice</h1>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal-message">Please use Microsoft Edge to access this page.</p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
     <!-- end alerts -->    
     <div class="container-fluid">
         
@@ -535,10 +549,11 @@
             })
 
             async function init(){
+                // checkBrowser();
                 let d = new Date();
                 let dbExists;
-                setYear(d);
-                setActiveRota(d);
+                
+                
                 await checkDatabaseExists("sppdata")
                     .then(result => {
                         dbExists = result.exists; // Save the value to the variable
@@ -549,6 +564,8 @@
                     })
                     .catch(error => console.log(error));
                 // set page text
+                setYear(d);
+                setActiveRota(d);
                 $('#page-name').text($('#references .list-group-item.active').text());
                 generateTable(d.getMonth()+1);
 
@@ -572,13 +589,25 @@
                 $('#generalModal').modal('show');
 
             }
+            
             function checkDatabaseExists(dbName) {
                 return new Promise((resolve, reject) => {
+                    //force users to use edge
+                    var isEdge = /Edge\/\d./i.test(navigator.userAgent);
+                    if(!isEdge){
+                        $("body").html(`
+                            <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
+                                <div class="alert alert-danger" role="alert">
+                                    <h1>Please use Microsoft Edge to access this page.</h1>
+                                </div>
+                            </div>
+                        `)
+                    }
                     let request = indexedDB.open(dbName);
-
+                    
                     request.onupgradeneeded = function(event) {
                         request.transaction.abort();
-                        resolve({ exists: false, message: "Database not found. Please set up the required data from the ROTA file. If you have already uploaded the file, please use Microsoft Edge." });
+                        resolve({ exists: false, message: "Database not found. Please use Microsoft Edge and set up the required data from the ROTA file." });
                     };
 
                     request.onsuccess = function(event) {
