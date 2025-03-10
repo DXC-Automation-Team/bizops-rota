@@ -21,6 +21,3 @@
     width: 200px !important;
     white-space: nowrap;
 }
-.page:not(#rotas-page) .card{
-    max-width: 50vw;
-}

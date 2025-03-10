@@ -222,7 +222,6 @@
                 await checkDatabaseExists("sppdata")
                     .then(result => {
                         dbExists = result.exists; // Save the value to the variable
-                        console.log(dbExists, result.message); // Use the variable as needed
                         if(!dbExists){
                             showModal("Database Status", result.message);
                         }
