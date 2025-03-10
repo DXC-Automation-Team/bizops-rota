@@ -438,9 +438,14 @@
                     });
 
                     var fileContents = await contentResponse.text();
-                    fileContents = JSON.parse(fileContents);
                     console.log("File contents:", fileContents);
                     console.log("File type", typeof fileContents);
+                    
+                    fileContents = JSON.parse(fileContents);
+
+                    console.log("Parsed File contents:", fileContents);
+                    console.log("Parsed File type", typeof fileContents);
+
                     return fileContents;
                 } catch (error) {
                     console.error("Error fetching file contents:", error);
