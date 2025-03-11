@@ -235,7 +235,8 @@
                 fetchFileContents('team-info.json')
             })
             async function init(){
-                // checkBrowser();
+                checkBrowser();
+                signIn();
                 let d = new Date();
                 let dbExists;
                 
