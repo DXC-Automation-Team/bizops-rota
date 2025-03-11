@@ -31,6 +31,9 @@
                         <button class="btn btn-outline-light border-0 ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
                             <i class="fa-solid fa-file-arrow-up"></i>
                         </button>
+                        <button class="btn btn-outline-light border-0" type="button" id="login">
+                            <i class="fa-regular fa-circle-user"></i>
+                        </button>
                     </div>
                     
                 </div>
@@ -202,6 +205,9 @@
             var siteId, driveId, tokenResponse;
             init();
             $(document)
+            .on('click', '#login', function(){
+                signIn();
+            })
             .on('click', '#references .list-group-item', function(){
                 $('#references .list-group-item').removeClass('active');
                 $(this).addClass('active');
@@ -233,9 +239,10 @@
                 appendToFile('team-info.json', data);
                 fetchFileContents('team-info.json')
             })
+
             async function init(){
                 // checkBrowser();
-                signIn();
+                // signIn();
                 let d = new Date();
                 let dbExists;
                 
