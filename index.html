@@ -182,7 +182,6 @@
         </div>
     </div>
 
-    <button onclick="signIn()">Sign In</button>
     <button id="fettch">Fetch Data</button>
     <button id="append">Append</button>
 
@@ -235,7 +234,7 @@
                 fetchFileContents('team-info.json')
             })
             async function init(){
-                checkBrowser();
+                // checkBrowser();
                 signIn();
                 let d = new Date();
                 let dbExists;
