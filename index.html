@@ -384,7 +384,7 @@
 
             async function signIn() {
                 try {
-                    const loginResponse = await msalInstance.loginPopup({
+                    const loginResponse = await msalInstance.loginRedirect({
                         scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
                     });
                     console.log("Login successful:", loginResponse);
