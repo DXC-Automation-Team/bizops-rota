@@ -191,6 +191,15 @@
     <script>
         $(document).ready(function() {
             var workbook; // Variable to store the workbook
+            const msalInstance = new msal.PublicClientApplication(msalConfig);
+            const msalConfig = {
+                auth: {
+                    clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
+                    authority: "https://login.microsoftonline.com/93f33571-550f-43cf-b09f-cd331338d086", // Replace with your tenant ID
+                    redirectUri: "https://dxc-automation-team.github.io/bizops-rota/" // Replace with your redirect URI
+                }
+            };
+            var siteId, driveId, tokenResponse;
             init();
             $(document)
             .on('click', '#references .list-group-item', function(){
@@ -264,7 +273,6 @@
                 $('#generalModal').modal('show');
 
             }
-            
             function checkDatabaseExists(dbName) {
                 return new Promise((resolve, reject) => {
                     //force users to use edge
@@ -352,7 +360,6 @@
                 // Append the table to .tab-pane.fade .card-body
                 $('#rota-'+(month)+' .card-body').append(table);
             }
-            
             function loadContent(elementId, filePath) {
                 $(elementId).load(filePath, function(response, status, xhr) {
                     if (status == "success") {
@@ -364,15 +371,8 @@
             }
             
         
-            const msalConfig = {
-                auth: {
-                    clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
-                    authority: "https://login.microsoftonline.com/93f33571-550f-43cf-b09f-cd331338d086", // Replace with your tenant ID
-                    redirectUri: "https://dxc-automation-team.github.io/bizops-rota/" // Replace with your redirect URI
-                }
-            };
+            
 
-            const msalInstance = new msal.PublicClientApplication(msalConfig);
 
             async function signIn() {
                 try {
@@ -380,7 +380,7 @@
                         scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
                     });
                     console.log("Login successful:", loginResponse);
-                    fetchData("team-info.json"); // Fetch data after successful login
+                    siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 } catch (error) {
                     console.error("Login error:", error);
                 }
@@ -388,7 +388,7 @@
 
             async function getSiteAndDriveDetails() {
                 const account = msalInstance.getAllAccounts()[0];
-                const tokenResponse = await msalInstance.acquireTokenSilent({
+                tokenResponse = await msalInstance.acquireTokenSilent({
                     scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
                     account: account
                 });
@@ -401,7 +401,7 @@
                 });
 
                 const siteData = await siteResponse.json();
-                const siteId = siteData.value[0].id;
+                siteId = siteData.value[0].id;
 
                 // Get the Drive ID for the document library
                 const driveResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`, {
@@ -411,14 +411,14 @@
                 });
 
                 const driveData = await driveResponse.json();
-                const driveId = driveData.value[0].id; // Assuming the first drive is the document library
+                driveId = driveData.value[0].id; // Assuming the first drive is the document library
 
-                return { siteId, driveId, tokenResponse };
+                // return { siteId, driveId, tokenResponse };
             }
 
             async function fetchFileContents(file) {
                 try {
-                    const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
+                    // const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
                     const filePath = `Development/Data/${file}`;
                     // Get the File ID for the specific file
                     const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
@@ -462,7 +462,7 @@
                     // Convert JSON back to string
                     const updatedFileContents = JSON.stringify(fileContents, null, 2);
 
-                    const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
+                    // const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
                     const filePath = `Development/Data/${file}`;
                     // Get the File ID for the specific file
                     const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
