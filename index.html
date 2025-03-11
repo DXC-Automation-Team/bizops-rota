@@ -184,7 +184,7 @@
             </div>        
         </div>
     </div>
-
+    <button id="signOut">Sign out</button>
     <button id="fettch">Fetch Data</button>
     <button id="append">Append</button>
 
@@ -207,6 +207,9 @@
             $(document)
             .on('click', '#login', function(){
                 signIn();
+            })
+            .on('click', '#signOut', function(){
+                msalInstance.logout();
             })
             .on('click', '#references .list-group-item', function(){
                 $('#references .list-group-item').removeClass('active');
