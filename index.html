@@ -191,7 +191,6 @@
     <script>
         $(document).ready(function() {
             var workbook; // Variable to store the workbook
-            const msalInstance = new msal.PublicClientApplication(msalConfig);
             const msalConfig = {
                 auth: {
                     clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
@@ -199,6 +198,8 @@
                     redirectUri: "https://dxc-automation-team.github.io/bizops-rota/" // Replace with your redirect URI
                 }
             };
+            const msalInstance = new msal.PublicClientApplication(msalConfig);
+            
             var siteId, driveId, tokenResponse;
             init();
             $(document)
