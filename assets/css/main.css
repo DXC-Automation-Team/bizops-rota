@@ -21,3 +21,7 @@
     width: 200px !important;
     white-space: nowrap;
 }
+#home-page{
+    height: 50vh;
+    min-height: 500px;
+}

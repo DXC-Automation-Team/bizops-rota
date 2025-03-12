@@ -15,178 +15,154 @@
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-body" data-bs-theme="dark">
-        <div class="container-fluid">
-            <div class="row flex-grow-1">
-                <div class="col-4">
-                    <button class="btn btn-outline-light border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#references" aria-controls="references">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                </div>
-                <div class="col-4 text-center" >
-                    <span class="navbar-brand" id="page-name"></span>
-                </div>
-                <div class="col-4">
-                    <div class="d-flex">
-                        <button class="btn btn-outline-light border-0 ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                            <i class="fa-solid fa-file-arrow-up"></i>
-                        </button>
-                        <button class="btn btn-outline-light border-0" type="button" id="login">
-                            <i class="fa-regular fa-circle-user"></i>
+    <div id="contents">
+        <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div class="container-fluid">
+                <div class="row flex-grow-1">
+                    <div class="col-4">
+                        <button class="btn btn-outline-light border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#references" aria-controls="references">
+                            <i class="fa-solid fa-bars"></i>
                         </button>
                     </div>
-                    
-                </div>
-            </div>
-            
-        </div>
-    </nav>
-    <!-- Modals -->
-            
-        <!-- General Modal -->
-        <div class="modal fade" id="generalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="modal-title"></h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="col-4 text-center" >
+                        <span class="navbar-brand" id="page-name"></span>
                     </div>
-                    <div class="modal-body">
-                        <p id="modal-message"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Upload Modal -->
-        <div class="modal fade" id="uploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">Upload ROTA file</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="rotaFile" class="form-label">Select ROTA file</label>
-                                <input class="form-control" type="file" id="rotaFile" accept=".xlsm, .xlsx">
-                                <div class="upload-text form-text">Please upload the ROTA file to set up the database.</div>
-                                <div class="upload-text form-text d-none">Workbook loaded successfully!</div>
+                    <div class="col-4">
+                        <div class="d-flex">
+                            <button class="btn btn-outline-light border-0 ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                <i class="fa-solid fa-file-arrow-up"></i>
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-user"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li id="signIn"><a class="dropdown-item">Sign In</a></li>
+                                    <li id="signOut"><a class="dropdown-item">Sign Out</a></li>
+                                </ul>
                             </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="extract" disabled>Extract</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    <!-- end alerts -->    
-    <div class="container-fluid">
-        
-        <div class="container mt-3" id="main">
-            <div class="page" id="rotas-page">
-                <h1>For the year <span id="year"></span></h1> 
-                <ul class="nav nav-tabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-1" role="tab" aria-controls="rota-1" aria-selected="true">January</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-2" role="tab" aria-controls="rota-2" aria-selected="false">February</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-3" role="tab" aria-controls="rota-3" aria-selected="false">March</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-4" role="tab" aria-controls="rota-4" aria-selected="false">April</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-5" role="tab" aria-controls="rota-5" aria-selected="false">May</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-6" role="tab" aria-controls="rota-6" aria-selected="false">June</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-7" role="tab" aria-controls="rota-7" aria-selected="false">July</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-8" role="tab" aria-controls="rota-8" aria-selected="false">August</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-9" role="tab" aria-controls="rota-9" aria-selected="false">September</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-10" role="tab" aria-controls="rota-10" aria-selected="false">October</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-11" role="tab" aria-controls="rota-11" aria-selected="false">November</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" aria-current="page" data-bs-toggle="tab" data-bs-target="#rota-12" role="tab" aria-controls="rota-12" aria-selected="false">December</button>
-                    </li>                    
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade" id="rota-1" role="tabpanel" aria-labelledby="rota-1" tabindex="0">
-                        <div class="card rotapage">
-                            <div class="card-body">
-                                
-                            </div>
+                            
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="rota-2" role="tabpanel" aria-labelledby="rota-2" tabindex="0">
-                        <div class="card rotapage">
-                            <div class="card-body">
-                                
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="rota-3" role="tabpanel" aria-labelledby="rota-3" tabindex="0">
-                        <div class="card rotapage">
-                            <div class="card-body">
-                                
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 
             </div>
-            <div class="d-none page" id="team-info-page"></div>
-            <div class="d-none page" id="employee-info-page"></div>
-            <div class="d-none page" id="shift-info-page"></div>
-            <div class="d-none page" id="PUTIL-target-page"></div>
-            <div class="d-none page" id="SPP-cutoffs-page"></div>
-            <div class="d-none page" id="submission-logs-page"></div>
+        </nav>
+        <!-- Modals -->
+                
+            <!-- General Modal -->
+            <div class="modal fade" id="generalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="modal-title"></h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modal-message"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Upload Modal -->
+            <div class="modal fade" id="uploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Upload ROTA file</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="rotaFile" class="form-label">Select ROTA file</label>
+                                    <input class="form-control" type="file" id="rotaFile" accept=".xlsm, .xlsx">
+                                    <div class="upload-text form-text">Please upload the ROTA file to set up the database.</div>
+                                    <div class="upload-text form-text d-none">Workbook loaded successfully!</div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="extract" disabled>Extract</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        <!-- Modals -->  
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="references" aria-labelledby="referencesLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="referencesLabel">References</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="list-group list-group-flush">
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="home-page">Home</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="rotas-page">ROTAs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="team-info-page">Team Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="employee-info-page">Employee Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="shift-info-page">Shift Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="PUTIL-target-page">PUTIL Target</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="SPP-cutoffs-page">SPP Cutoffs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="submission-logs-page">Submission Logs</button>
+    
+                </div>        
+            </div>
         </div>
+        <div class="container-fluid">
+            
+            <div class="container mt-3" id="main">
+                <div class="page d-flex align-items-center " id="home-page">
+                    <div class="row align-items-center h-100 flex-grow-1">  
+                        <div class="col-2"></div>
+                        <div class="col-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 px-0 h-100">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                                        <h1>Welcome to the SPP BizOps Rota</h1>
+                                        <p>This is a tool to manage the SPP BizOps Rota. Please sign in to access the features.</p>
+                                        <button id="fettch">Fetch Data</button>
+                                        <button id="append">Append</button>
+                                    </div>
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                        </div>
+                    </div> 
+                    
+                </div>
+                <div class="d-none page" id="rotas-page"></div>
+                <div class="d-none page" id="team-info-page"></div>
+                <div class="d-none page" id="employee-info-page"></div>
+                <div class="d-none page" id="shift-info-page"></div>
+                <div class="d-none page" id="PUTIL-target-page"></div>
+                <div class="d-none page" id="SPP-cutoffs-page"></div>
+                <div class="d-none page" id="submission-logs-page"></div>
+            </div>
+            
+        </div>
+        
+    
+        
         
     </div>
     
-
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="references" aria-labelledby="referencesLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="referencesLabel">References</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="list-group list-group-flush">
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="rotas-page">ROTAs</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="team-info-page">Team Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="employee-info-page">Employee Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="shift-info-page">Shift Info</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="PUTIL-target-page">PUTIL Target</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="SPP-cutoffs-page">SPP Cutoffs</button>
-                <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action "  loaded="false" target="submission-logs-page">Submission Logs</button>
-
-            </div>        
-        </div>
-    </div>
-    <button id="signOut">Sign out</button>
-    <button id="fettch">Fetch Data</button>
-    <button id="append">Append</button>
 
     <script src="assets/jquery/jquery-3.7.1.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -203,9 +179,10 @@
             const msalInstance = new msal.PublicClientApplication(msalConfig);
             
             var siteId, driveId, tokenResponse;
+            var accountName, email;
             init();
             $(document)
-            .on('click', '#login', function(){
+            .on('click', '#signIn', function(){
                 signIn();
             })
             .on('click', '#signOut', function(){
@@ -250,14 +227,14 @@
                 let dbExists;
                 
                 
-                await checkDatabaseExists("sppdata")
+                /* await checkDatabaseExists("sppdata")
                     .then(result => {
                         dbExists = result.exists; // Save the value to the variable
                         if(!dbExists){
                             showModal("Database Status", result.message);
                         }
                     })
-                    .catch(error => console.log(error));
+                    .catch(error => console.log(error)); */
                 // set page text
                 setYear(d);
                 setActiveRota(d);
@@ -395,6 +372,8 @@
                         });
                         console.log("Login successful:", loginResponse);
                         siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
+                        
+                        getAccountInfo();
                     } else {
                         console.log("User already signed in:", accounts[0]);
                         siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
@@ -404,6 +383,31 @@
                     showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
                 }
             }
+            async function getUserProfile(accessToken) {
+                const graphEndpoint = "https://graph.microsoft.com/v1.0/me";
+                try {
+                    const response = await fetch(graphEndpoint, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    });
+                    const profile = await response.json();
+                    return profile;
+                } catch (error) {
+                    console.error("Fetching user profile error:", error);
+                }
+            }
+            async function getAccountInfo() {
+                const token = await getToken();
+                if (token) {
+                    const profile = await getUserProfile(token);
+                    console.log("User Profile:", profile);
+                    accountName = profile.displayName;
+                    email = profile.mail || profile.userPrincipalName; 
+                }
+            }
+
+
 
             async function getSiteAndDriveDetails() {
                 const account = msalInstance.getAllAccounts()[0];
