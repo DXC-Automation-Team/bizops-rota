@@ -200,10 +200,10 @@
                 $('#references .list-group-item').removeClass('active');
                 $(this).addClass('active');
                 $('#page-name').text($(this).text());
-                let page = '#'+$(this).attr('target');
+                let page = $(this).attr('target');
                 let loaded = $(this).attr('loaded');
-                $(page).removeClass('d-none');
-                $('.page').not(page).addClass('d-none');
+                $('#'+page).removeClass('d-none');
+                $('.page').not('#'+page).addClass('d-none');
                 if(loaded == 'false'){
                     loadContent('#'+page, 'aside/'+page+'.html');
                     $(this).attr('loaded', 'true');
