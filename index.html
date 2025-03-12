@@ -39,6 +39,7 @@
                                 <ul class="dropdown-menu">
                                     <li id="signIn"><a class="dropdown-item">Sign In</a></li>
                                     <li id="signOut"><a class="dropdown-item">Sign Out</a></li>
+                                    <li id="getAccountInfo"><a class="dropdown-item">Account Info</a></li>
                                 </ul>
                             </div>
                             
@@ -195,6 +196,9 @@
             })
             .on('click', '#signOut', function(){
                 msalInstance.logout();
+            })
+            .on('click', '#signOut', function(){
+                getAccountInfo();
             })
             .on('click', '#references .list-group-item', function(){
                 $('#references .list-group-item').removeClass('active');
@@ -396,6 +400,8 @@
                         getAccountInfo();
                     } else {
                         console.log("User already signed in:", accounts[0]);
+                        accountName = accounts[0].name;
+                        email = accounts[0].username;
                     }
                     
                     siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
