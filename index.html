@@ -204,13 +204,23 @@
                 let loaded = $(this).attr('loaded');
                 $('#'+page).removeClass('d-none');
                 $('.page').not('#'+page).addClass('d-none');
-                if(loaded == 'false'){
-                    loadContent('#'+page, 'aside/'+page+'.html');
-                    $(this).attr('loaded', 'true');
-                }
-                if(page == 'rotas-page'){
-                    let d = new Date();
-                    generateTable(d.getMonth()+1);
+                if (loaded === 'false') {
+                    loadContent('#' + page, 'aside/' + page + '.html', function(success) {
+                        if (success) {
+                            loaded = 'true'; // Update loaded status
+                            $(this).attr('loaded', loaded); // Update the attribute
+
+                            if (page === 'rotas-page') {
+                                let d = new Date();
+                                generateTable(d.getMonth() + 1); // Call generateTable after content is loaded
+                            }
+                        }
+                    });
+                } else {
+                    if (page === 'rotas-page') {
+                        let d = new Date();
+                        generateTable(d.getMonth() + 1); // Call generateTable directly if already loaded
+                    }
                 }
             })
             .on('change', '#rotaFile', function(event){
@@ -359,17 +369,20 @@
                 table.append(tbody);
 
                 // Append the table to .tab-pane.fade .card-body
-                $('#rota-'+(month)+' .card-body').append(table);
+                $('#rota-'+(month)+' .card-body').html(table);
             }
-            function loadContent(elementId, filePath) {
+            function loadContent(elementId, filePath, callback) {
                 $(elementId).load(filePath, function(response, status, xhr) {
                     if (status == "success") {
                         $(elementId).show(); // Show the content once loaded
+                        if (callback) callback(true); // Call the callback function if provided
                     } else if (status == "error") {
                         $(elementId).html("Failed to load content.");
+                        if (callback) callback(false); // Call the callback function with failure status
                     }
                 });
             }
+
             
         
             
