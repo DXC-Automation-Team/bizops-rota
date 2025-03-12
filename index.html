@@ -194,7 +194,8 @@
             .on('click', '#signIn', function(){
                 signIn();
             })
-            .on('click', '#signOut', function(){
+            .on('click', '#signOut', async function(){
+                await msalInstance.handleRedirectPromise();
                 msalInstance.logout();
             })
             .on('click', '#getAccountInfo', function(){
