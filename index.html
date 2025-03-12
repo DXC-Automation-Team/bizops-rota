@@ -416,8 +416,9 @@
                 if (token) {
                     const profile = await getUserProfile(token);
                     console.log("User Profile:", profile);
-                    accountName = profile.displayName;
-                    email = profile.mail || profile.userPrincipalName; 
+                    const accounts = msalInstance.getAllAccounts();
+                    accountName = accounts[0].name;
+                    email = accounts[0].username;
                 }
             }
             async function getUserProfile(accessToken) {
