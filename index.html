@@ -251,7 +251,7 @@
                 $('#home-page').css('opacity', '1');
                 let d = new Date();
                 let dbExists;
-                
+                siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 
                 /* await checkDatabaseExists("sppdata")
                     .then(result => {
@@ -264,6 +264,7 @@
                 // set page text
                 setYear(d);
                 setActiveRota(d);
+                
                 $('#page-name').text($('#references .list-group-item.active').text());
 
             }
@@ -399,14 +400,8 @@
                         console.log("Login successful:", loginResponse);
                         
                         getAccountInfo();
-                    } else {
-                        location.reload(true);
-                        console.log("User already signed in:", accounts[0]);
-                        accountName = accounts[0].name;
-                        email = accounts[0].username;
                     }
-                    
-                    siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
+                    location.reload(true);
                 } catch (error) {
                     console.error("Login error:", error);
                     showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
@@ -472,6 +467,8 @@
                     $('#signIn').show();
                     $('#signOut, #sidebarToggler, #getAccountInfo').hide();
                 }
+                
+                    
             }
 
 
