@@ -197,8 +197,9 @@
             .on('click', '#signOut', function(){
                 msalInstance.logout();
             })
-            .on('click', '#signOut', function(){
-                getAccountInfo();
+            .on('click', '#getAccountInfo', function(){
+                console.log("Account Name:", accountName);
+                console.log("Email:", email);
             })
             .on('click', '#references .list-group-item', function(){
                 $('#references .list-group-item').removeClass('active');
