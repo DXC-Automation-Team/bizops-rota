@@ -94,7 +94,7 @@
                 </div>
             </div>
             
-        <!-- Modals -->  
+        <!--/ Modals -->  
         <div class="offcanvas offcanvas-start" tabindex="-1" id="references" aria-labelledby="referencesLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="referencesLabel">References</h5>
@@ -214,10 +214,16 @@
             })
             .on('click', '#references .list-group-item', function(){
                 let page = $(this).attr('target');
-                if($(this).attr('loaded') == 'false'){
+                let loaded = $(this).attr('loaded');
+                if(loaded == 'false'){
                     loadContent('#'+page, 'aside/'+page+'.html');
                     $(this).attr('loaded', 'true');
+                    if(page == 'rotas-page'){
+                        let d = new Date();
+                        generateTable(d.getMonth()+1);
+                    }
                 }
+                
             })
             .on('click', '#fettch', function(){
                 fetchFileContents('team-info.json')
@@ -229,7 +235,7 @@
             })
 
             async function init(){
-                // checkBrowser();
+                checkBrowser();
                 // signIn();
                 $('#home-page').css('opacity', '1');
                 let d = new Date();
@@ -248,7 +254,6 @@
                 setYear(d);
                 setActiveRota(d);
                 $('#page-name').text($('#references .list-group-item.active').text());
-                generateTable(d.getMonth()+1);
 
             }
             function setYear(d){
@@ -273,16 +278,7 @@
             function checkDatabaseExists(dbName) {
                 return new Promise((resolve, reject) => {
                     //force users to use edge
-                    var isEdge = /Edg\/\d./i.test(navigator.userAgent);
-                    if(!isEdge){
-                        $("body").html(`
-                            <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-                                <div class="alert alert-danger" role="alert">
-                                    <h1>Please use Microsoft Edge to access this page.</h1>
-                                </div>
-                            </div>
-                        `)
-                    }
+                    
                     let request = indexedDB.open(dbName);
                     
                     request.onupgradeneeded = function(event) {
@@ -300,6 +296,18 @@
                         reject({ exists: false, message: `Error opening database: ${event.target.errorCode}` });
                     };
                 });
+            }
+            function checkBrowser(){
+                var isEdge = /Edg\/\d./i.test(navigator.userAgent);
+                if(!isEdge){
+                    $("body").html(`
+                        <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
+                            <div class="alert alert-danger" role="alert">
+                                <h1>Please use Microsoft Edge to access this page.</h1>
+                            </div>
+                        </div>
+                    `)
+                }
             }
             function generateTable(month) {
                 // Get the number of days in the month
