@@ -383,30 +383,34 @@
                 });
             }
 
-            
-        
-            
-
-
             async function signIn() {
                 await msalInstance.handleRedirectPromise();
                 try {
                     const accounts = msalInstance.getAllAccounts();
                     if (accounts.length === 0) {
                         const loginResponse = await msalInstance.loginRedirect({
-                            scopes: ["profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
+                            scopes: ["email","openid","profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
                         });
                         console.log("Login successful:", loginResponse);
-                        siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                         
                         getAccountInfo();
                     } else {
                         console.log("User already signed in:", accounts[0]);
-                        siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                     }
+                    
+                    siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 } catch (error) {
                     console.error("Login error:", error);
                     showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
+                }
+            }
+            async function getAccountInfo() {
+                const token = await getToken();
+                if (token) {
+                    const profile = await getUserProfile(token);
+                    console.log("User Profile:", profile);
+                    accountName = profile.displayName;
+                    email = profile.mail || profile.userPrincipalName; 
                 }
             }
             async function getUserProfile(accessToken) {
@@ -421,15 +425,6 @@
                     return profile;
                 } catch (error) {
                     console.error("Fetching user profile error:", error);
-                }
-            }
-            async function getAccountInfo() {
-                const token = await getToken();
-                if (token) {
-                    const profile = await getUserProfile(token);
-                    console.log("User Profile:", profile);
-                    accountName = profile.displayName;
-                    email = profile.mail || profile.userPrincipalName; 
                 }
             }
 
