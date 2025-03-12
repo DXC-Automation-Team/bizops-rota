@@ -20,7 +20,7 @@
             <div class="container-fluid">
                 <div class="row flex-grow-1">
                     <div class="col-4">
-                        <button class="btn btn-outline-light border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#references" aria-controls="references">
+                        <button class="btn btn-outline-light border-0" id="sidebarToggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#references" aria-controls="references">
                             <i class="fa-solid fa-bars"></i>
                         </button>
                     </div>
@@ -247,7 +247,7 @@
 
             async function init(){
                 checkBrowser();
-                // signIn();
+                checkLoginStatus();
                 $('#home-page').css('opacity', '1');
                 let d = new Date();
                 let dbExists;
@@ -456,6 +456,16 @@
                     }
                 } else {
                     throw new Error("No accounts found.");
+                }
+            }
+            async function checkLoginStatus() {
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length > 0) {
+                    $('#signIn').hide();
+                    $('#signOut, #sidebarToggler, #getAccountInfo').show();
+                } else {
+                    $('#signIn').show();
+                    $('#signOut, #sidebarToggler, #getAccountInfo').hide();
                 }
             }
 
