@@ -195,7 +195,6 @@
                 signIn();
             })
             .on('click', '#signOut', async function(){
-                await msalInstance.handleRedirectPromise();
                 msalInstance.logout();
             })
             .on('click', '#getAccountInfo', function(){
@@ -436,6 +435,30 @@
                     console.error("Fetching user profile error:", error);
                 }
             }
+            async function getToken() {
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length > 0) {
+                    const request = {
+                        scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with necessary scopes
+                    };
+                    try {
+                        const response = await msalInstance.acquireTokenSilent(request);
+                        return response.accessToken;
+                    } catch (error) {
+                        console.error("Token acquisition error:", error);
+                        if (error instanceof msal.InteractionRequiredAuthError) {
+                            // Fallback to interactive token acquisition if silent acquisition fails
+                            const loginResponse = await msalInstance.loginRedirect(request);
+                            return loginResponse.accessToken;
+                        } else {
+                            throw error;
+                        }
+                    }
+                } else {
+                    throw new Error("No accounts found.");
+                }
+            }
+
 
 
 
