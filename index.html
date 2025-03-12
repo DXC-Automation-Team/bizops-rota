@@ -400,6 +400,7 @@
                         
                         getAccountInfo();
                     } else {
+                        location.reload(true);
                         console.log("User already signed in:", accounts[0]);
                         accountName = accounts[0].name;
                         email = accounts[0].username;
