@@ -386,10 +386,6 @@
 
 
             async function signIn() {
-                if (msalInstance.getInteractionInProgress()) {
-                    console.error("Interaction in progress. Please wait for the current interaction to complete.");
-                    return;
-                }
                 try {
                     const loginResponse = await msalInstance.loginRedirect({
                     scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
@@ -398,6 +394,7 @@
                     siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 } catch (error) {
                     console.error("Login error:", error);
+                    showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
                 }
             }
 
