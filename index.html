@@ -386,9 +386,13 @@
 
 
             async function signIn() {
+                if (msalInstance.getInteractionInProgress()) {
+                    console.error("Interaction in progress. Please wait for the current interaction to complete.");
+                    return;
+                }
                 try {
                     const loginResponse = await msalInstance.loginRedirect({
-                        scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
+                    scopes: ["user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
                     });
                     console.log("Login successful:", loginResponse);
                     siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
