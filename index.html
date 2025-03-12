@@ -459,6 +459,7 @@
                 }
             }
             async function checkLoginStatus() {
+                cnosole.log("Checking login status");
                 const accounts = msalInstance.getAllAccounts();
                 if (accounts.length > 0) {
                     $('#signIn').hide();
