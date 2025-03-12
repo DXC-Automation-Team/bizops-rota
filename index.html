@@ -119,12 +119,15 @@
             <div class="container mt-3" id="main">
                 <div class="page d-flex align-items-center " id="home-page">
                     <div class="row align-items-center h-100 flex-grow-1">  
-                        <div class="col-2"></div>
-                        <div class="col-1 h-40">
+                        <div class="col-1"></div>
+                        <div class="col-1 h-30">
                             <div class="card h-100">
-                                <div class="card-body">
-                                    
-                                </div>
+                                <div class="card-body"></div>
+                            </div>
+                        </div>
+                        <div class="col-1 ps-0 h-40">
+                            <div class="card h-100">
+                                <div class="card-body"></div>
                             </div>
                         </div>
                         <div class="col-2 ps-0 h-60">
@@ -228,6 +231,7 @@
             async function init(){
                 // checkBrowser();
                 // signIn();
+                $('#home-page').css('opacity', '1');
                 let d = new Date();
                 let dbExists;
                 
