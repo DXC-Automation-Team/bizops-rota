@@ -463,6 +463,8 @@
                 if (accounts.length > 0) {
                     $('#signIn').hide();
                     $('#signOut, #sidebarToggler, #getAccountInfo').show();
+                    accountName = accounts[0].name;
+                    email = accounts[0].username;
                 } else {
                     $('#signIn').show();
                     $('#signOut, #sidebarToggler, #getAccountInfo').hide();
