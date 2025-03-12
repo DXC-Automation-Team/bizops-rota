@@ -201,8 +201,17 @@
                 $(this).addClass('active');
                 $('#page-name').text($(this).text());
                 let page = '#'+$(this).attr('target');
+                let loaded = $(this).attr('loaded');
                 $(page).removeClass('d-none');
                 $('.page').not(page).addClass('d-none');
+                if(loaded == 'false'){
+                    loadContent('#'+page, 'aside/'+page+'.html');
+                    $(this).attr('loaded', 'true');
+                }
+                if(page == 'rotas-page'){
+                    let d = new Date();
+                    generateTable(d.getMonth()+1);
+                }
             })
             .on('change', '#rotaFile', function(event){
                 $('#extract').prop('disabled', false);
@@ -211,19 +220,6 @@
             .on('click', '#extract', function(){
                 getTableData('Reference', 'tbl_Employee');
                 // getNamedRangeData('Sheet1', 'NamedRange1');
-            })
-            .on('click', '#references .list-group-item', function(){
-                let page = $(this).attr('target');
-                let loaded = $(this).attr('loaded');
-                if(loaded == 'false'){
-                    loadContent('#'+page, 'aside/'+page+'.html');
-                    $(this).attr('loaded', 'true');
-                    if(page == 'rotas-page'){
-                        let d = new Date();
-                        generateTable(d.getMonth()+1);
-                    }
-                }
-                
             })
             .on('click', '#fettch', function(){
                 fetchFileContents('team-info.json')
