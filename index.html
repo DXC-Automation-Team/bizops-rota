@@ -226,6 +226,7 @@
             .on('click','#rota-tabs .nav-link',function(){
                 let target = $(this).attr('data-bs-target');
                 let month = target.substring(5);
+                console.log(month);
                 generateTableHeaders(month);
             })
             .on('input', '.rotapage textarea', function(){
