@@ -277,6 +277,7 @@
             function setYear(d){
                 currentYear = d.getFullYear();
                 $('#year').text(currentYear);
+                console.log(currentYear)
             }
             function setActiveRota(d){
                 let month = d.getMonth();
@@ -359,8 +360,8 @@
                 // Create table body with a single cell containing the textarea
                 var tbody = $('<tbody>').addClass("table-group-divider");
                 var dataRow = $('<tr>');
-                // ADD +4 to daysInMonth to account for the extra columns
-                var textAreaCell = $('<td>').attr('colspan', daysInMonth).append(
+                // ADD +4 to daysInMonth to account for the extra columns. +1 for the name column, +3 for the extra columns
+                var textAreaCell = $('<td>').attr('colspan', daysInMonth+1).append(
                     $('<textarea>').attr({
                         rows: 10,
                         placeholder: 'Paste your Excel data here',
