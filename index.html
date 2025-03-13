@@ -190,6 +190,7 @@
             
             var siteId, driveId, tokenResponse;
             var accountName, email;
+            var currentYear;
             init();
             $(document)
             .on('click', '#signIn', function(){
@@ -274,7 +275,7 @@
 
             }
             function setYear(d){
-                let year = d.getFullYear();
+                year = d.getFullYear();
                 $('#year').text(year);
             }
             function setActiveRota(d){
@@ -330,7 +331,7 @@
                 // Check if the table is already generated
                 if($('#rota-'+month+' table').length > 0) return;
                 // Get the number of days in the month
-                var daysInMonth = new Date(2025, month, 0).getDate();
+                var daysInMonth = new Date(currentYear, month, 0).getDate();
                 var monthName = monthNames[month - 1];
                 // Create table element
                 var table = $('<table>').addClass('table table-striped table-hover table-bordered');
@@ -342,7 +343,7 @@
                 headerRow.append($('<th>').attr('rowspan', 2).text('Name'));
 
                 for (var day = 1; day <= daysInMonth; day++) {
-                    var date = new Date(2025, month - 1, day); // Month is zero-indexed
+                    var date = new Date(currentYear, month - 1, day); // Month is zero-indexed
                     headerRow.append($('<th>').text(('0' + day).slice(-2)).css('white-space', 'nowrap')); // Format day as dd
                     dayOfWeekRow.append($('<th>').text(date.toLocaleDateString('en-US', { weekday: 'short' })).css('white-space', 'nowrap')); // Format day of the week as ddd
                 }
@@ -358,10 +359,10 @@
                 // Create table body with a single cell containing the textarea
                 var tbody = $('<tbody>').addClass("table-group-divider");
                 var dataRow = $('<tr>');
-                var textAreaCell = $('<td>').attr('colspan', daysInMonth + 4).append(
+                // ADD +4 to daysInMonth to account for the extra columns
+                var textAreaCell = $('<td>').attr('colspan', daysInMonth).append(
                     $('<textarea>').attr({
                         rows: 10,
-                        cols: 50,
                         placeholder: 'Paste your Excel data here',
                         month: monthName.toLowerCase(),
                         category: category,
@@ -377,7 +378,8 @@
             }
             function generateTableFromInput(target){ 
                 // var monthName = (monthNames[month - 1]).toLowerCase(); 
-                // const data = $('#'+target).val().trim(); 
+                // Get the number of days in the month
+                var daysInMonth = new Date(currentYear, month, 0).getDate();
                 const data = target.val().trim(); 
                 const rows = data.split('\n').map(row => row.split('\t')); 
                 // let html = '<table class="table table-striped table-hover table-bordered">'; 
