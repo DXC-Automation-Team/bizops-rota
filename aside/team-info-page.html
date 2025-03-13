@@ -1,35 +1,42 @@
-<div class="card w-50">
-    <div class="card-body">
-        <form>
-            <div class="mb-3">
-                <label for="sub-sl" class="form-label">SUB-SL</label>
-                <select class="form-select" id="sub-sl" aria-describedby="sub-sl">
-                    <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
-                    <option value="C&I: CIBC">C&I: CIBC</option>
-                    <option value="C&I: EAO">C&I: EAO</option>
-                    <option value="C&I: Leadership">C&I: Leadership</option>
-                    <option value="C&I: LT & BizOps">C&I: LT & BizOps</option>
-                    <option value="C&I: Network">C&I: Network</option>
-                    <option value="C&I: PM & EAO SDEX">C&I: PM & EAO SDEX</option>
-                    <option value="C&I: PM & PMO">C&I: PM & PMO</option>
-                    <option value="C&I: VPC">C&I: VPC</option>
-                    <option value="CIO: DXC IT">CIO: DXC IT</option>
-                    <option value="Delivery Excellence">Delivery Excellence</option>
-                    <option value="Global Deliver: Region">Global Deliver: Region</option>
-                    <option value="Site Operations">Site Operations</option>
-                  </select>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-5">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="sub-sl" class="form-label">SUB-SL</label>
+                        <select class="form-select" id="sub-sl" aria-describedby="sub-sl">
+                            <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
+                            <option value="C&I: CIBC">C&I: CIBC</option>
+                            <option value="C&I: EAO">C&I: EAO</option>
+                            <option value="C&I: Leadership">C&I: Leadership</option>
+                            <option value="C&I: LT & BizOps">C&I: LT & BizOps</option>
+                            <option value="C&I: Network">C&I: Network</option>
+                            <option value="C&I: PM & EAO SDEX">C&I: PM & EAO SDEX</option>
+                            <option value="C&I: PM & PMO">C&I: PM & PMO</option>
+                            <option value="C&I: VPC">C&I: VPC</option>
+                            <option value="CIO: DXC IT">CIO: DXC IT</option>
+                            <option value="Delivery Excellence">Delivery Excellence</option>
+                            <option value="Global Deliver: Region">Global Deliver: Region</option>
+                            <option value="Site Operations">Site Operations</option>
+                          </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="team-name" class="form-label">Team Name</label>
+                        <input type="text" class="form-control" id="team-name" aria-describedby="team-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wbs" class="form-label">WBS</label>
+                        <input type="text" class="form-control" id="wbs" aria-describedby="wbs">
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary float-end" id="saveTeamInfo">Save</button>
+                    </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="team-name" class="form-label">Team Name</label>
-                <input type="text" class="form-control" id="team-name" aria-describedby="team-name">
-            </div>
-            <div class="mb-3">
-                <label for="wbs" class="form-label">WBS</label>
-                <input type="text" class="form-control" id="wbs" aria-describedby="wbs">
-            </div>
-            <div class="mb-3">
-                <button type="button" class="btn btn-primary float-end" id="saveTeamInfo">Save</button>
-            </div>
-        </form>
+        </div>
     </div>
+    <div class="col-3"></div>
+    <div class="col-2"></div>
 </div>
