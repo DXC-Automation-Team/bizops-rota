@@ -217,7 +217,7 @@
                     loadContent('#' + page, 'aside/' + page + '.html', function(success) {
                         if (success) {
                             let attempts = 0;
-                            const interval = 100; // 100ms interval
+                            const interval = 150; // 100ms interval
                             const maxAttempts = 5;
                             const checkStatusInterval = setInterval(function() {
                                 const pageStatus = checkPageStatus(page);
@@ -363,7 +363,7 @@
                         //check server if data is available
 
                         //if data is available
-                        
+
                         //if data does not exist
                         generateTableHeaders(month,'shift');
                         setActiveRota();
