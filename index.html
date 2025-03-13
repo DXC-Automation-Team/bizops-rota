@@ -217,7 +217,6 @@
 
                             if (page === 'rotas-page') {
                                 let d = new Date();
-                                console.log(month);
                                 generateTableHeaders(d.getMonth() + 1); // Call generateTable after content is loaded
                             }
                         }
@@ -226,7 +225,7 @@
             })
             .on('click','#rota-tabs .nav-link',function(){
                 let target = $(this).attr('data-bs-target');
-                let month = target.substring(5);
+                let month = target.substring(6);
                 console.log(month);
                 generateTableHeaders(month);
             })
