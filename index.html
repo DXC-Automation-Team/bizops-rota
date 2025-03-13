@@ -220,7 +220,7 @@
                             if (page === 'rotas-page') {
                                 let d = new Date();
                                 let month = d.getMonth() + 1;
-                                generateTableHeaders(d.getMonth() + 1); // Call generateTable after content is loaded
+                                generateTableHeaders(d.getMonth() + 1,'shift'); // Call generateTable after content is loaded
                                 $('#rota-tabs .nav-link').removeClass('active').attr('aria-selected', 'false');
                                 $('#rota-tabs .tab-pane').removeClass('show active');
                                 let tab = $('#rota-tabs .nav-link[data-bs-target="#rota-' + month + '"]');
