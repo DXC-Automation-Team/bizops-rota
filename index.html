@@ -371,15 +371,15 @@
                 // const data = $('#'+target).val().trim(); 
                 const data = target.val().trim(); 
                 const rows = data.split('\n').map(row => row.split('\t')); 
-                let html = '<table class="table table-striped table-hover table-bordered">'; 
+                // let html = '<table class="table table-striped table-hover table-bordered">'; 
                 // Generate table rows 
                 rows.forEach(row => {
                     html += '<tr>'; 
                     row.forEach(cell => { html += `<td><input type="text" value="${cell}"></td>`; }); 
                     html += '</tr>'; }
                 ); 
-                html += '</table>'; 
-                $('#'+target).closest('tbody').html(html); 
+                // html += '</table>'; 
+                target.closest('tbody').html(html); 
             }
             function generateTableFromServer(){
                 // Get the data from the server
