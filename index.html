@@ -224,8 +224,9 @@
                 }
             })
             .on('click','#rota-tabs .nav-link',function(){
-                let d = new Date();
-                generateTableHeaders(d.getMonth() + 1);
+                let target = $(this).attr('data-bs-target');
+                let month = target.substring(5);
+                generateTableHeaders(month);
             })
             .on('input', '.rotapage textarea', function(){
                 let target = $(this).attr('id');
