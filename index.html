@@ -218,15 +218,8 @@
                             $(this).attr('loaded', loaded); // Update the attribute
 
                             if (page === 'rotas-page') {
-                                let d = new Date();
-                                let month = d.getMonth() + 1;
-                                generateTableHeaders(d.getMonth() + 1,'shift'); // Call generateTable after content is loaded
-                                $('#rota-tabs .nav-link').removeClass('active').attr('aria-selected', 'false');
-                                $('#rota-tabs .tab-pane').removeClass('show active');
-                                let tab = $('#rota-tabs .nav-link[data-bs-target="#rota-' + month + '"]');
-                                let tabpage = $('.tab-pane#rota-' + month);
-                                tab.addClass('active').attr('aria-selected', 'true');
-                                tabpage.addClass('show active');
+                                generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
+                                setActiveRota();
                                 
 
                             }
@@ -256,6 +249,7 @@
                 checkLoginStatus();
                 $('#home-page').css('opacity', '1');
                 let d = new Date();
+                setYear(d);
                 let dbExists;
                 siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 
@@ -268,8 +262,6 @@
                     })
                     .catch(error => console.log(error)); */
                 // set page text
-                setYear(d);
-                setActiveRota(d);
                 
                 $('#page-name').text($('#references .list-group-item.active').text());
 
@@ -279,13 +271,14 @@
                 $('#year').text(currentYear);
                 console.log(currentYear)
             }
-            function setActiveRota(d){
+            function setActiveRota(){
+                let d = new Date();
                 let month = d.getMonth();
                 let rota = '#rota-'+(month+1);
                 let link = '#rotas-page .nav-link[aria-controls="rota-'+(month+1)+'"]';
-                $('#rotas-page .nav-link').removeClass('active');
+                $('#rotas-page .nav-link').removeClass('active').attr('aria-selected', 'false');
                 $('#rotas-page .tab-pane').removeClass('show active');
-                $(link).addClass('active');
+                $(link).addClass('active').attr('aria-selected', 'true');
                 $(rota).addClass('show active');
             }
             function showModal(title, message){
