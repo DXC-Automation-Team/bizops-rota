@@ -177,7 +177,7 @@
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
-            var workbook; // Variable to store the workbook
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const msalConfig = {
                 auth: {
                     clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
@@ -224,7 +224,7 @@
                 } else {
                     if (page === 'rotas-page') {
                         let d = new Date();
-                        generateTable(d.getMonth() + 1); // Call generateTable directly if already loaded
+                        generateTableHeaders(d.getMonth() + 1); // Call generateTableHeaders directly if already loaded
                     }
                 }
             })
@@ -232,9 +232,9 @@
                 $('#extract').prop('disabled', false);
                 checkFileInput(event);
             })
-            .on('click', '#extract', function(){
-                getTableData('Reference', 'tbl_Employee');
-                // getNamedRangeData('Sheet1', 'NamedRange1');
+            .on('input', '.rotapage textarea', function(){
+                let target = $(this).attr('id');
+                generateTableFromInput(target);
             })
             .on('click', '#fettch', function(){
                 fetchFileContents('team-info.json')
@@ -321,10 +321,10 @@
                     `)
                 }
             }
-            function generateTable(month) {
+            function generateTableHeaders(month) {
                 // Get the number of days in the month
                 var daysInMonth = new Date(2025, month, 0).getDate();
-
+                var monthName = monthNames[month - 1];
                 // Create table element
                 var table = $('<table>').addClass('table table-striped table-hover table-bordered');
 
@@ -348,35 +348,42 @@
                 thead.append(dayOfWeekRow);
                 table.append(thead);
 
-                // Create table body
+                // Create table body with a single cell containing the textarea
                 var tbody = $('<tbody>').addClass("table-group-divider");
-
-                // Add dummy data rows
-                var dummyData = [
-                    { name: "John Doe", TEH: "8", PUTILHours: "5", PUTIL: "10" },
-                    { name: "Jane Smith", TEH: "7", PUTILHours: "4", PUTIL: "9" },
-                    { name: "Alice Johnson", TEH: "6", PUTILHours: "3", PUTIL: "8" }
-                ];
-
-                for (var i = 0; i < dummyData.length; i++) {
-                    var dataRow = $('<tr>');
-                    var data = dummyData[i];
-                    dataRow.append($('<td>').append($('<input>').attr('type', 'text').val(data.name)));
-                    for (var day = 1; day <= daysInMonth; day++) {
-                        dataRow.append($('<td>').append($('<input>').attr('type', 'text').val('X'))); // Dummy data for days
-                    }
-                    dataRow.append($('<td>').append($('<input>').attr('type', 'text').val(data.TEH)));
-                    dataRow.append($('<td>').append($('<input>').attr('type', 'text').val(data.PUTILHours)));
-                    dataRow.append($('<td>').append($('<input>').attr('type', 'text').val(data.PUTIL)));
-                    tbody.append(dataRow);
-                }
-
-                // Append tbody to the table
+                var dataRow = $('<tr>');
+                var textAreaCell = $('<td>').attr('colspan', daysInMonth + 4).append(
+                    $('<textarea>').attr({
+                        rows: 10,
+                        cols: 50,
+                        placeholder: 'Paste your Excel data here',
+                        month: monthName.toLowerCase(),
+                        category: 'shift',
+                        id: monthName.toLowerCase() + 'Shift'
+                    })
+                );
+                dataRow.append(textAreaCell);
+                tbody.append(dataRow);
                 table.append(tbody);
 
                 // Append the table to .tab-pane.fade .card-body
-                $('#rota-'+(month)+' .card-body').html(table);
+                $('#rota-' + month + ' .card-body').html(table);
             }
+            function generateTableFromInput(target){ 
+                // var monthName = (monthNames[month - 1]).toLowerCase(); 
+                const data = $('#'+target).val().trim(); 
+                const rows = data.split('\n').map(row => row.split('\t')); 
+                let html = '<table class="table table-striped table-hover table-bordered">'; 
+                // Generate table rows 
+                rows.forEach(row => {
+                    html += '<tr>'; 
+                    row.forEach(cell => { html += `<td><input type="text" value="${cell}"></td>`; }); 
+                    html += '</tr>'; }
+                ); 
+                html += '</table>'; 
+                $('#'+target).closest('tbody').html(html); 
+            }
+            
+
             function loadContent(elementId, filePath, callback) {
                 $(elementId).load(filePath, function(response, status, xhr) {
                     if (status == "success") {
@@ -471,9 +478,6 @@
                     
             }
 
-
-
-
             async function getSiteAndDriveDetails() {
                 const account = msalInstance.getAllAccounts()[0];
                 tokenResponse = await msalInstance.acquireTokenSilent({
@@ -503,7 +507,6 @@
 
                 // return { siteId, driveId, tokenResponse };
             }
-
             async function fetchFileContents(file) {
                 try {
                     // const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
@@ -539,7 +542,6 @@
                     console.error("Error fetching file contents:", error);
                 }
             }
-
             async function appendToFile(file, dataToAppend) {
                 try {
                     var fileContents = await fetchFileContents(file);
