@@ -222,7 +222,7 @@
                                 let month = d.getMonth()+1;
                                 generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
                                 setActiveRota();
-                                
+                                $('#year').text(currentYear);
 
                             }
                         }
@@ -247,7 +247,7 @@
             })
 
             async function init(){
-                setYear();
+                
                 checkBrowser();
                 checkLoginStatus();
                 $('#home-page').css('opacity', '1');
@@ -263,16 +263,12 @@
                     })
                     .catch(error => console.log(error)); */
                 // set page text
-                
+                let d = new Date();
+                currentYear = d.getFullYear();
                 $('#page-name').text($('#references .list-group-item.active').text());
 
             }
-            function setYear(){
-                let d = new Date();
-                currentYear = d.getFullYear();
-                $('#year').text(currentYear);
-                console.log(currentYear)
-            }
+            
             function setActiveRota(){
                 let d = new Date();
                 let month = d.getMonth();
