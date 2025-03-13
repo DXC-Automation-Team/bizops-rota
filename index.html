@@ -365,6 +365,7 @@
                         rows: 10,
                         placeholder: 'Paste your Excel data here',
                         month: monthName.toLowerCase(),
+                        monthnumber: month,
                         category: category,
                         style: 'width: 100%;'
                     })
@@ -377,7 +378,8 @@
                 $('#rota-' + month + ' .card-body').html(table);
             }
             function generateTableFromInput(target){ 
-                // var monthName = (monthNames[month - 1]).toLowerCase(); 
+                // var monthName = (monthNames[month - 1]).toLowerCase();
+                var month = target.attr('monthnumber');
                 // Get the number of days in the month
                 var daysInMonth = new Date(currentYear, month, 0).getDate();
                 const data = target.val().trim(); 
