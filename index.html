@@ -221,16 +221,11 @@
                             }
                         }
                     });
-                } else {
-                    if (page === 'rotas-page') {
-                        let d = new Date();
-                        generateTableHeaders(d.getMonth() + 1); // Call generateTableHeaders directly if already loaded
-                    }
                 }
             })
-            .on('change', '#rotaFile', function(event){
-                $('#extract').prop('disabled', false);
-                checkFileInput(event);
+            .on('click','#rota-tabs .nav-link',function(){
+                let d = new Date();
+                generateTableHeaders(d.getMonth() + 1);
             })
             .on('input', '.rotapage textarea', function(){
                 let target = $(this).attr('id');
@@ -322,6 +317,8 @@
                 }
             }
             function generateTableHeaders(month) {
+                // Check if the table is already generated
+                if($('#rota-'+month+' table').length > 0) return;
                 // Get the number of days in the month
                 var daysInMonth = new Date(2025, month, 0).getDate();
                 var monthName = monthNames[month - 1];
