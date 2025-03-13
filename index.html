@@ -247,12 +247,10 @@
             })
 
             async function init(){
+                setYear();
                 checkBrowser();
                 checkLoginStatus();
                 $('#home-page').css('opacity', '1');
-                let d = new Date();
-                
-                setYear(d);
                 let dbExists;
                 siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 
@@ -269,7 +267,8 @@
                 $('#page-name').text($('#references .list-group-item.active').text());
 
             }
-            function setYear(d){
+            function setYear(){
+                let d = new Date();
                 currentYear = d.getFullYear();
                 $('#year').text(currentYear);
                 console.log(currentYear)
