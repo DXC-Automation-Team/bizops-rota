@@ -230,8 +230,7 @@
                 generateTableHeaders(month,'shift');
             })
             .on('input', '.rotapage textarea', function(){
-                let target = $(this).attr('id');
-                generateTableFromInput(target);
+                generateTableFromInput($(this));
             })
             .on('click', '#fettch', function(){
                 fetchFileContents('team-info.json')
@@ -369,7 +368,8 @@
             }
             function generateTableFromInput(target){ 
                 // var monthName = (monthNames[month - 1]).toLowerCase(); 
-                const data = $('#'+target).val().trim(); 
+                // const data = $('#'+target).val().trim(); 
+                const data = target.val().trim(); 
                 const rows = data.split('\n').map(row => row.split('\t')); 
                 let html = '<table class="table table-striped table-hover table-bordered">'; 
                 // Generate table rows 
