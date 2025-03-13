@@ -274,14 +274,14 @@
                 let dbExists;
                 siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 
-                /* await checkDatabaseExists("sppdata")
+                await checkDatabaseExists()
                     .then(result => {
                         dbExists = result.exists; // Save the value to the variable
                         if(!dbExists){
                             showModal("Database Status", result.message);
                         }
                     })
-                    .catch(error => console.log(error)); */
+                    .catch(error => console.log(error));
                 // set page text
                 let d = new Date();
                 currentYear = d.getFullYear();
@@ -305,15 +305,15 @@
                 $('#generalModal').modal('show');
 
             }
-            function checkDatabaseExists(dbName) {
+            function checkDatabaseExists() {
                 return new Promise((resolve, reject) => {
                     //force users to use edge
                     
-                    let request = indexedDB.open(dbName);
+                    let request = indexedDB.open('sppdata');
                     
                     request.onupgradeneeded = function(event) {
                         request.transaction.abort();
-                        resolve({ exists: false, message: "Database not found. Please use Microsoft Edge and set up the required data from the ROTA file." });
+                        resolve({ exists: false, message: "Database not found. Please set up the required data from the ROTA file." });
                     };
 
                     request.onsuccess = function(event) {
@@ -447,7 +447,6 @@
                 // Get the data from the server
                 // Generate the table
             }
-            
 
             function loadContent(elementId, filePath, callback) {
                 $(elementId).load(filePath, function(response, status, xhr) {

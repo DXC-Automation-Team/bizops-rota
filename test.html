@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to HTML Table</title>
+    <style>
+        #tablesContainer {
+            margin-top: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            resize: none;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link href='https://fonts.googleapis.com/css?family=Anaheim' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-7">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Start Shift</th>
+                                        <th>Shift Hours</th>
+                                        <th>Actual Hours</th>
+                                        <th>End Shift</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>AP</td>
+                                        <td>Regular Shift</td>
+                                        <td>06:00</td>
+                                        <td>9</td>
+                                        <td>8</td>
+                                        <td>15:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>EU</td>
+                                        <td>Regular Shift</td>
+                                        <td>14:00</td>
+                                        <td>9</td>
+                                        <td>8</td>
+                                        <td>23:00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NA</td>
+                                        <td>Regular Shift</td>
+                                        <td>22:00</td>
+                                        <td>9</td>
+                                        <td>8</td>
+                                        <td>7:00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>Instructions</h3>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Click on the <i class="fa-solid fa-circle-plus"></i> to add a new Shift Code.</li>
+                                <li class="list-group-item">Only codes registered in the table can be used for plotting the Rota Schedules.</li>
+            
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        $(document).ready(function() {
+            
+        });
+        
+        const dbName = 'sppdata';
+        const storeSchemas = [
+            { name: 'team-info', keyPath: 'id' },
+            { name: 'shift-info', keyPath: 'id' },
+            { name: 'team-info', keyPath: 'id' },
+            { name: 'rota-info', keyPath: 'id' },
+            { name: 'standby-info', keyPath: 'id' },
+            { name: 'submission-logs', keyPath: 'id' }
+        ];
+        function checkDatabaseExists(dbName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+                    db.close();
+                    resolve(true);
+                };
+
+                request.onupgradeneeded = function(event) {
+                    event.target.transaction.abort();
+                    resolve(false);
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+        function checkTableExists(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+                    let exists = db.objectStoreNames.contains(storeName);
+                    resolve(exists);
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+        function createDatabaseAndTable(dbName, storeSchemas) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName, 1);
+
+                request.onupgradeneeded = function(event) {
+                    let db = event.target.result;
+                    storeSchemas.forEach(schema => {
+                        if (!db.objectStoreNames.contains(schema.name)) {
+                            db.createObjectStore(schema.name, { keyPath: schema.keyPath });
+                            console.log(`Object store "${schema.name}" created.`);
+                        }
+                    });
+                };
+
+                request.onsuccess = function(event) {
+                    resolve(`Database "${dbName}" and tables created/checked successfully.`);
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+
+        // Check if database exists and create it if necessary
+        checkDatabaseExists(dbName)
+            .then(dbExists => {
+                if (!dbExists) {
+                    return createDatabaseAndTable(dbName, storeSchemas);
+                } else {
+                    console.log('Database already exists.');
+                    // Check and create each table if necessary
+                    return Promise.all(storeSchemas.map(schema => {
+                        return checkTableExists(dbName, schema.name)
+                            .then(tableExists => {
+                                if (!tableExists) {
+                                    return createDatabaseAndTable(dbName, [schema]);
+                                } else {
+                                    console.log(`Table "${schema.name}" already exists.`);
+                                }
+                            });
+                    }));
+                }
+            })
+            .then(message => {
+                if (message) {
+                    console.log(message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+
+
+    </script>
+</body>
+</html>
