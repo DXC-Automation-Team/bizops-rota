@@ -338,10 +338,10 @@
                     headerRow.append($('<th>').text(('0' + day).slice(-2)).css('white-space', 'nowrap')); // Format day as dd
                     dayOfWeekRow.append($('<th>').text(date.toLocaleDateString('en-US', { weekday: 'short' })).css('white-space', 'nowrap')); // Format day of the week as ddd
                 }
-
-                headerRow.append($('<th>').attr('rowspan', 2).text('TEH').css('white-space', 'nowrap'));
+                // OPTIONALLY ADD THIS BACK IF NEEDED
+                /* headerRow.append($('<th>').attr('rowspan', 2).text('TEH').css('white-space', 'nowrap'));
                 headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL Hours'));
-                headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL').css('white-space', 'nowrap'));
+                headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL').css('white-space', 'nowrap')); */
 
                 thead.append(headerRow);
                 thead.append(dayOfWeekRow);
