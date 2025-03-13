@@ -204,20 +204,39 @@
                 console.log("Email:", email);
             })
             .on('click', '#references .list-group-item', function(){
+                
+                let page = $(this).attr('target');
+                let loaded = $(this).attr('loaded');
+                let listItem = $(this);
                 $('#references .list-group-item').removeClass('active');
                 $(this).addClass('active');
                 $('#page-name').text($(this).text());
-                let page = $(this).attr('target');
-                let loaded = $(this).attr('loaded');
                 $('#'+page).removeClass('d-none');
                 $('.page').not('#'+page).addClass('d-none');
                 if (loaded === 'false') {
                     loadContent('#' + page, 'aside/' + page + '.html', function(success) {
                         if (success) {
-                            loaded = 'true'; // Update loaded status
-                            $(this).attr('loaded', loaded); // Update the attribute
+                            let attempts = 0;
+                            const interval = 100; // 100ms interval
+                            const maxAttempts = 5;
+                            const checkStatusInterval = setInterval(function() {
+                                const pageStatus = checkPageStatus(page);
+                                if (pageStatus || attempts >= maxAttempts) {
+                                    clearInterval(checkStatusInterval);
+                                    if (!pageStatus) {
+                                        alert("Failed to load content after 5 attempts.");
+                                    } else {
+                                        loaded = 'true'; // Update loaded status
+                                        listItem.attr('loaded', loaded);
+                                        fetchPageContents(page);
+                                    }
+                                }
+                                attempts++;
+                            }, interval);
+                            
 
                             if (page === 'rotas-page') {
+                                
                                 let d = new Date();
                                 let month = d.getMonth()+1;
                                 generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
@@ -319,6 +338,41 @@
                     `)
                 }
             }
+            function checkPageStatus(page){
+                let pageStatus = false;
+                let pageContent = $('#'+page).html();
+                if(pageContent.length > 0){
+                    pageStatus = true;
+                }
+                return pageStatus;
+                
+            }
+            
+            function fetchPageContents(page){
+                switch(page){
+                    case "rotas-page":
+                        $('#year').text(currentYear);
+                        let d = new Date();
+                        let month = d.getMonth()+1;
+                        //check if employee info is setup
+
+                        //check if shift info is setup
+
+                        //check if team info is setup
+
+                        //check server if data is available
+
+                        //if data is available
+                        
+                        //if data does not exist
+                        generateTableHeaders(month,'shift');
+                        setActiveRota();
+                        
+                        break;
+                    
+                }
+            }
+            
             function generateTableHeaders(month,category) {
                 // Check if the table is already generated
                 if($('#rota-'+month+' table').length > 0) return;
