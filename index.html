@@ -104,7 +104,8 @@
             <div class="offcanvas-body">
                 <div class="list-group list-group-flush">
                     <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="home-page">Home</button>
-                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="rotas-page">ROTAs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="rotas-page">Shift ROTAs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="standby-rotas-page">Standby ROTAs</button>
                     <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="team-info-page">Team Info</button>
                     <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="employee-info-page">Employee Info</button>
                     <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="shift-info-page">Shift Info</button>
@@ -226,8 +227,7 @@
             .on('click','#rota-tabs .nav-link',function(){
                 let target = $(this).attr('data-bs-target');
                 let month = target.substring(6);
-                console.log(month);
-                generateTableHeaders(month);
+                generateTableHeaders(month,'shift');
             })
             .on('input', '.rotapage textarea', function(){
                 let target = $(this).attr('id');
@@ -318,7 +318,7 @@
                     `)
                 }
             }
-            function generateTableHeaders(month) {
+            function generateTableHeaders(month,category) {
                 // Check if the table is already generated
                 if($('#rota-'+month+' table').length > 0) return;
                 // Get the number of days in the month
@@ -356,8 +356,7 @@
                         cols: 50,
                         placeholder: 'Paste your Excel data here',
                         month: monthName.toLowerCase(),
-                        category: 'shift',
-                        id: monthName.toLowerCase() + 'Shift',
+                        category: category,
                         style: 'width: 100%;'
                     })
                 );
@@ -381,6 +380,10 @@
                 ); 
                 html += '</table>'; 
                 $('#'+target).closest('tbody').html(html); 
+            }
+            function generateTableFromServer(){
+                // Get the data from the server
+                // Generate the table
             }
             
 
