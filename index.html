@@ -218,6 +218,8 @@
                             $(this).attr('loaded', loaded); // Update the attribute
 
                             if (page === 'rotas-page') {
+                                let d = new Date();
+                                let month = d.getMonth()+1;
                                 generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
                                 setActiveRota();
                                 
@@ -249,6 +251,7 @@
                 checkLoginStatus();
                 $('#home-page').css('opacity', '1');
                 let d = new Date();
+                
                 setYear(d);
                 let dbExists;
                 siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
