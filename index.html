@@ -372,6 +372,7 @@
                 const data = target.val().trim(); 
                 const rows = data.split('\n').map(row => row.split('\t')); 
                 // let html = '<table class="table table-striped table-hover table-bordered">'; 
+                let html = '';
                 // Generate table rows 
                 rows.forEach(row => {
                     html += '<tr>'; 
