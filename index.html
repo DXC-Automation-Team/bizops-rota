@@ -220,6 +220,7 @@
                             const interval = 150; // 100ms interval
                             const maxAttempts = 5;
                             const checkStatusInterval = setInterval(function() {
+                                console.log("Checking page status attempt", attempts);
                                 const pageStatus = checkPageStatus(page);
                                 if (pageStatus || attempts >= maxAttempts) {
                                     clearInterval(checkStatusInterval);
@@ -349,6 +350,7 @@
             }
             
             function fetchPageContents(page){
+                console.log("Fetching page contents for", page);
                 switch(page){
                     case "rotas-page":
                         $('#year').text(currentYear);
