@@ -41,10 +41,10 @@
                 <div class="col-5">
                     <div class="card">
                         <div class="card-body">
-                            <form>
+                            <form id="teamForm" class="needs-validation" novalidate>
                                 <div class="mb-3">
                                     <label for="sub-sl" class="form-label">SUB-SL</label>
-                                    <select class="form-select" id="sub-sl" aria-describedby="sub-sl">
+                                    <select class="form-select" id="sub-sl" aria-describedby="sub-sl" required>
                                         <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
                                         <option value="C&I: CIBC">C&I: CIBC</option>
                                         <option value="C&I: EAO">C&I: EAO</option>
@@ -62,15 +62,33 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="team-name" class="form-label">Team Name</label>
-                                    <input type="text" class="form-control" id="team-name" aria-describedby="team-name">
+                                    <input type="text" class="form-control" id="team-name" aria-describedby="team-name" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a team name.
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="wbs" class="form-label">WBS</label>
-                                    <input type="text" class="form-control" id="wbs" aria-describedby="wbs">
+                                    <input type="text" class="form-control" id="wbs" aria-describedby="wbs" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a WBS.
+                                    </div>
+                                </div>
+                                <div class="alert alert-primary mb-3" role="alert" id="teamInfoMessage" style="display: none;">
+                                    
+                                    
                                 </div>
                                 <div class="mb-3">
-                                    <button type="button" class="btn btn-primary float-end" id="checkTeamInfo">Verify</button>
-                                    <button type="button" class="btn btn-primary float-end" id="saveTeamInfo">Save</button>
+                                    
+                                    <button type="submit" class="btn btn-primary float-end" id="checkTeamInfo" >Verify</button>
+                                    <div id="teamSubmitButtons" class="d-none">
+                                        <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">No</button>
+                                        <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo">Yes</button>
+                                    </div>
+                                    <div id="teamChangeButtons" class="d-none">
+                                        <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">I have a different team</button>
+                                    </div>
+                                    
                                 </div>
                             </form>
                         </div>
@@ -78,7 +96,9 @@
                 </div>
                 <div class="col-3">
                     <div class="card">
-                        <div class="card-body"></div>
+                        <div class="card-body">
+                            <button class="btn btn-outline-dark" id="getTable">get table</button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-2"></div>
@@ -90,13 +110,46 @@
     <script>
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         $(document).ready(function() {
+            addFormValidation();
             $(document)
+            .on('submit', '#teamForm', function(event){
+                event.preventDefault();
+            })
+            .on('input', '#sub-sl, #team-name, #wbs', function(){
+                resetFormValidation();
+                /* $('#checkTeamInfo').removeClass('d-none');
+                $('#teamInfoMessage').hide();
+                $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');  */
+            })
+            .on('change', '#sub-sl', function(){
+                resetFormValidation();
+                /* $('#checkTeamInfo').removeClass('d-none');
+                $('#teamInfoMessage').hide();
+                $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none'); */
+            })
             .on('click','#checkTeamInfo',function(){
                 checkTeamInfo();
             })
             .on('click','#saveTeamInfo',function(){
                 saveTeamInfo();
-            });
+            })
+            .on('click','.cancelSaveTeamInfo',function(){
+                resetFormValidation();
+            })
+            .on('click','#getTable',function(){
+                getTableContents(dbName, 'team-info')
+                    .then(content => {
+                        if (content) {
+                            console.log('Table contents:', content);
+                        } else {
+                            console.log('Table is empty.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            })
+            ;
         });
         
         const dbName = 'sppdata';
@@ -145,6 +198,140 @@
             });
         }
 
+        function getTableContents(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readonly');
+                        let objectStore = transaction.objectStore(storeName);
+                        let content = [];
+                        
+                        objectStore.openCursor().onsuccess = function(event) {
+                            let cursor = event.target.result;
+                            if (cursor) {
+                                content.push(cursor.value);
+                                cursor.continue();
+                            } else {
+                                resolve(content.length > 0 ? content : null);
+                            }
+                        };
+
+                        objectStore.openCursor().onerror = function(event) {
+                            reject('Cursor error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve(null); // Table doesn't exist
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+        function getTableContent(dbName, storeName, key) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readonly');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let getRequest = objectStore.get(key);
+
+                        getRequest.onsuccess = function(event) {
+                            if (event.target.result) {
+                                resolve(event.target.result);
+                            } else {
+                                resolve(null); // No data found for the given key
+                            }
+                        };
+
+                        getRequest.onerror = function(event) {
+                            reject('Get error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve(null); // Table doesn't exist
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+        function saveToLocalDB(dbName, storeName, data) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readwrite');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let addRequest = objectStore.add(data);
+
+                        addRequest.onsuccess = function() {
+                            resolve('Data added successfully');
+                        };
+
+                        addRequest.onerror = function(event) {
+                            reject('Add error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve('Table does not exist');
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+        function clearTable(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readwrite');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let clearRequest = objectStore.clear();
+
+                        clearRequest.onsuccess = function() {
+                            resolve('Table contents cleared successfully');
+                        };
+
+                        clearRequest.onerror = function(event) {
+                            reject('Clear error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve('Table does not exist');
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+
+
         function createDatabaseAndTable(dbName, storeSchemas) {
             return new Promise((resolve, reject) => {
                 let request = indexedDB.open(dbName, 1);
@@ -169,12 +356,45 @@
             });
         }
 
+        
+        function getItemByKey(contentArray, key) {
+            return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
+        }
+        //UTILITIES
+        function addFormValidation(){
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }
+        function resetFormValidation(){
+            $('#teamForm').removeClass('was-validated');
+            $('#checkTeamInfo').removeClass('d-none');
+            $('#teamInfoMessage').hide();
+            $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+        }
+
+        //API
         function checkTeamInfo(){
-            let subSl = $('#sub-sl').val();
-            let teamName = $('#team-name').val();
-            let wbs = $('#wbs').val();
+            let subSl = $('#sub-sl').val().trim();
+            let teamName = $('#team-name').val().trim();
+            let wbs = $('#wbs').val().trim();
+            if(subSl == '' || teamName == '' || wbs == ''){return;}
+
             let teamInfo = {
-                "SUBSL": subSl,
+                SUBSL: subSl,
                 Team: teamName,
                 WBS: wbs
             };
@@ -190,15 +410,24 @@
                     
                     // Check if response contains the data
                     if (response) {
-                        // Access properties of the returned item
-                        var subSl = response["SUB_x002d_SL"];
-                        var team = response["Team"];
-                        var title = response["WBS"]; // Assuming Title is a field in your SharePoint list
-
-                        console.log("SUB-SL:", subSl);
-                        console.log("Team:", team);
+                        $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
+                        $('#teamInfoMessage').show();
+                        $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
+                        $('#teamChangeButtons').removeClass('d-none');
+                        clearTable(dbName, 'team-info')
+                            .then(message => {
+                                console.log(message);
+                                teamInfo.id = 1;
+                                return saveToLocalDB(dbName, 'team-info', teamInfo);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
                     } else {
-                        console.log("No item found.");
+                        $('#teamInfoMessage').text("This team is not yet registered in the database. Would you like to use this team?");
+                        $('#teamInfoMessage').show();
+                        $('#checkTeamInfo, #teamChangeButtons').addClass('d-none');
+                        $('#teamSubmitButtons').removeClass('d-none');
                     }
                 },
                 error: function(xhr, status, error) {
@@ -212,7 +441,7 @@
             let teamName = $('#team-name').val();
             let wbs = $('#wbs').val();
             let teamInfo = {
-                "SUBSL": subSl,
+                SUBSL: subSl,
                 Team: teamName,
                 WBS: wbs
             };
@@ -222,15 +451,23 @@
                 contentType: "application/json",
                 data: JSON.stringify(teamInfo),
                 success: function(response) {
-                    // Parse the response
-                    console.log("Flow triggered successfully! Received response:", response);
-                    
                     // Check if response contains the data
                     if (response) {
                         // Access properties of the returned item
-                        console.log(response['message']);
-                    } else {
-                        console.log(response['message']);
+                        $('#teamInfoMessage').text(response["message"]);
+                        $('#teamInfoMessage').show();
+                        $('#checkTeamInfo').removeClass('d-none');
+                        $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+                        clearTable(dbName, 'team-info')
+                            .then(message => {
+                                console.log(message);
+                                teamInfo.id = 1;
+                                return saveToLocalDB(dbName, 'team-info', teamInfo);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                        
                     }
                 },
                 error: function(xhr, status, error) {
@@ -238,6 +475,7 @@
                 }
             })
         }
+        
         // Check if database exists and create it if necessary
         checkDatabaseExists(dbName)
             .then(dbExists => {
@@ -262,11 +500,37 @@
                 if (message) {
                     console.log(message);
                 }
+                return getTableContents(dbName, 'team-info');
+            })
+            .then(content => {
+                if (content) {
+                    let teamInfo = getItemByKey(content, 1)
+                    if (teamInfo) {
+                        $('#sub-sl').val(teamInfo.SUBSL);
+                        $('#team-name').val(teamInfo.Team);
+                        $('#wbs').val(teamInfo.WBS);
+                    }
+                } else {
+                    console.log('Table is empty or does not exist.');
+                }
             })
             .catch(error => {
                 console.error(error);
             });
-
+        
+        //check table contents
+        getTableContents(dbName, 'team-info')
+            .then(content => {
+                if (content) {
+                    console.log('Table contents:', content);
+                } else {
+                    console.log('Table is empty.');
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        
         
 
     </script>
