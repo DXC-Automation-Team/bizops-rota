@@ -69,23 +69,33 @@
                     </div>
                 </div>
             </div>
-            <!-- Upload Modal -->
-            <div class="modal fade" id="uploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <!-- Step 1 Modal -->
+            <div class="modal fade" id="step1Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5">Upload ROTA file</h1>
+                            <h1 class="modal-title fs-5">Step 1</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label for="rotaFile" class="form-label">Select ROTA file</label>
-                                    <input class="form-control" type="file" id="rotaFile" accept=".xlsm, .xlsx">
-                                    <div class="upload-text form-text">Please upload the ROTA file to set up the database.</div>
-                                    <div class="upload-text form-text d-none">Workbook loaded successfully!</div>
-                                </div>
-                            </form>
+                            It appears that the database is not set up. Please follow the steps to set up the database.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#step2Modal" data-bs-dismiss="modal">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Step 2 Modal -->
+            <div class="modal fade" id="step2Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Step 2</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            It appears that the database is not set up. Please follow the steps to set up the database.
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="extract" disabled>Extract</button>
@@ -288,6 +298,12 @@
                 await checkDatabaseExists(dbName)
                     .then(dbExists => {
                         if (!dbExists) {
+                            let step = checkTutorialStatus();
+                            if(step){
+                                console.log('Database does not exist.');
+                            }else{
+                                startSetup();
+                            }
                             return createDatabaseAndTable(dbName, storeSchemas);
                         } else {
                             console.log('Database already exists.');
@@ -323,10 +339,6 @@
                 $(rota).addClass('show active');
             }
             
-            
-
-            
-
             function checkBrowser(){
                 var isEdge = /Edg\/\d./i.test(navigator.userAgent);
                 if(!isEdge){
@@ -348,7 +360,30 @@
                 return pageStatus;
                 
             }
-            
+            function checkTutorialStatus(){
+                let tutorial = localStorage.getItem('tutorial');
+                if(tutorial){
+                    return tutorial;
+                } else {
+                    return null;
+                }
+            }
+            function startSetup(){
+                $('#step1Modal').modal('show');
+                localStorage.setItem('tutorial', '1');
+            }
+            function continueSetup(step){
+                switch(step){
+                    case 1:
+                        $('#step1Modal').modal('show');
+                        break;
+                    case 2:
+                        $('#step2Modal').modal('show');
+                        break;
+                }
+            }
+
+
             async function fetchPageContents(page){
                 console.log("Fetching page contents for", page);
                 switch(page){
