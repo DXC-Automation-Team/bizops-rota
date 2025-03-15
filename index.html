@@ -296,7 +296,7 @@
                         if (!dbExists) {
                             let step = checkTutorialStatus();
                             if(step){
-                                console.log('Database does not exist.');
+                                continueSetup(step);
                             }else{
                                 startSetup();
                             }
