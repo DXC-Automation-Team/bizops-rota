@@ -34,77 +34,114 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="container mt-3">
-            <div class="row">
-                <div class="col-2"></div>
-                <div class="col-5">
-                    <div class="card">
-                        <div class="card-body">
-                            <form id="teamForm" class="needs-validation" novalidate>
-                                <div class="mb-3">
-                                    <label for="sub-sl" class="form-label">SUB-SL</label>
-                                    <select class="form-select" id="sub-sl" aria-describedby="sub-sl" required>
-                                        <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
-                                        <option value="C&I: CIBC">C&I: CIBC</option>
-                                        <option value="C&I: EAO">C&I: EAO</option>
-                                        <option value="C&I: Leadership">C&I: Leadership</option>
-                                        <option value="C&I: LT & BizOps">C&I: LT & BizOps</option>
-                                        <option value="C&I: Network">C&I: Network</option>
-                                        <option value="C&I: PM & EAO SDEX">C&I: PM & EAO SDEX</option>
-                                        <option value="C&I: PM & PMO">C&I: PM & PMO</option>
-                                        <option value="C&I: VPC">C&I: VPC</option>
-                                        <option value="CIO: DXC IT">CIO: DXC IT</option>
-                                        <option value="Delivery Excellence">Delivery Excellence</option>
-                                        <option value="Global Deliver: Region">Global Deliver: Region</option>
-                                        <option value="Site Operations">Site Operations</option>
-                                      </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="team-name" class="form-label">Team Name</label>
-                                    <input type="text" class="form-control" id="team-name" aria-describedby="team-name" required>
-                                    <div class="invalid-feedback">
-                                        Please provide a team name.
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="wbs" class="form-label">WBS</label>
-                                    <input type="text" class="form-control" id="wbs" aria-describedby="wbs" required>
-                                    <div class="invalid-feedback">
-                                        Please provide a WBS.
-                                    </div>
-                                </div>
-                                <div class="alert alert-primary mb-3" role="alert" id="teamInfoMessage" style="display: none;">
-                                    
-                                    
-                                </div>
-                                <div class="mb-3">
-                                    
-                                    <button type="submit" class="btn btn-primary float-end" id="checkTeamInfo" >Verify</button>
-                                    <div id="teamSubmitButtons" class="d-none">
-                                        <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">No</button>
-                                        <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo">Yes</button>
-                                    </div>
-                                    <div id="teamChangeButtons" class="d-none">
-                                        <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">I have a different team</button>
-                                    </div>
-                                    
-                                </div>
-                            </form>
+    <div class="d-flex flex-column h-100">
+        <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-body" data-bs-theme="dark">
+            <div class="container-fluid">
+                <div class="row flex-grow-1">
+                    <div class="col-4">
+                        <button class="btn btn-outline-light border-0" id="sidebarToggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#references" aria-controls="references">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="col-4 text-center" >
+                        <span class="navbar-brand" id="page-name"></span>
+                    </div>
+                    <div class="col-4">
+                        <div class="d-flex">
+                            <!-- <button class="btn btn-outline-light border-0 ms-auto" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                <i class="fa-solid fa-file-arrow-up"></i>
+                            </button> -->
+                            <div class="ms-auto dropstart">
+                                <button class="btn btn-outline-light border-0 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-user"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li id="signIn"><a class="dropdown-item">Sign In</a></li>
+                                    <li id="signOut"><a class="dropdown-item">Sign Out</a></li>
+                                    <li id="getAccountInfo"><a class="dropdown-item">Account Info</a></li>
+                                </ul>
+                            </div>
+                            
                         </div>
+                        
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <button class="btn btn-outline-dark" id="getTable">get table</button>
+                
+            </div>
+        </nav>
+        <div class="container-fluid pt-3 flex-grow-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <form id="teamForm" class="needs-validation" novalidate>
+                                    <div class="mb-3">
+                                        <label for="sub-sl" class="form-label">SUB-SL</label>
+                                        <select class="form-select" id="sub-sl" aria-describedby="sub-sl" required>
+                                            <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
+                                            <option value="C&I: CIBC">C&I: CIBC</option>
+                                            <option value="C&I: EAO">C&I: EAO</option>
+                                            <option value="C&I: Leadership">C&I: Leadership</option>
+                                            <option value="C&I: LT & BizOps">C&I: LT & BizOps</option>
+                                            <option value="C&I: Network">C&I: Network</option>
+                                            <option value="C&I: PM & EAO SDEX">C&I: PM & EAO SDEX</option>
+                                            <option value="C&I: PM & PMO">C&I: PM & PMO</option>
+                                            <option value="C&I: VPC">C&I: VPC</option>
+                                            <option value="CIO: DXC IT">CIO: DXC IT</option>
+                                            <option value="Delivery Excellence">Delivery Excellence</option>
+                                            <option value="Global Deliver: Region">Global Deliver: Region</option>
+                                            <option value="Site Operations">Site Operations</option>
+                                          </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="team-name" class="form-label">Team Name</label>
+                                        <input type="text" class="form-control" id="team-name" aria-describedby="team-name" required>
+                                        <div class="invalid-feedback">
+                                            Please provide a team name.
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="wbs" class="form-label">WBS</label>
+                                        <input type="text" class="form-control" id="wbs" aria-describedby="wbs" required>
+                                        <div class="invalid-feedback">
+                                            Please provide a WBS.
+                                        </div>
+                                    </div>
+                                    <div class="alert alert-primary mb-3" role="alert" id="teamInfoMessage" style="display: none;">
+                                        
+                                        
+                                    </div>
+                                    <div class="mb-3">
+                                        
+                                        <button type="submit" class="btn btn-primary float-end" id="checkTeamInfo" >Verify</button>
+                                        <div id="teamSubmitButtons" class="d-none">
+                                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">No</button>
+                                            <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo">Yes</button>
+                                        </div>
+                                        <div id="teamChangeButtons" class="d-none">
+                                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">I have a different team</button>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <button class="btn btn-outline-dark" id="getTable">get table</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
                 </div>
-                <div class="col-2"></div>
             </div>
         </div>
     </div>
+    
     
 
     <script>
