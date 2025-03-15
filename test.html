@@ -35,6 +35,41 @@
 </head>
 <body>
     <div class="d-flex flex-column h-100">
+        <!-- Step 1 Modal -->
+        <div class="modal fade" id="step1Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Step 1</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        It appears that the database is not set up. Please follow the steps to set up the database.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#step2Modal" data-bs-dismiss="modal">Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Step 2 Modal -->
+        <div class="modal fade" id="step2Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Step 2</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Go to <b>Team Info</b>, <b>Employee Info</b>, and <b>Shift Info</b> pages on the left sidebar and fill in the required information.<br>
+                        To check your progress, go to the <b>Checklist</b> page.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="startStep2" data-bs-dismiss="modal">Okay</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-body" data-bs-theme="dark">
             <div class="container-fluid">
                 <div class="row flex-grow-1">
@@ -191,6 +226,9 @@
                     .catch(error => {
                         console.error(error);
                     });
+            })
+            .on('click', '#startStep2', function(){
+                localStorage.setItem('tutorial', '2');
             })
             ;
         });
@@ -437,6 +475,32 @@
             button.prop('disabled', false);
         }
 
+        //TUTORIAL
+        function checkTutorialStatus(){
+            console.log("Checking tutorial status");
+            let tutorial = localStorage.getItem('tutorial');
+            if(tutorial){
+                return tutorial;
+            } else {
+                return null;
+            }
+        }
+        function startSetup(){
+            $('#step1Modal').modal('show');
+            localStorage.setItem('tutorial', '1');
+        }
+        function continueSetup(step){
+            console.log("Continuing setup from step", step);
+            switch(step){
+                case '1':
+                    $('#step1Modal').modal('show');
+                    break;
+                case '2':
+                    $('#step2Modal').modal('show');
+                    break;
+            }
+        }
+
         //API
         function checkTeamInfo(){
             let subSl = $('#sub-sl').val().trim();
@@ -540,6 +604,12 @@
         checkDatabaseExists(dbName)
             .then(dbExists => {
                 if (!dbExists) {
+                    let step = checkTutorialStatus();
+                    if(step){
+                        continueSetup(step);
+                    }else{
+                        startSetup();
+                    }
                     return createDatabaseAndTable(dbName, storeSchemas);
                 } else {
                     console.log('Database already exists.');
