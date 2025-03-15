@@ -321,209 +321,8 @@
                 $(link).addClass('active').attr('aria-selected', 'true');
                 $(rota).addClass('show active');
             }
-            //UTILITIES
-            function showModal(title, message){
-                $('#modal-title').text(title);
-                $('#modal-message').text(message);
-                $('#generalModal').modal('show');
-
-            }
-            function addFormValidation(){
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            const forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        }
-            function resetFormValidation(form){
-                form.removeClass('was-validated');
-            }
-            function spinButton(button){
-                button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-                button.prop('disabled', true);
-            }
-            function stopSpinButton(button, text){
-                button.html(text);
-                button.prop('disabled', false);
-            }    
             
-            //DATABASE FUNCTIONS
-            function checkDatabaseExists(dbName) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-                        db.close();
-                        resolve(true);
-                    };
-
-                    request.onupgradeneeded = function(event) {
-                        event.target.transaction.abort();
-                        resolve(false);
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-            function checkTableExists(dbName, storeName) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-                        let exists = db.objectStoreNames.contains(storeName);
-                        resolve(exists);
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-            function getTableContents(dbName, storeName) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-
-                        if (db.objectStoreNames.contains(storeName)) {
-                            let transaction = db.transaction(storeName, 'readonly');
-                            let objectStore = transaction.objectStore(storeName);
-                            let content = [];
-                            
-                            objectStore.openCursor().onsuccess = function(event) {
-                                let cursor = event.target.result;
-                                if (cursor) {
-                                    content.push(cursor.value);
-                                    cursor.continue();
-                                } else {
-                                    resolve(content.length > 0 ? content : null);
-                                }
-                            };
-
-                            objectStore.openCursor().onerror = function(event) {
-                                reject('Cursor error: ' + event.target.errorCode);
-                            };
-                        } else {
-                            resolve(null); // Table doesn't exist
-                        }
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-            function getTableContent(dbName, storeName, key) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-
-                        if (db.objectStoreNames.contains(storeName)) {
-                            let transaction = db.transaction(storeName, 'readonly');
-                            let objectStore = transaction.objectStore(storeName);
-
-                            let getRequest = objectStore.get(key);
-
-                            getRequest.onsuccess = function(event) {
-                                if (event.target.result) {
-                                    resolve(event.target.result);
-                                } else {
-                                    resolve(null); // No data found for the given key
-                                }
-                            };
-
-                            getRequest.onerror = function(event) {
-                                reject('Get error: ' + event.target.errorCode);
-                            };
-                        } else {
-                            resolve(null); // Table doesn't exist
-                        }
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-            function saveToLocalDB(dbName, storeName, data) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-
-                        if (db.objectStoreNames.contains(storeName)) {
-                            let transaction = db.transaction(storeName, 'readwrite');
-                            let objectStore = transaction.objectStore(storeName);
-
-                            let addRequest = objectStore.add(data);
-
-                            addRequest.onsuccess = function() {
-                                resolve('Data added successfully');
-                            };
-
-                            addRequest.onerror = function(event) {
-                                reject('Add error: ' + event.target.errorCode);
-                            };
-                        } else {
-                            resolve('Table does not exist');
-                        }
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-            function clearTable(dbName, storeName) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName);
-
-                    request.onsuccess = function(event) {
-                        let db = event.target.result;
-
-                        if (db.objectStoreNames.contains(storeName)) {
-                            let transaction = db.transaction(storeName, 'readwrite');
-                            let objectStore = transaction.objectStore(storeName);
-
-                            let clearRequest = objectStore.clear();
-
-                            clearRequest.onsuccess = function() {
-                                resolve('Table contents cleared successfully');
-                            };
-
-                            clearRequest.onerror = function(event) {
-                                reject('Clear error: ' + event.target.errorCode);
-                            };
-                        } else {
-                            resolve('Table does not exist');
-                        }
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-
+            
 
             function createDatabaseAndTable(dbName, storeSchemas) {
                 return new Promise((resolve, reject) => {
@@ -888,6 +687,207 @@
                 }
             }
         });
+        //UTILITIES
+        function showModal(title, message){
+                $('#modal-title').text(title);
+                $('#modal-message').text(message);
+                $('#generalModal').modal('show');
+
+            }
+        function addFormValidation(){
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }
+        function resetFormValidation(form){
+            form.removeClass('was-validated');
+        }
+        function spinButton(button){
+            button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+            button.prop('disabled', true);
+        }
+        function stopSpinButton(button, text){
+            button.html(text);
+            button.prop('disabled', false);
+        }    
+        //DATABASE FUNCTIONS
+        function checkDatabaseExists(dbName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+                    db.close();
+                    resolve(true);
+                };
+
+                request.onupgradeneeded = function(event) {
+                    event.target.transaction.abort();
+                    resolve(false);
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function checkTableExists(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+                    let exists = db.objectStoreNames.contains(storeName);
+                    resolve(exists);
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function getTableContents(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readonly');
+                        let objectStore = transaction.objectStore(storeName);
+                        let content = [];
+                        
+                        objectStore.openCursor().onsuccess = function(event) {
+                            let cursor = event.target.result;
+                            if (cursor) {
+                                content.push(cursor.value);
+                                cursor.continue();
+                            } else {
+                                resolve(content.length > 0 ? content : null);
+                            }
+                        };
+
+                        objectStore.openCursor().onerror = function(event) {
+                            reject('Cursor error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve(null); // Table doesn't exist
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function getTableContent(dbName, storeName, key) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readonly');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let getRequest = objectStore.get(key);
+
+                        getRequest.onsuccess = function(event) {
+                            if (event.target.result) {
+                                resolve(event.target.result);
+                            } else {
+                                resolve(null); // No data found for the given key
+                            }
+                        };
+
+                        getRequest.onerror = function(event) {
+                            reject('Get error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve(null); // Table doesn't exist
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function saveToLocalDB(dbName, storeName, data) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readwrite');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let addRequest = objectStore.add(data);
+
+                        addRequest.onsuccess = function() {
+                            resolve('Data added successfully');
+                        };
+
+                        addRequest.onerror = function(event) {
+                            reject('Add error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve('Table does not exist');
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function clearTable(dbName, storeName) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName);
+
+                request.onsuccess = function(event) {
+                    let db = event.target.result;
+
+                    if (db.objectStoreNames.contains(storeName)) {
+                        let transaction = db.transaction(storeName, 'readwrite');
+                        let objectStore = transaction.objectStore(storeName);
+
+                        let clearRequest = objectStore.clear();
+
+                        clearRequest.onsuccess = function() {
+                            resolve('Table contents cleared successfully');
+                        };
+
+                        clearRequest.onerror = function(event) {
+                            reject('Clear error: ' + event.target.errorCode);
+                        };
+                    } else {
+                        resolve('Table does not exist');
+                    }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
 
 
 
