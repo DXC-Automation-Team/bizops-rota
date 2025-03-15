@@ -95,11 +95,10 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            It appears that the database is not set up. Please follow the steps to set up the database.
+                            Go to Team Info page on the left sidebar and fill in the required information.
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="extract" disabled>Extract</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="startStep2" data-bs-dismiss="modal">Okay</button>
                         </div>
                     </div>
                 </div>
@@ -278,14 +277,10 @@
             .on('input', '.rotapage textarea', function(){
                 generateTableFromInput($(this));
             })
-            .on('click', '#fettch', function(){
-                fetchFileContents('team-info.json')
+            .on('click', '#startStep2', function(){
+                localStorage.setItem('tutorial', '2');
             })
-            .on('click', '#append', function(){
-                let data = { data1: 1 };
-                appendToFile('team-info.json', data);
-                fetchFileContents('team-info.json')
-            })
+            
 
             async function init(){
                 
