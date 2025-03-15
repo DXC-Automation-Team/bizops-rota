@@ -178,29 +178,30 @@
     <script src="assets/jquery/jquery-3.7.1.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const msalConfig = {
+            auth: {
+                clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
+                authority: "https://login.microsoftonline.com/93f33571-550f-43cf-b09f-cd331338d086", // Replace with your tenant ID
+                redirectUri: "https://dxc-automation-team.github.io/bizops-rota/" // Replace with your redirect URI
+            }
+        };
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        
+        var siteId, driveId, tokenResponse;
+        var accountName, email;
+        var currentYear;
+        const dbName = 'sppdata';
+        const storeSchemas = [
+            { name: 'team-info', keyPath: 'id' },
+            { name: 'shift-info', keyPath: 'id' },
+            { name: 'team-info', keyPath: 'id' },
+            { name: 'rota-info', keyPath: 'id' },
+            { name: 'standby-info', keyPath: 'id' },
+            { name: 'submission-logs', keyPath: 'id' }
+        ];
         $(document).ready(function() {
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const msalConfig = {
-                auth: {
-                    clientId: "31badd82-505e-4b39-bed5-efeac69d9158", // Replace with your client ID
-                    authority: "https://login.microsoftonline.com/93f33571-550f-43cf-b09f-cd331338d086", // Replace with your tenant ID
-                    redirectUri: "https://dxc-automation-team.github.io/bizops-rota/" // Replace with your redirect URI
-                }
-            };
-            const msalInstance = new msal.PublicClientApplication(msalConfig);
             
-            var siteId, driveId, tokenResponse;
-            var accountName, email;
-            var currentYear;
-            const dbName = 'sppdata';
-            const storeSchemas = [
-                { name: 'team-info', keyPath: 'id' },
-                { name: 'shift-info', keyPath: 'id' },
-                { name: 'team-info', keyPath: 'id' },
-                { name: 'rota-info', keyPath: 'id' },
-                { name: 'standby-info', keyPath: 'id' },
-                { name: 'submission-logs', keyPath: 'id' }
-            ];
             init();
             $(document)
             .on('click', '#signIn', function(){
@@ -324,30 +325,7 @@
             
             
 
-            function createDatabaseAndTable(dbName, storeSchemas) {
-                return new Promise((resolve, reject) => {
-                    let request = indexedDB.open(dbName, 1);
-
-                    request.onupgradeneeded = function(event) {
-                        let db = event.target.result;
-                        storeSchemas.forEach(schema => {
-                            if (!db.objectStoreNames.contains(schema.name)) {
-                                db.createObjectStore(schema.name, { keyPath: schema.keyPath });
-                                console.log(`Object store "${schema.name}" created.`);
-                            }
-                        });
-                    };
-
-                    request.onsuccess = function(event) {
-                        resolve(`Database "${dbName}" and tables created/checked successfully.`);
-                    };
-
-                    request.onerror = function(event) {
-                        reject('Database error: ' + event.target.errorCode);
-                    };
-                });
-            }
-
+            
 
             function checkBrowser(){
                 var isEdge = /Edg\/\d./i.test(navigator.userAgent);
@@ -881,6 +859,29 @@
                     } else {
                         resolve('Table does not exist');
                     }
+                };
+
+                request.onerror = function(event) {
+                    reject('Database error: ' + event.target.errorCode);
+                };
+            });
+        }
+        function createDatabaseAndTable(dbName, storeSchemas) {
+            return new Promise((resolve, reject) => {
+                let request = indexedDB.open(dbName, 1);
+
+                request.onupgradeneeded = function(event) {
+                    let db = event.target.result;
+                    storeSchemas.forEach(schema => {
+                        if (!db.objectStoreNames.contains(schema.name)) {
+                            db.createObjectStore(schema.name, { keyPath: schema.keyPath });
+                            console.log(`Object store "${schema.name}" created.`);
+                        }
+                    });
+                };
+
+                request.onsuccess = function(event) {
+                    resolve(`Database "${dbName}" and tables created/checked successfully.`);
                 };
 
                 request.onerror = function(event) {
