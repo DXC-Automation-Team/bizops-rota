@@ -97,4 +97,109 @@
         })
         ;
     });
+    function resetTeamFormValidation(){
+        $('#teamForm').removeClass('was-validated');
+        $('#checkTeamInfo').removeClass('d-none');
+        $('#teamInfoMessage').hide();
+        $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+    }
+    //API
+    function checkTeamInfo(){
+        let subSl = $('#sub-sl').val().trim();
+        let teamName = $('#team-name').val().trim();
+        let wbs = $('#wbs').val().trim();
+        if(subSl == '' || teamName == '' || wbs == ''){return;}
+
+        let teamInfo = {
+            SUBSL: subSl,
+            Team: teamName,
+            WBS: wbs
+        };
+        $.ajax({
+            //url: 'https://prod-15.westus.logic.azure.com:443/workflows/8c8fc6aef9404f4ba7d7c95234f09ab7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wmeO4cY32iIrQBkSv_wavtBPx6OINBJEjvr9Z6T9h9s',
+            url: 'https://prod-08.westus.logic.azure.com:443/workflows/474c521d5db942af8e7ada7e224942f0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=v04lNrvXqT0XCeD952IiA9ts_0wCW0V5Abxoi7xQZX0',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(teamInfo),
+            beforeSend: function(){
+                spinButton($('#checkTeamInfo'));
+            },
+            complete: function(){
+                stopSpinButton($('#checkTeamInfo'), 'Verify');
+            },
+            success: function(response) {
+                // Check if response contains the data
+                if (response) {
+                    $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
+                    $('#teamInfoMessage').show();
+                    $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
+                    $('#teamChangeButtons').removeClass('d-none');
+                    clearTable(dbName, 'team-info')
+                        .then(message => {
+                            console.log(message);
+                            teamInfo.id = response["ID"];
+                            return saveToLocalDB(dbName, 'team-info', teamInfo);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                } else {
+                    $('#teamInfoMessage').text("This team is not yet registered in the database. Would you like to use this team?");
+                    $('#teamInfoMessage').show();
+                    $('#checkTeamInfo, #teamChangeButtons').addClass('d-none');
+                    $('#teamSubmitButtons').removeClass('d-none');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error triggering flow: " + xhr.responseText);
+            }
+        })
+    }
+
+    function saveTeamInfo(){
+        let subSl = $('#sub-sl').val();
+        let teamName = $('#team-name').val();
+        let wbs = $('#wbs').val();
+        let teamInfo = {
+            SUBSL: subSl,
+            Team: teamName,
+            WBS: wbs
+        };
+        $.ajax({
+            url: 'https://prod-147.westus.logic.azure.com:443/workflows/22112f3877014f419f86892822cb4481/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8nDGiXPHXBcLvxG5sdf_w94zNAlYRkwpKpjvK1WK688',
+            type: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify(teamInfo),
+            beforeSend: function(){
+                spinButton($('#saveTeamInfo'));
+            },
+            complete: function(){
+                stopSpinButton($('#saveTeamInfo'), 'Yes');
+            },
+            success: function(response) {
+                // Check if response contains the data
+                if (response) {
+                    // Access properties of the returned item
+                    $('#teamInfoMessage').text(response["message"]);
+                    $('#teamInfoMessage').show();
+                    $('#checkTeamInfo').removeClass('d-none');
+                    $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+                    clearTable(dbName, 'team-info')
+                        .then(message => {
+                            console.log(message);
+                            teamInfo.id = response["ID"];
+                            return saveToLocalDB(dbName, 'team-info', teamInfo);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error triggering flow: " + xhr.responseText);
+            }
+        })
+    }
+    
 </script>
