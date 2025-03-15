@@ -116,16 +116,10 @@
                 event.preventDefault();
             })
             .on('input', '#sub-sl, #team-name, #wbs', function(){
-                resetFormValidation();
-                /* $('#checkTeamInfo').removeClass('d-none');
-                $('#teamInfoMessage').hide();
-                $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');  */
+                resetTeamFormValidation();
             })
             .on('change', '#sub-sl', function(){
-                resetFormValidation();
-                /* $('#checkTeamInfo').removeClass('d-none');
-                $('#teamInfoMessage').hide();
-                $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none'); */
+                resetTeamFormValidation();
             })
             .on('click','#checkTeamInfo',function(){
                 checkTeamInfo();
@@ -134,7 +128,7 @@
                 saveTeamInfo();
             })
             .on('click','.cancelSaveTeamInfo',function(){
-                resetFormValidation();
+                resetTeamFormValidation();
             })
             .on('click','#getTable',function(){
                 getTableContents(dbName, 'team-info')
@@ -356,10 +350,10 @@
             });
         }
 
-        
         function getItemByKey(contentArray, key) {
             return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
         }
+
         //UTILITIES
         function addFormValidation(){
             'use strict'
@@ -379,11 +373,19 @@
                 }, false)
             })
         }
-        function resetFormValidation(){
+        function resetTeamFormValidation(){
             $('#teamForm').removeClass('was-validated');
             $('#checkTeamInfo').removeClass('d-none');
             $('#teamInfoMessage').hide();
             $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+        }
+        function spinButton(button){
+            button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+            button.prop('disabled', true);
+        }
+        function stopSpinButton(button, text){
+            button.html(text);
+            button.prop('disabled', false);
         }
 
         //API
@@ -404,10 +406,13 @@
                 type: 'POST',
                 contentType: "application/json",
                 data: JSON.stringify(teamInfo),
+                beforeSend: function(){
+                    spinButton($('#checkTeamInfo'));
+                },
+                complete: function(){
+                    stopSpinButton($('#checkTeamInfo'), 'Verify');
+                },
                 success: function(response) {
-                    // Parse the response
-                    console.log("Flow triggered successfully! Received response:", response);
-                    
                     // Check if response contains the data
                     if (response) {
                         $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
@@ -417,7 +422,7 @@
                         clearTable(dbName, 'team-info')
                             .then(message => {
                                 console.log(message);
-                                teamInfo.id = 1;
+                                teamInfo.id = response["ID"];
                                 return saveToLocalDB(dbName, 'team-info', teamInfo);
                             })
                             .catch(error => {
@@ -450,6 +455,12 @@
                 type: 'POST',
                 contentType: "application/json",
                 data: JSON.stringify(teamInfo),
+                beforeSend: function(){
+                    spinButton($('#saveTeamInfo'));
+                },
+                complete: function(){
+                    stopSpinButton($('#saveTeamInfo'), 'Yes');
+                },
                 success: function(response) {
                     // Check if response contains the data
                     if (response) {
@@ -461,7 +472,7 @@
                         clearTable(dbName, 'team-info')
                             .then(message => {
                                 console.log(message);
-                                teamInfo.id = 1;
+                                teamInfo.id = response["ID"];
                                 return saveToLocalDB(dbName, 'team-info', teamInfo);
                             })
                             .catch(error => {
@@ -497,14 +508,11 @@
                 }
             })
             .then(message => {
-                if (message) {
-                    console.log(message);
-                }
                 return getTableContents(dbName, 'team-info');
             })
             .then(content => {
                 if (content) {
-                    let teamInfo = getItemByKey(content, 1)
+                    let teamInfo = content[0];
                     if (teamInfo) {
                         $('#sub-sl').val(teamInfo.SUBSL);
                         $('#team-name').val(teamInfo.Team);
@@ -518,18 +526,7 @@
                 console.error(error);
             });
         
-        //check table contents
-        getTableContents(dbName, 'team-info')
-            .then(content => {
-                if (content) {
-                    console.log('Table contents:', content);
-                } else {
-                    console.log('Table is empty.');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            
         
         
 

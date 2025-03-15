@@ -116,9 +116,9 @@
                 </div>        
             </div>
         </div>
-        <div class="container-fluid">
+        <div class="container-fluid pt-3">
             
-            <div class="container mt-3" id="main">
+            <div class="container" id="main">
                 <div class="page d-flex align-items-center " id="home-page">
                     <div class="row align-items-center h-100 flex-grow-1">  
                         <div class="col-1"></div>
@@ -324,7 +324,18 @@
                 }, false)
             })
         }
-            
+            function resetFormValidation(form){
+                form.removeClass('was-validated');
+            }
+            function spinButton(button){
+                button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+                button.prop('disabled', true);
+            }
+            function stopSpinButton(button, text){
+                button.html(text);
+                button.prop('disabled', false);
+            }    
+
             function checkDatabaseExists() {
                 return new Promise((resolve, reject) => {
                     //force users to use edge
