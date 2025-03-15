@@ -357,6 +357,7 @@
                 
             }
             function checkTutorialStatus(){
+                console.log("Checking tutorial status");
                 let tutorial = localStorage.getItem('tutorial');
                 if(tutorial){
                     return tutorial;
@@ -369,6 +370,7 @@
                 localStorage.setItem('tutorial', '1');
             }
             function continueSetup(step){
+                console.log("Continuing setup from step", step);
                 switch(step){
                     case 1:
                         $('#step1Modal').modal('show');
