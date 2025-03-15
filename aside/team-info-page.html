@@ -60,3 +60,41 @@
         
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        // addFormValidation();
+        $(document)
+        .on('submit', '#teamForm', function(event){
+            event.preventDefault();
+        })
+        .on('input', '#sub-sl, #team-name, #wbs', function(){
+            resetTeamFormValidation();
+        })
+        .on('change', '#sub-sl', function(){
+            resetTeamFormValidation();
+        })
+        .on('click','#checkTeamInfo',function(){
+            checkTeamInfo();
+        })
+        .on('click','#saveTeamInfo',function(){
+            saveTeamInfo();
+        })
+        .on('click','.cancelSaveTeamInfo',function(){
+            resetTeamFormValidation();
+        })
+        .on('click','#getTable',function(){
+            getTableContents(dbName, 'team-info')
+                .then(content => {
+                    if (content) {
+                        console.log('Table contents:', content);
+                    } else {
+                        console.log('Table is empty.');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        })
+        ;
+    });
+</script>
