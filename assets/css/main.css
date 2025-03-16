@@ -44,9 +44,15 @@
 .modal-footer{
     border-top: none !important;
 }
+#teamInfoImage, #EmployeeInfoImage{
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
 #teamInfoImage{
     background-image: url('../img/team.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
+}
+#EmployeeInfoImage{
+    background-image: url('../img/employees.svg');
 }
