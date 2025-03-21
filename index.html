@@ -206,11 +206,12 @@
         const storeSchemas = [
             { name: 'team-info', keyPath: 'id' },
             { name: 'shift-info', keyPath: 'id' },
-            { name: 'team-info', keyPath: 'id' },
+            { name: 'employee-info', keyPath: 'id' },
             { name: 'rota-info', keyPath: 'id' },
             { name: 'standby-info', keyPath: 'id' },
             { name: 'submission-logs', keyPath: 'id' }
         ];
+        var teamID;
         $(document).ready(function() {
             
             init();
@@ -515,197 +516,15 @@
                 });
             }
 
-            async function signIn() {
-                await msalInstance.handleRedirectPromise();
-                try {
-                    const accounts = msalInstance.getAllAccounts();
-                    if (accounts.length === 0) {
-                        const loginResponse = await msalInstance.loginRedirect({
-                            scopes: ["email","openid","profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
-                        });
-                        console.log("Login successful:", loginResponse);
-                        
-                        getAccountInfo();
-                    }
-                    location.reload(true);
-                } catch (error) {
-                    console.error("Login error:", error);
-                    showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
-                }
-            }
-            async function getAccountInfo() {
-                const token = await getToken();
-                if (token) {
-                    const profile = await getUserProfile(token);
-                    console.log("User Profile:", profile);
-                    const accounts = msalInstance.getAllAccounts();
-                    accountName = accounts[0].name;
-                    email = accounts[0].username;
-                }
-            }
-            async function getUserProfile(accessToken) {
-                const graphEndpoint = "https://graph.microsoft.com/v1.0/me";
-                try {
-                    const response = await fetch(graphEndpoint, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    });
-                    const profile = await response.json();
-                    return profile;
-                } catch (error) {
-                    console.error("Fetching user profile error:", error);
-                }
-            }
-            async function getToken() {
-                const accounts = msalInstance.getAllAccounts();
-                if (accounts.length > 0) {
-                    const request = {
-                        scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with necessary scopes
-                    };
-                    try {
-                        const response = await msalInstance.acquireTokenSilent(request);
-                        return response.accessToken;
-                    } catch (error) {
-                        console.error("Token acquisition error:", error);
-                        if (error instanceof msal.InteractionRequiredAuthError) {
-                            // Fallback to interactive token acquisition if silent acquisition fails
-                            const loginResponse = await msalInstance.loginRedirect(request);
-                            return loginResponse.accessToken;
-                        } else {
-                            throw error;
-                        }
-                    }
-                } else {
-                    throw new Error("No accounts found.");
-                }
-            }
-            async function checkLoginStatus() {
-                console.log("Checking login status");
-                const accounts = msalInstance.getAllAccounts();
-                console.log("Accounts:", accounts);
-                if (accounts.length > 0) {
-                    $('#signIn').hide();
-                    $('#signOut, #sidebarToggler, #getAccountInfo').show();
-                    accountName = accounts[0].name;
-                    email = accounts[0].username;
-                } else {
-                    $('#signIn').show();
-                    $('#signOut, #sidebarToggler, #getAccountInfo').hide();
-                }
-                
-                    
-            }
-
-            async function getSiteAndDriveDetails() {
-                const account = msalInstance.getAllAccounts()[0];
-                tokenResponse = await msalInstance.acquireTokenSilent({
-                    scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
-                    account: account
-                });
-
-                // Get the Site ID
-                const siteResponse = await fetch("https://graph.microsoft.com/v1.0/sites?search=ciROTASchedule", {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.accessToken}`
-                    }
-                });
-
-                const siteData = await siteResponse.json();
-                siteId = siteData.value[0].id;
-
-                // Get the Drive ID for the document library
-                const driveResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`, {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.accessToken}`
-                    }
-                });
-
-                const driveData = await driveResponse.json();
-                driveId = driveData.value[0].id; // Assuming the first drive is the document library
-
-                // return { siteId, driveId, tokenResponse };
-            }
-            async function fetchFileContents(file) {
-                try {
-                    // const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
-                    const filePath = `Development/Data/${file}`;
-                    // Get the File ID for the specific file
-                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
-                        headers: {
-                            Authorization: `Bearer ${tokenResponse.accessToken}`
-                        }
-                    });
-
-                    const fileData = await fileResponse.json();
-                    const fileId = fileData.id;
-
-                    // Fetch the contents of the file
-                    const contentResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${fileId}/content`, {
-                        headers: {
-                            Authorization: `Bearer ${tokenResponse.accessToken}`
-                        }
-                    });
-
-                    var fileContents = await contentResponse.text();
-                    console.log("File contents:", fileContents);
-                    console.log("File type", typeof fileContents);
-                    
-                    fileContents = JSON.parse(fileContents || "{}");
-
-                    console.log("Parsed File contents:", fileContents);
-                    console.log("Parsed File type", typeof fileContents);
-
-                    return fileContents;
-                } catch (error) {
-                    console.error("Error fetching file contents:", error);
-                }
-            }
-            async function appendToFile(file, dataToAppend) {
-                try {
-                    var fileContents = await fetchFileContents(file);
-                    console.log("data to append", dataToAppend);
-                    // Append new data to the JSON object
-                    fileContents['property'] = dataToAppend;
-
-                    // Convert JSON back to string
-                    const updatedFileContents = JSON.stringify(fileContents, null, 2);
-
-                    // const { siteId, driveId, tokenResponse } = await getSiteAndDriveDetails();
-                    const filePath = `Development/Data/${file}`;
-                    // Get the File ID for the specific file
-                    const fileResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/root:/${filePath}`, {
-                        headers: {
-                            Authorization: `Bearer ${tokenResponse.accessToken}`
-                        }
-                    });
-
-                    const fileData = await fileResponse.json();
-                    const fileId = fileData.id;
-
-                    // Update the file with the new contents
-                    await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives/${driveId}/items/${fileId}/content`, {
-                        method: 'PUT',
-                        headers: {
-                            Authorization: `Bearer ${tokenResponse.accessToken}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: updatedFileContents
-                    });
-
-                    console.log("File updated successfully.");
-                } catch (error) {
-                    console.error("Error appending to file:", error);
-                }
-            }
+            
         });
         //UTILITIES
         function showModal(title, message){
-                $('#modal-title').text(title);
-                $('#modal-message').text(message);
-                $('#generalModal').modal('show');
+            $('#modal-title').text(title);
+            $('#modal-message').html(message);
+            $('#generalModal').modal('show');
 
-            }
+        }
         function addFormValidation(){
             'use strict'
 
@@ -840,7 +659,7 @@
                 };
             });
         }
-        function saveToLocalDB(dbName, storeName, data) {
+        async function saveToLocalDB(dbName, storeName, data) {
             return new Promise((resolve, reject) => {
                 let request = indexedDB.open(dbName);
 
@@ -924,8 +743,189 @@
             });
         }
 
+        //MSAL FUNCTIONS
+        async function saveToSharePoint(listName, data) {
+            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
+            const token = await getToken();
+            if (token) {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ fields: data })
+                });
 
+                if (!response.ok) {
+                    throw new Error(`Error saving to SharePoint: ${response.statusText}`);
+                }
 
+                const result = await response.json();
+                console.log("Data saved successfully:", result);
+            }
+        }
+        async function saveToSharePointBatch(listName, dataArray) {
+            const url = "https://graph.microsoft.com/v1.0/$batch"; // Graph API batch endpoint
+            const token = await getToken();
+
+            if (token) {
+                const batchSize = 20; // Maximum requests per batch
+                const batches = [];
+
+                // Split dataArray into batches of 20
+                for (let i = 0; i < dataArray.length; i += batchSize) {
+                    const batch = dataArray.slice(i, i + batchSize);
+                    batches.push(batch);
+                }
+
+                for (const batch of batches) {
+                    const batchRequests = batch.map((item, index) => {
+                        return {
+                            id: `${index + 1}`, // Unique ID for each request
+                            method: "POST",
+                            url: `/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`,
+                            body: { fields: item },
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        };
+                    });
+
+                    // Prepare batch payload
+                    const batchPayload = { requests: batchRequests };
+
+                    // Send batch request
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(batchPayload)
+                    });
+
+                    if (!response.ok) {
+                        console.error(`Error in batch request: ${response.statusText}`);
+                    } else {
+                        const result = await response.json();
+                        console.log("Batch saved successfully:", result);
+                    }
+                }
+            }
+        }
+
+        async function signIn() {
+            await msalInstance.handleRedirectPromise();
+            try {
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length === 0) {
+                    const loginResponse = await msalInstance.loginRedirect({
+                        scopes: ["email","openid","profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
+                    });
+                    console.log("Login successful:", loginResponse);
+                    
+                    getAccountInfo();
+                }
+                location.reload(true);
+            } catch (error) {
+                console.error("Login error:", error);
+                showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
+            }
+        }
+        async function getAccountInfo() {
+            const token = await getToken();
+            if (token) {
+                const profile = await getUserProfile(token);
+                console.log("User Profile:", profile);
+                const accounts = msalInstance.getAllAccounts();
+                accountName = accounts[0].name;
+                email = accounts[0].username;
+            }
+        }
+        async function getUserProfile(accessToken) {
+            const graphEndpoint = "https://graph.microsoft.com/v1.0/me";
+            try {
+                const response = await fetch(graphEndpoint, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                const profile = await response.json();
+                return profile;
+            } catch (error) {
+                console.error("Fetching user profile error:", error);
+            }
+        }
+        async function getToken() {
+            const accounts = msalInstance.getAllAccounts();
+            if (accounts.length > 0) {
+                const request = {
+                    scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with necessary scopes
+                };
+                try {
+                    const response = await msalInstance.acquireTokenSilent(request);
+                    return response.accessToken;
+                } catch (error) {
+                    console.error("Token acquisition error:", error);
+                    if (error instanceof msal.InteractionRequiredAuthError) {
+                        // Fallback to interactive token acquisition if silent acquisition fails
+                        const loginResponse = await msalInstance.loginRedirect(request);
+                        return loginResponse.accessToken;
+                    } else {
+                        throw error;
+                    }
+                }
+            } else {
+                throw new Error("No accounts found.");
+            }
+        }
+        async function checkLoginStatus() {
+            console.log("Checking login status");
+            const accounts = msalInstance.getAllAccounts();
+            console.log("Accounts:", accounts);
+            if (accounts.length > 0) {
+                $('#signIn').hide();
+                $('#signOut, #sidebarToggler, #getAccountInfo').show();
+                accountName = accounts[0].name;
+                email = accounts[0].username;
+            } else {
+                $('#signIn').show();
+                $('#signOut, #sidebarToggler, #getAccountInfo').hide();
+            }
+            
+                
+        }
+        async function getSiteAndDriveDetails() {
+            const account = msalInstance.getAllAccounts()[0];
+            tokenResponse = await msalInstance.acquireTokenSilent({
+                scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
+                account: account
+            });
+
+            // Get the Site ID
+            const siteResponse = await fetch("https://graph.microsoft.com/v1.0/sites?search=ciROTASchedule", {
+                headers: {
+                    Authorization: `Bearer ${tokenResponse.accessToken}`
+                }
+            });
+
+            const siteData = await siteResponse.json();
+            siteId = siteData.value[0].id;
+
+            // Get the Drive ID for the document library
+            const driveResponse = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/drives`, {
+                headers: {
+                    Authorization: `Bearer ${tokenResponse.accessToken}`
+                }
+            });
+
+            const driveData = await driveResponse.json();
+            driveId = driveData.value[0].id; // Assuming the first drive is the document library
+
+            // return { siteId, driveId, tokenResponse };
+        }
+        
     </script>
 </body>
 </html>

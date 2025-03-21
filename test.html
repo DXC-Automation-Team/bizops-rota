@@ -5,24 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Page</title>
     <style>
-        #tablesContainer {
-            margin-top: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-        }
-        textarea {
-            width: 100%;
-            height: 100%;
-            border: none;
-            resize: none;
-        }
+        
     </style>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -35,6 +18,23 @@
 </head>
 <body>
     <div class="d-flex flex-column h-100">
+        <!-- General Modal -->
+        <div class="modal fade" id="generalModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modal-title"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modal-message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Step 1 Modal -->
         <div class="modal fade" id="step1Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -68,6 +68,26 @@
                         <button type="button" class="btn btn-primary" id="startStep2" data-bs-dismiss="modal">Okay</button>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="references" aria-labelledby="referencesLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="referencesLabel">References</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="list-group list-group-flush">
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="home-page">Home</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="rotas-page">Shift ROTAs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="standby-rotas-page">Standby ROTAs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="team-info-page">Team Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="employee-info-page">Employee Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="shift-info-page">Shift Info</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="PUTIL-target-page">PUTIL Target</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="SPP-cutoffs-page">SPP Cutoffs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="submission-logs-page">Submission Logs</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action"  loaded="false" target="checklist-page">Setup Checklist</button>
+                </div>        
             </div>
         </div>
         <nav class="navbar navbar-expand-lg  bg-dark border-bottom border-body" data-bs-theme="dark">
@@ -106,19 +126,169 @@
         </nav>
         <div class="container-fluid flex-grow-1">
             <div class="container h-100">
-                <div class="row h-100">
-                    <div class="col-2"></div>
-                    <div class="col-4 align-self-center">
-                        <div class="card h-100 border-0">
-                            <div class="card-body">
-                                
+                <div class="d-none page pt-3 d-flex align-items-center " id="home-page">
+                    <div class="row align-items-center h-100 flex-grow-1">  
+                        <div class="col-1"></div>
+                        <div class="col-1 h-30">
+                            <div class="card h-100">
+                                <div class="card-body"></div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6 h-75 align-self-center" id="EmployeeInfoImage">
-                        
+                        <div class="col-1 ps-0 h-40">
+                            <div class="card h-100">
+                                <div class="card-body"></div>
+                            </div>
+                        </div>
+                        <div class="col-2 ps-0 h-60">
+                            <div class="card h-100">
+                                <div class="card-body"></div>
+                            </div>
+                        </div>
+                        <div class="col-5 px-0 h-75">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                                        <h1>Welcome to the SPP BizOps Rota</h1>
+                                        <p>This is a tool to manage the SPP BizOps Rota. Please sign in to access the features.</p>
+                                        <!-- <button id="fettch">Fetch Data</button>
+                                        <button id="append">Append</button> -->
+                                    </div>
+                                    
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                        </div>
+                    </div> 
+                    
+                </div>
+                <div class="d-none pt-3 page" id="rotas-page"></div>
+                <div class="d-none pt-3 page" id="standby-rotas-page"></div>
+                <div class="d-none h-100 page" id="team-info-page">
+                    <div class="row h-100">
+                        <div class="col-2"></div>
+                        <div class="col-4 align-self-center">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <form id="teamForm" class="needs-validation" novalidate>
+                                        <div class="mb-3">
+                                            <label for="sub-sl" class="form-label">SUB-SL</label>
+                                            <select class="form-select" id="sub-sl" aria-describedby="sub-sl" required>
+                                                <option value="C&I: CDM CIBC">C&I: AMS/Europe</option>
+                                                <option value="C&I: CDM CIBC">C&I: APJ-MEA</option>
+                                                <option value="C&I: CDM CIBC">C&I: CDM</option>
+                                                <option value="C&I: CDM CIBC">C&I: CDM CIBC</option>
+                                                <option value="C&I: CIBC">C&I: CIBC</option>
+                                                <option value="C&I: EAO">C&I: EAO</option>
+                                                <option value="C&I: Leadership">C&I: Leadership</option>
+                                                <option value="C&I: LT & BizOps">C&I: LT & BizOps</option>
+                                                <option value="C&I: Network">C&I: Network</option>
+                                                <option value="C&I: PM & EAO SDEX">C&I: PM & EAO SDEX</option>
+                                                <option value="C&I: PM & PMO">C&I: PM & PMO</option>
+                                                <option value="C&I: VPC">C&I: VPC</option>
+                                                <option value="CIO: DXC IT">CIO: DXC IT</option>
+                                                <option value="Delivery Excellence">Delivery Excellence</option>
+                                                <option value="Global Deliver: Region">Global Deliver: Region</option>
+                                                <option value="Site Operations">Site Operations</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="team-name" class="form-label">Team Name</label>
+                                            <input type="text" class="form-control" id="team-name" aria-describedby="team-name" required>
+                                            <div class="invalid-feedback">
+                                                Please provide a team name.
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="wbs" class="form-label">WBS</label>
+                                            <input type="text" class="form-control" id="wbs" aria-describedby="wbs" required>
+                                            <div class="invalid-feedback">
+                                                Please provide a WBS.
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-primary mb-3" role="alert" id="teamInfoMessage" style="display: none;">
+                                            
+                                            
+                                        </div>
+                                        <div class="mb-3">
+                                            
+                                            <button type="submit" class="btn btn-primary float-end" id="checkTeamInfo" >Verify</button>
+                                            <div id="teamSubmitButtons" class="d-none">
+                                                <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">No</button>
+                                                <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo">Yes</button>
+                                            </div>
+                                            <div id="teamChangeButtons" class="d-none">
+                                                <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">I have a different team</button>
+                                            </div>
+                                            
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 h-75 align-self-center" id="teamInfoImage">
+                            
+                        </div>
                     </div>
                 </div>
+                <div class="h-100 page" id="employee-info-page">
+                    <div class="h-100 loadingScreen"></div>
+                    
+                    <div class="row h-100 d-none" id="employeeContent">
+                        <div class="col-7 align-self-center h-100">
+                            <div id="employeeDataInput" class="d-flex d-none flex-column h-100">
+                                <div class="my-auto">
+                                    <h1>Generate table from Excel.<sup id="showEmployeeTip">
+                                            <button class="btn border-none bg-transparent p-0">
+                                                <i class="fa-solid fa-circle-info"></i>
+                                            </button>
+                                        </sup>
+                                    </h1>
+                                    <textarea id="" class="w-100 border" style="height: 100px;" placeholder="Copy your table data and paste it here!"></textarea>
+                                </div>
+                                
+                            </div>
+                            <div class="card h-100 border-0 d-none" id="employeeInfoCard">
+                                <div class="card-body h-100"  >
+                                    <form novalidate class="needs-validation" id="employeeForm" source="">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>EID</th>
+                                                    <th>
+                                                        <button class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <div id="employee-from-sharepoint-buttons" class="d-none">   
+                                            <button class="btn btn-primary float-end" disabled type="submit" id="updateEmployees">Update all</button>
+                                            <button class="btn btn-secondary float-end me-2" type="button" id="refreshEmployees">Reload</button>
+                                        </div>
+                                        <div id="employee-from-excel-buttons" class="d-none">   
+                                            <button class="btn btn-primary float-end" type="submit" id="saveEmployees">Save</button>
+                                            <button class="btn btn-secondary float-end me-2" type="button" id="resetEmployees">Reset</button>
+                                        </div>
+                                        
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5 h-75 align-self-center" id="EmployeeInfoImage"></div>
+                    </div>
+                </div>
+                <div class="d-none pt-3 h-100 page" id="shift-info-page"></div>
+                <div class="d-none pt-3 h-100 page" id="PUTIL-target-page"></div>
+                <div class="d-none pt-3 h-100 page" id="SPP-cutoffs-page"></div>
+                <div class="d-none pt-3 h-100 page" id="submission-logs-page"></div>
+                <div class="d-none pt-3 h-100 page" id="checklist-page"></div>
+            
+                
             </div>
         </div>
     </div>
@@ -130,6 +300,12 @@
         $(document).ready(function() {
             addFormValidation();
             $(document)
+            .on('click','.list-group-item',function(){
+                let target = $(this).attr('target');
+                $('.page').addClass('d-none');
+                $('#'+target).removeClass('d-none');
+                $('#page-name').text(target.replace(/-/g, ' '));
+            })
             .on('submit', '#teamForm', function(event){
                 event.preventDefault();
             })
@@ -181,6 +357,62 @@
             .on('click', '#startStep2', function(){
                 localStorage.setItem('tutorial', '2');
             })
+            .on('click','.list-group-item[target="employee-info-page"]', async function(){
+                $('#employee-info-page .loadingScreen').html(loader()).removeClass('d-none');
+
+
+                await getEmployees()
+                    .then(employees => {
+                        return processEmployees(employees)
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                
+            })
+            .on('click','#showEmployeeTip',function(){
+                let html = `
+                    <img src="assets/img/tip-employee-info.gif" class="w-100"><br>
+                    You can quickly populate the table by <b>copying</b> the contents of your Employee Info table in your template and <b>pasting</b> it on the text field.
+                `;
+                showModal("Tip", html);
+            })
+            .on('input','#employeeDataInput textarea', function(){
+                console.log('generating employee table')
+                generateEmployeeTable($(this).val().trim())
+            })
+            .on('submit','#employeeForm', async function(e){
+                e.preventDefault();
+                await filterEmployees();
+            })
+            .on('click','#resetEmployees',function(){
+                $('#employeeDataInput textarea').val('')
+                $('#employeeDataInput').removeClass('d-none');
+                $('#employeeInfoCard').addClass('d-none');
+                resetEmployeeFormValidation();
+                
+            })
+            .on('click','#updateEmployees',function(){
+                //call updateEmployees API
+            })
+            .on('click','#refreshEmployees',async function(){
+                spinButton($(this))
+                //load from sharepoint
+                await getEmployees()
+                    .then(employees => {
+                        return processEmployees(employees)
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                resetEmployeeFormValidation()
+                stopSpinButton($(this),'Reload')
+            })
+            .on('input','#employeeForm input',function(){
+                let source = $('#employeeForm').attr('source');
+                if(source == 'sharepoint')
+                    $(this).closest('tr').find('.employee-actions').removeClass('d-none')
+            })
             ;
         });
         
@@ -188,11 +420,12 @@
         const storeSchemas = [
             { name: 'team-info', keyPath: 'id' },
             { name: 'shift-info', keyPath: 'id' },
-            { name: 'team-info', keyPath: 'id' },
+            { name: 'employee-info', keyPath: 'id' },
             { name: 'rota-info', keyPath: 'id' },
             { name: 'standby-info', keyPath: 'id' },
             { name: 'submission-logs', keyPath: 'id' }
         ];
+        var teamID;
         function checkDatabaseExists(dbName) {
             return new Promise((resolve, reject) => {
                 let request = indexedDB.open(dbName);
@@ -301,7 +534,7 @@
             });
         }
 
-        function saveToLocalDB(dbName, storeName, data) {
+        async function saveToLocalDB(dbName, storeName, data) {
             return new Promise((resolve, reject) => {
                 let request = indexedDB.open(dbName);
 
@@ -393,6 +626,12 @@
         }
 
         //UTILITIES
+        function showModal(title, message){
+            $('#modal-title').text(title);
+            $('#modal-message').html(message);
+            $('#generalModal').modal('show');
+
+        }
         function addFormValidation(){
             'use strict'
 
@@ -417,6 +656,10 @@
             $('#teamInfoMessage').hide();
             $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
         }
+        function resetEmployeeFormValidation(){
+            $('#employeeForm').removeClass('was-validated');
+
+        }
         function spinButton(button){
             button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
             button.prop('disabled', true);
@@ -424,6 +667,12 @@
         function stopSpinButton(button, text){
             button.html(text);
             button.prop('disabled', false);
+        }
+        function loader(){
+            return `
+                    <div class="d-flex flex-grow-1 align-items-center justify-content-center h-100">
+                        <div class="spinner-border" role="status"></div>
+                    </div>`;
         }
 
         //TUTORIAL
@@ -487,6 +736,8 @@
                             .then(message => {
                                 console.log(message);
                                 teamInfo.id = response["ID"];
+                                teamID = response["ID"];
+                                localStorage.setItem('teamID',parseInt(teamID))
                                 return saveToLocalDB(dbName, 'team-info', teamInfo);
                             })
                             .catch(error => {
@@ -537,6 +788,8 @@
                             .then(message => {
                                 console.log(message);
                                 teamInfo.id = response["ID"];
+                                teamID = response["ID"];
+                                localStorage.setItem('teamID',parseInt(teamID))
                                 return saveToLocalDB(dbName, 'team-info', teamInfo);
                             })
                             .catch(error => {
@@ -551,6 +804,256 @@
             })
         }
         
+        async function getEmployees() {
+            try {
+                const content = await getTableContents(dbName, 'team-info'); // Await the table contents
+                if (content) {
+                    const teamInfo = content[0];
+                    if (teamInfo) {
+                        const teamID = parseInt(teamInfo.id);
+
+                        // Return the response from the AJAX call
+                        const employees = await new Promise((resolve, reject) => {
+                            $.ajax({
+                                url: 'https://prod-144.westus.logic.azure.com:443/workflows/b79dbdaf97094406b1901b7f25f7a42d/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=kIPs-acXuT853VY1omwal89IPmLD2_m78U1e54k9_lk',
+                                type: 'POST',
+                                contentType: "application/json",
+                                data: JSON.stringify({ teamID: teamID }),
+                                success: function (response) {
+                                    if (response) {
+                                        console.log("Employees:", response);
+                                        resolve(response); // Resolve the Promise with the response
+                                    } else {
+                                        console.log("No Employees");
+                                        resolve(null); // Resolve with null if no employees
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("Error triggering flow: " + xhr.responseText);
+                                    reject(error); // Reject the Promise on error
+                                },
+                                complete: function () {
+                                    $('#employee-info-page .loadingScreen').empty().addClass('d-none');
+                                }
+                            });
+                        });
+
+                        return employees; // Return the resolved employees
+                    } else {
+                        continueSetup('2');
+                        return null;
+                    }
+                } else {
+                    continueSetup('2');
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error in getEmployees:", error);
+                throw error; // Propagate the error to the caller
+            }
+        }
+
+
+        async function filterEmployees(){
+            
+            let data = [];
+            if(!teamID || teamID == null || teamID == undefined){
+                //gt from localStorage
+                teamID = localStorage.getItem('teamID');
+                if ( !teamID || teamID == null || teamID == undefined) {
+                    
+                    console.log("No team ID in local storage.")
+                    //get from indexedDB
+                    const content = getTableContents(dbName, 'team-info');
+                    if(content){
+                        const teamInfo = content[0];
+                        if (teamInfo) {
+                            teamID = parseInt(teamInfo.id);
+                        }else{
+                            showModal("Error","Couldn't get team info.")
+                        }
+                    }
+                }
+            }
+            // Loop through each row in the table (tbody)
+            $('#employeeForm tbody tr').each(function () {
+                const name = ($(this).find('.emp-name').val()).trim(); // Get the value of the name input
+                const email = ($(this).find('.emp-email').val()).trim(); // Get the value of the email input
+                const eid = parseInt(($(this).find('.emp-eid').val()).trim()); // Get the value of the eid input
+                teamID = parseInt(teamID)
+                // Add the row's data into the data array
+                data.push({
+                    name: name,
+                    email: email,
+                    eid: eid,
+                    teamID: teamID
+                });
+            });
+            saveEmployees(data)
+            
+                                
+                
+            
+        }
+        async function processEmployees(response) {
+            console.log("resp:", response);
+
+            if (response) {
+                if (response.length > 0) {
+                    try {
+                        // Await clearing the table
+                        const message = await clearTable(dbName, 'employee-info');
+                        console.log(message);
+
+                        // Loop through each response entry and save to IndexedDB
+                        const savePromises = response.map(data => saveToLocalDB(dbName, 'employee-info', data));
+                        await Promise.all(savePromises);
+
+                        console.log('All data added successfully!');
+                        loadEmployeeTable(response);
+                    } catch (error) {
+                        console.error('Error processing employees:', error);
+                    }
+                } else {
+                    // Handle empty response case
+                    $('#employeeContent').removeClass('d-none');
+                    let html = `
+                        <img src="assets/img/tip-employee-info.gif" class="w-100"><br>
+                        You can quickly populate the table by <b>copying</b> the contents of your Employee Info table in your template and <b>pasting</b> it on the text field.
+                    `;
+                    showModal("Tip", html);
+                    $('#employeeDataInput').removeClass("d-none");
+                }
+            }
+        }
+
+
+        function saveEmployees(data){
+            $.ajax({
+                url:'https://prod-174.westus.logic.azure.com:443/workflows/ffeb95159ac64bd89120915df35820fd/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TxfC_8D1fZMN4wW1CjPvwx3cKb8gbPzy32mheOkeATQ',
+                type: 'POST',
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                beforeSend: function(){
+                    spinButton($("#saveEmployees"))
+                },
+                complete: function(){
+                    resetEmployeeFormValidation()
+                    stopSpinButton($("#saveEmployees"),'Save')
+                },
+                success: function(response) {
+                    // Check if response contains the data
+                    
+                    if(response){
+                        showModal("Success",response.message)
+                    }else{
+                        showModal("Oops...","It seems that didn't work. Please try again.")
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Error triggering flow: " + xhr.responseText);
+                }
+            })
+        }
+        //generateEmployeeTable accepts TDV input from the textarea and generates a table
+        function generateEmployeeTable(textarea) {
+            const input = textarea; // Get the input data
+            const rows = input.split('\n'); // Split input into rows (by new line)
+            const $tbody = $('#employeeForm tbody'); // Get the <tbody> element
+            $tbody.empty(); // Clear existing rows
+
+            // Iterate over rows
+            rows.forEach(row => {
+                const values = row.split('\t'); // Split each row into values (tab-delimited)
+                if (values.length === 3) { // Ensure there are 3 columns (Name, Email, EID)
+                    const $newRow = $('<tr>'); // Create a new table row
+                    $newRow.append(`
+                    <td>
+                        <input type="text" class="form-control emp-name" value="${(values[0]).trim()}" required>
+                        <div class="invalid-feedback">
+                        Please provide a name.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="email" class="form-control emp-email" value="${(values[1]).trim()}" required>
+                        <div class="invalid-feedback">
+                        Please provide a valid email.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="number" class="form-control emp-eid" value="${parseInt((values[2]).trim())}" step="1" min="1" required>
+                        <div class="invalid-feedback">
+                        Please provide an EID.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <div class="d-none employee-actions">
+                            <button class="btn btn-primary employee-update-btn">Update</button>
+                        </div> 
+                    </td>
+                    `);
+                    $tbody.append($newRow); // Append the new row to the tbody
+                }
+            });
+            $('#employeeForm').attr('source','excel');
+            $('#employeeDataInput, #employee-from-sharepoint-buttons').addClass('d-none');
+            $('#employeeInfoCard, #employee-from-excel-buttons').removeClass('d-none');
+        }
+        //loadEmployeeTable takes an array from the SPP GetEmployees API and generates a table
+        function loadEmployeeTable(array){
+            const $tbody = $('#employeeForm tbody'); // Get the <tbody> element
+            $tbody.empty(); // Clear existing rows
+            if(array.length>0){
+                array.forEach(row=>{
+                    const $newRow = $('<tr>');
+                    $newRow.append(`
+                    <td>
+                        <input type="text" class="form-control emp-name" value="${row.Name}" required>
+                        <div class="invalid-feedback">
+                        Please provide a name.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="email" class="form-control emp-email" value="${row.Email}" required>
+                        <div class="invalid-feedback">
+                        Please provide a valid email.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="number" class="form-control emp-eid" value="${row.EID}" step="1" min="1" required>
+                        <div class="invalid-feedback">
+                        Please provide an EID.
+                        </div>
+                        <input type="hidden" name="id" value="${row.id}">
+                        <input type="hidden" name="id" value="${row.TeamID}">
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <div class="d-none employee-actions">
+                            <button class="btn btn-primary employee-update-btn">Update</button>
+                        </div> 
+                    </td>
+                    `);
+                    $tbody.append($newRow);
+                });
+            }
+            $('#employeeForm').attr('source','sharepoint')
+            $('#employeeDataInput, #employee-from-excel-buttons').addClass('d-none');
+            $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
+        }
+
+
         // Check if database exists and create it if necessary
         checkDatabaseExists(dbName)
             .then(dbExists => {
