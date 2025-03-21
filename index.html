@@ -165,7 +165,8 @@
                         <div class="col-2">
                         </div>
                     </div> 
-                    
+                    <button id="saveUsingMSAL">MSAL Save</button>
+                
                 </div>
                 <div class="d-none pt-3 page" id="rotas-page"></div>
                 <div class="d-none pt-3 page" id="standby-rotas-page"></div>
@@ -212,6 +213,26 @@
             { name: 'submission-logs', keyPath: 'id' }
         ];
         var teamID;
+        var sampleEmployees = [
+            {
+                "Name": "Abel Paolo De Leon",
+                "TeamID": "21",
+                "Email": "abelpaolo.deleon@dxc.com",
+                "EID": "11714998"
+            },
+            {
+                "Name": "Alvin Tan",
+                "TeamID": "21",
+                "Email": "alvin.tan@dxc.com",
+                "EID": "11775056"
+            },
+            {
+                "Name": "Anabel Herrera",
+                "TeamID": "21",
+                "Email": "anabel.i.herrera@dxc.com",
+                "EID": "60121704"
+            }
+        ];
         $(document).ready(function() {
             
             init();
@@ -282,6 +303,9 @@
             })
             .on('click', '#startStep2', function(){
                 localStorage.setItem('tutorial', '2');
+            })
+            .on('click','#saveUsingMSAL',function(){
+                saveToSharePointBatch('Employees',sampleEmployees)
             })
             
 
