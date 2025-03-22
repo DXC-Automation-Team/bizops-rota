@@ -166,7 +166,7 @@
                         <div class="col-2">
                         </div>
                     </div> 
-                    <button id="saveUsingMSAL">MSAL Save</button>
+                    <button id="saveUsingMSAL">MSAL Get</button>
                 
                 </div>
                 <div class="d-none pt-3 page" id="rotas-page"></div>
@@ -214,26 +214,7 @@
             { name: 'submission-logs', keyPath: 'id' }
         ];
         var teamID;
-        var sampleEmployees = [
-            {
-                "Name": "Abel Paolo De Leon",
-                "TeamID": "21",
-                "Email": "abelpaolo.deleon@dxc.com",
-                "EID": "11714998"
-            },
-            {
-                "Name": "Alvin Tan",
-                "TeamID": "21",
-                "Email": "alvin.tan@dxc.com",
-                "EID": "11775056"
-            },
-            {
-                "Name": "Anabel Herrera",
-                "TeamID": "21",
-                "Email": "anabel.i.herrera@dxc.com",
-                "EID": "60121704"
-            }
-        ];
+        
         $(document).ready(function() {
             
             init();
@@ -362,7 +343,19 @@
                     $(this).closest('tr').find('.employee-actions').removeClass('d-none')
             })
             .on('click','#saveUsingMSAL',function(){
-                saveToSharePointBatch('Employees',sampleEmployees)
+                // saveToSharePointBatch('Employees',sampleEmployees)
+                const listName = "Employees";
+                const fields = ["ID", "TeamID", "EID", "Name", "Email"];
+                const conditions = [{ field: "TeamID", value: teamID }];
+
+                getFromSharePoint(listName, fields, conditions)
+                    .then(items => {
+                        console.log("Fetched Items:", items);
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+
             })
 
             async function init(){
@@ -913,6 +906,50 @@
                         showModal("Success",`Data saved successfully`)
                     }
                 }
+            }
+        }
+        async function getFromSharePoint(listName, fields, conditions) {
+            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items?$expand=fields`; // Graph API endpoint for list items
+            const token = await getToken();
+
+            if (token) {
+                try {
+                    // Build the query string for filtering conditions
+                    let filterQuery = "";
+                    if (conditions && conditions.length > 0) {
+                        filterQuery = conditions.map(cond => `${cond.field} eq '${cond.value}'`).join(" and ");
+                    }
+
+                    // Add the select (fields) and filter queries to the URL
+                    let requestUrl = url;
+                    if (fields && fields.length > 0) {
+                        requestUrl += `&$select=${fields.map(field => `fields/${field}`).join(",")}`;
+                    }
+                    if (filterQuery) {
+                        requestUrl += `&$filter=${filterQuery}`;
+                    }
+
+                    // Fetch the items from the list
+                    const response = await fetch(requestUrl, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error fetching from SharePoint: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log("Items fetched successfully:", result.value);
+                    return result.value; // Return the list of items
+                } catch (error) {
+                    console.error("Error retrieving data from SharePoint:", error);
+                }
+            } else {
+                throw new Error("Failed to obtain authentication token.");
             }
         }
 
