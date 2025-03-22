@@ -758,6 +758,8 @@
             if (token) {
                 const batchSize = 20; // Maximum requests per batch
                 const batches = [];
+                let totalEntries = dataArray.length; // Total number of entries to insert
+                let successCount = 0; // Counter for entries with 201 status
 
                 // Split dataArray into batches of 20
                 for (let i = 0; i < dataArray.length; i += batchSize) {
@@ -766,17 +768,15 @@
                 }
 
                 for (const batch of batches) {
-                    const batchRequests = batch.map((item, index) => {
-                        return {
-                            id: `${index + 1}`, // Unique ID for each request
-                            method: "POST",
-                            url: `/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`,
-                            body: { fields: item },
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        };
-                    });
+                    const batchRequests = batch.map((item, index) => ({
+                        id: `${index + 1}`, // Unique ID for each request
+                        method: "POST",
+                        url: `/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`,
+                        body: { fields: item },
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }));
 
                     // Prepare batch payload
                     const batchPayload = { requests: batchRequests };
@@ -795,11 +795,32 @@
                         console.error(`Error in batch request: ${response.statusText}`);
                     } else {
                         const result = await response.json();
-                        showModal("Success",`Data saved successfully`)
+
+                        // Check individual responses for errors and count successes
+                        result.responses.forEach((res) => {
+                            if (res.status === 201) {
+                                successCount++;
+                            } else if (res.status === 400) {
+                                console.error(`Error in item ${res.id}: ${res.body.error.message}`);
+                            }
+                        });
                     }
+                }
+
+                // Compare counters and trigger appropriate response
+                if (successCount === totalEntries) {
+                    showModal("Success", "All entries were saved successfully!");
+                } else if (successCount > 0) {
+                    showModal(
+                        "Partial Success",
+                        `${successCount} out of ${totalEntries} entries were saved successfully. Check logs for errors.`
+                    );
+                } else {
+                    showModal("Error", "No entries were saved. Please check the logs for details.");
                 }
             }
         }
+
         async function getFromSharePoint(listName, fields, conditions) {
             const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
             const token = await getToken();
@@ -1200,11 +1221,17 @@
                 const eid = parseInt(($(this).find('.emp-eid').val()).trim()); // Get the value of the eid input
                 teamID = parseInt(teamID)
                 // Add the row's data into the data array
+                // data.push({
+                //     Name: name,
+                //     Email: email,
+                //     EID: eid,
+                //     TeamID: teamID
+                // });
                 data.push({
-                    Name: name,
-                    Email: email,
-                    EID: eid,
-                    TeamID: teamID
+                    name: name,
+                    email: email,
+                    eID: eid,
+                    teamID: teamID
                 });
             });
             saveEmployees(data)
