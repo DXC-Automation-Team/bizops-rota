@@ -391,6 +391,21 @@
                             }));
                         }
                     })
+                    .then(message => {
+                        return getTableContents(dbName, 'team-info');
+                    })
+                    .then(content => {
+                        if (content) {
+                            let teamInfo = content[0];
+                            if (teamInfo) {
+                                $('#sub-sl').val(teamInfo.SUBSL);
+                                $('#team-name').val(teamInfo.Team);
+                                $('#wbs').val(teamInfo.WBS);
+                            }
+                        } else {
+                            console.log('Table is empty or does not exist.');
+                        }
+                    })
                     .catch(error => console.log(error));
                 // set page text
                 let d = new Date();
@@ -576,7 +591,17 @@
                 // Get the data from the server
                 // Generate the table
             }
-
+            function loadContent(elementId, filePath, callback) {
+                $(elementId).load(filePath, function(response, status, xhr) {
+                    if (status == "success") {
+                        $(elementId).show(); // Show the content once loaded
+                        if (callback) callback(true); // Call the callback function if provided
+                    } else if (status == "error") {
+                        $(elementId).html("Failed to load content.");
+                        if (callback) callback(false); // Call the callback function with failure status
+                    }
+                });
+            }
             
 
             
