@@ -261,16 +261,13 @@
                                 attempts++;
                             }, interval);
                             
-
-                            if (page === 'rotas-page') {
-                                
-                                let d = new Date();
-                                let month = d.getMonth()+1;
-                                generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
-                                setActiveRota();
-                                $('#year').text(currentYear);
-
+                            switch(page){
+                                case 'rotas-page': setupRotasPage();
+                                break;
+                                case 'employee-info-page': setupEmployeesPage();
+                                break;
                             }
+                            
                         }
                     });
                 }
@@ -281,7 +278,7 @@
                 generateTableHeaders(month,'shift');
             })
             .on('input', '.rotapage textarea', function(){
-                generateTableFromInput($(this));
+                generateRotaTableFromInput($(this));
             })
             .on('click', '#startStep2', function(){
                 localStorage.setItem('tutorial', '2');
@@ -415,199 +412,69 @@
 
             }
             
-            function setActiveRota(){
-                let d = new Date();
-                let month = d.getMonth();
-                let rota = '#rota-'+(month+1);
-                let link = '#rotas-page .nav-link[aria-controls="rota-'+(month+1)+'"]';
-                $('#rotas-page .nav-link').removeClass('active').attr('aria-selected', 'false');
-                $('#rotas-page .tab-pane').removeClass('show active');
-                $(link).addClass('active').attr('aria-selected', 'true');
-                $(rota).addClass('show active');
-            }
             
-            function checkBrowser(){
-                var isEdge = /Edg\/\d./i.test(navigator.userAgent);
-                if(!isEdge){
-                    $("body").html(`
-                        <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-                            <div class="alert alert-danger" role="alert">
-                                <h1>Please use Microsoft Edge to access this page.</h1>
-                            </div>
-                        </div>
-                    `)
-                }
-            }
-            function checkPageStatus(page){
-                let pageStatus = false;
-                let pageContent = $('#'+page).html();
-                if(pageContent.length > 0){
-                    pageStatus = true;
-                }
-                return pageStatus;
-                
-            }
-            function checkTutorialStatus(){
-                console.log("Checking tutorial status");
-                let tutorial = localStorage.getItem('tutorial');
-                if(tutorial){
-                    return tutorial;
-                } else {
-                    return null;
-                }
-            }
-            function startSetup(){
-                $('#step1Modal').modal('show');
-                localStorage.setItem('tutorial', '1');
-            }
-            function continueSetup(step){
-                console.log("Continuing setup from step", step);
-                switch(step){
-                    case '1':
-                        $('#step1Modal').modal('show');
-                        break;
-                    case '2':
-                        $('#step2Modal').modal('show');
-                        break;
-                }
-            }
-
-
-            async function fetchPageContents(page){
-                console.log("Fetching page contents for", page);
-                switch(page){
-                    case "rotas-page":
-                        $('#year').text(currentYear);
-                        let d = new Date();
-                        let month = d.getMonth()+1;
-                        //check if employee info is setup
-
-                        //check if shift info is setup
-
-                        //check if team info is setup
-
-                        //check server if data is available
-
-                        //if data is available
-
-                        //if data does not exist
-                        generateTableHeaders(month,'shift');
-                        setActiveRota();
-                        
-                        break;
-                    case "standby-rotas-page":
-                        break;
-                    case "team-info-page":
-                        addFormValidation();
-                        await getTableContents(dbName, 'team-info')
-                            .then(content => {
-                                if (content) {
-                                    let teamInfo = content[0];
-                                    if (teamInfo) {
-                                        $('#sub-sl').val(teamInfo.SUBSL);
-                                        $('#team-name').val(teamInfo.Team);
-                                        $('#wbs').val(teamInfo.WBS);
-                                    }
-                                } else {
-                                    console.log('Table is empty or does not exist.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error(error);
-                            });
-                        break;
-                    
-                }
-            }
-            
-            function generateTableHeaders(month,category) {
-                // Check if the table is already generated
-                if($('#rota-'+month+' table').length > 0) return;
-                // Get the number of days in the month
-                var daysInMonth = new Date(currentYear, month, 0).getDate();
-                var monthName = monthNames[month - 1];
-                // Create table element
-                var table = $('<table>').addClass('table table-striped table-hover table-bordered');
-
-                // Create table header rows
-                var thead = $('<thead>');
-                var headerRow = $('<tr>');
-                var dayOfWeekRow = $('<tr>');
-                headerRow.append($('<th>').attr('rowspan', 2).text('Name'));
-
-                for (var day = 1; day <= daysInMonth; day++) {
-                    var date = new Date(currentYear, month - 1, day); // Month is zero-indexed
-                    headerRow.append($('<th>').text(('0' + day).slice(-2)).css('white-space', 'nowrap')); // Format day as dd
-                    dayOfWeekRow.append($('<th>').text(date.toLocaleDateString('en-US', { weekday: 'short' })).css('white-space', 'nowrap')); // Format day of the week as ddd
-                }
-                // OPTIONALLY ADD THIS BACK IF NEEDED
-                /* headerRow.append($('<th>').attr('rowspan', 2).text('TEH').css('white-space', 'nowrap'));
-                headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL Hours'));
-                headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL').css('white-space', 'nowrap')); */
-
-                thead.append(headerRow);
-                thead.append(dayOfWeekRow);
-                table.append(thead);
-
-                // Create table body with a single cell containing the textarea
-                var tbody = $('<tbody>').addClass("table-group-divider");
-                var dataRow = $('<tr>');
-                // ADD +4 to daysInMonth to account for the extra columns. +1 for the name column, +3 for the extra columns
-                var textAreaCell = $('<td>').attr('colspan', daysInMonth+1).append(
-                    $('<textarea>').attr({
-                        rows: 10,
-                        placeholder: 'Paste your Excel data here',
-                        month: monthName.toLowerCase(),
-                        monthnumber: month,
-                        category: category,
-                        style: 'width: 100%;'
-                    })
-                );
-                dataRow.append(textAreaCell);
-                tbody.append(dataRow);
-                table.append(tbody);
-
-                // Append the table to .tab-pane.fade .card-body
-                $('#rota-' + month + ' .card-body').html(table);
-            }
-            function generateTableFromInput(target){ 
-                // var monthName = (monthNames[month - 1]).toLowerCase();
-                var month = target.attr('monthnumber');
-                // Get the number of days in the month
-                var daysInMonth = new Date(currentYear, month, 0).getDate();
-                const data = target.val().trim(); 
-                const rows = data.split('\n').map(row => row.split('\t')); 
-                // let html = '<table class="table table-striped table-hover table-bordered">'; 
-                let html = '';
-                // Generate table rows 
-                rows.forEach(row => {
-                    html += '<tr>'; 
-                    row.forEach(cell => { html += `<td><input type="text" value="${cell}"></td>`; }); 
-                    html += '</tr>'; }
-                ); 
-                // html += '</table>'; 
-                target.closest('tbody').html(html); 
-            }
-            function generateTableFromServer(){
-                // Get the data from the server
-                // Generate the table
-            }
-            function loadContent(elementId, filePath, callback) {
-                $(elementId).load(filePath, function(response, status, xhr) {
-                    if (status == "success") {
-                        $(elementId).show(); // Show the content once loaded
-                        if (callback) callback(true); // Call the callback function if provided
-                    } else if (status == "error") {
-                        $(elementId).html("Failed to load content.");
-                        if (callback) callback(false); // Call the callback function with failure status
-                    }
-                });
-            }
             
 
             
         });
         //UTILITIES
+        async function fetchPageContents(page){
+            console.log("Fetching page contents for", page);
+            switch(page){
+                case "rotas-page":
+                    $('#year').text(currentYear);
+                    let d = new Date();
+                    let month = d.getMonth()+1;
+                    //check if employee info is setup
+
+                    //check if shift info is setup
+
+                    //check if team info is setup
+
+                    //check server if data is available
+
+                    //if data is available
+
+                    //if data does not exist
+                    generateTableHeaders(month,'shift');
+                    setActiveRota();
+                    
+                    break;
+                case "standby-rotas-page":
+                    break;
+                case "team-info-page":
+                    addFormValidation();
+                    await getTableContents(dbName, 'team-info')
+                        .then(content => {
+                            if (content) {
+                                let teamInfo = content[0];
+                                if (teamInfo) {
+                                    $('#sub-sl').val(teamInfo.SUBSL);
+                                    $('#team-name').val(teamInfo.Team);
+                                    $('#wbs').val(teamInfo.WBS);
+                                }
+                            } else {
+                                console.log('Table is empty or does not exist.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                    break;
+                
+            }
+        }
+        function loadContent(elementId, filePath, callback) {
+            $(elementId).load(filePath, function(response, status, xhr) {
+                if (status == "success") {
+                    $(elementId).show(); // Show the content once loaded
+                    if (callback) callback(true); // Call the callback function if provided
+                } else if (status == "error") {
+                    $(elementId).html("Failed to load content.");
+                    if (callback) callback(false); // Call the callback function with failure status
+                }
+            });
+        }
         function showModal(title, message){
             $('#modal-title').text(title);
             $('#modal-message').html(message);
@@ -1098,6 +965,318 @@
 
             // return { siteId, driveId, tokenResponse };
         }
+        
+        function checkBrowser(){
+            var isEdge = /Edg\/\d./i.test(navigator.userAgent);
+            if(!isEdge){
+                $("body").html(`
+                    <div class="container-fluid" style="height: 100vh; display: flex; justify-content: center; align-items: center;">
+                        <div class="alert alert-danger" role="alert">
+                            <h1>Please use Microsoft Edge to access this page.</h1>
+                        </div>
+                    </div>
+                `)
+            }
+        }
+        function checkPageStatus(page){
+            let pageStatus = false;
+            let pageContent = $('#'+page).html();
+            if(pageContent.length > 0){
+                pageStatus = true;
+            }
+            return pageStatus;
+            
+        }
+        
+        //TUTORIAL FUNCTIONS
+        function checkTutorialStatus(){
+            console.log("Checking tutorial status");
+            let tutorial = localStorage.getItem('tutorial');
+            if(tutorial){
+                return tutorial;
+            } else {
+                return null;
+            }
+        }
+        function startSetup(){
+            $('#step1Modal').modal('show');
+            localStorage.setItem('tutorial', '1');
+        }
+        function continueSetup(step){
+            console.log("Continuing setup from step", step);
+            switch(step){
+                case '1':
+                    $('#step1Modal').modal('show');
+                    break;
+                case '2':
+                    $('#step2Modal').modal('show');
+                    break;
+            }
+        }
+        
+        
+
+        //EMPLOYEE FUNCTIONS
+        async function setupEmployeesPage(){
+            $('#employee-info-page .loadingScreen').html(loader()).removeClass('d-none');
+            await getEmployees()
+                .then(employees => {
+                    return processEmployees(employees)
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        }
+        async function getEmployees(){
+            try {
+                if (!teamID || teamID == undefined || teamID == null){
+                    const content = await getTableContents(dbName, 'team-info'); // Await the table contents
+                    if (content) {
+                        const teamInfo = content[0];
+                        if (teamInfo) {
+                            teamID = parseInt(teamInfo.id);
+                        } else {
+                            continueSetup('2');
+                            return null;
+                        }
+                    } else {
+                    continueSetup('2');
+                        return null;
+                    }
+                }
+                const listName = "Employees";
+                const fields = ["id", "TeamID", "EID", "Name", "Email"];
+                const conditions = [{ field: "TeamID", value: teamID }];
+
+                return getFromSharePoint(listName, fields, conditions);
+                    
+                
+            } catch (error) {
+                console.error("Error in getEmployees:", error);
+                throw error; // Propagate the error to the caller
+            }
+        }
+        async function processEmployees(response) {
+            console.log("resp:", response);
+
+            if (response) {
+                if (response.length > 0) {
+                    try {
+                        // Await clearing the table
+                        const message = await clearTable(dbName, 'employee-info');
+                        console.log(message);
+
+                        // Loop through each response entry and save to IndexedDB
+                        const savePromises = response.map(data => saveToLocalDB(dbName, 'employee-info', data));
+                        await Promise.all(savePromises);
+
+                        console.log('All data added successfully!');
+                        loadEmployeeTable(response);
+                    } catch (error) {
+                        console.error('Error processing employees:', error);
+                    }
+                } else {
+                    // Handle empty response case
+                    $('#employeeContent').removeClass('d-none');
+                    let html = `
+                        <img src="assets/img/tip-employee-info.gif" class="w-100"><br>
+                        You can quickly populate the table by <b>copying</b> the contents of your Employee Info table in your template and <b>pasting</b> it on the text field.
+                    `;
+                    showModal("Tip", html);
+                    $('#employeeDataInput').removeClass("d-none");
+                }
+            }
+        }
+        //generateEmployeeTable accepts TDV input from the textarea and generates a table
+        function generateEmployeeTable(textarea) {
+            const input = textarea; // Get the input data
+            const rows = input.split('\n'); // Split input into rows (by new line)
+            const $tbody = $('#employeeForm tbody'); // Get the <tbody> element
+            $tbody.empty(); // Clear existing rows
+
+            // Iterate over rows
+            rows.forEach(row => {
+                const values = row.split('\t'); // Split each row into values (tab-delimited)
+                if (values.length === 3) { // Ensure there are 3 columns (Name, Email, EID)
+                    const $newRow = $('<tr>'); // Create a new table row
+                    $newRow.append(`
+                    <td>
+                        <input type="text" class="form-control emp-name" value="${(values[0]).trim()}" required>
+                        <div class="invalid-feedback">
+                        Please provide a name.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="email" class="form-control emp-email" value="${(values[1]).trim()}" required>
+                        <div class="invalid-feedback">
+                        Please provide a valid email.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="number" class="form-control emp-eid" value="${parseInt((values[2]).trim())}" step="1" min="1" required>
+                        <div class="invalid-feedback">
+                        Please provide an EID.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <div class="d-none employee-actions">
+                            <button class="btn btn-primary employee-update-btn">Update</button>
+                        </div> 
+                    </td>
+                    `);
+                    $tbody.append($newRow); // Append the new row to the tbody
+                }
+            });
+            $('#employeeForm').attr('source','excel');
+            $('#employeeDataInput, #employee-from-sharepoint-buttons').addClass('d-none');
+            $('#employeeInfoCard, #employee-from-excel-buttons').removeClass('d-none');
+        }
+        //loadEmployeeTable takes an array from the SPP GetEmployees API and generates a table
+        function loadEmployeeTable(array){
+            const $tbody = $('#employeeForm tbody'); // Get the <tbody> element
+            $tbody.empty(); // Clear existing rows
+            if(array.length>0){
+                array.forEach(row=>{
+                    const $newRow = $('<tr>');
+                    $newRow.append(`
+                    <td>
+                        <input type="text" class="form-control emp-name" value="${row.Name}" required>
+                        <div class="invalid-feedback">
+                        Please provide a name.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="email" class="form-control emp-email" value="${row.Email}" required>
+                        <div class="invalid-feedback">
+                        Please provide a valid email.
+                        </div>
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <input type="number" class="form-control emp-eid" value="${row.EID}" step="1" min="1" required>
+                        <div class="invalid-feedback">
+                        Please provide an EID.
+                        </div>
+                        <input type="hidden" name="id" value="${row.id}">
+                        <input type="hidden" name="id" value="${row.TeamID}">
+                    </td>
+                    `);
+                    $newRow.append(`
+                    <td>
+                        <div class="d-none employee-actions">
+                            <button class="btn btn-primary employee-update-btn">Update</button>
+                        </div> 
+                    </td>
+                    `);
+                    $tbody.append($newRow);
+                });
+            }
+            $('#employeeForm').attr('source','sharepoint')
+            $('#employeeDataInput, #employee-from-excel-buttons').addClass('d-none');
+            $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
+        }
+
+        
+        //ROTA FUNCTIONS
+        function setupRotasPage(){
+            let d = new Date();
+            let month = d.getMonth()+1;
+            generateTableHeaders(month,'shift'); // Call generateTable after content is loaded
+            setActiveRota();
+            $('#year').text(currentYear);
+        }
+        function generateTableHeaders(month,category) {
+            // Check if the table is already generated
+            if($('#rota-'+month+' table').length > 0) return;
+            // Get the number of days in the month
+            var daysInMonth = new Date(currentYear, month, 0).getDate();
+            var monthName = monthNames[month - 1];
+            // Create table element
+            var table = $('<table>').addClass('table table-striped table-hover table-bordered');
+
+            // Create table header rows
+            var thead = $('<thead>');
+            var headerRow = $('<tr>');
+            var dayOfWeekRow = $('<tr>');
+            headerRow.append($('<th>').attr('rowspan', 2).text('Name'));
+
+            for (var day = 1; day <= daysInMonth; day++) {
+                var date = new Date(currentYear, month - 1, day); // Month is zero-indexed
+                headerRow.append($('<th>').text(('0' + day).slice(-2)).css('white-space', 'nowrap')); // Format day as dd
+                dayOfWeekRow.append($('<th>').text(date.toLocaleDateString('en-US', { weekday: 'short' })).css('white-space', 'nowrap')); // Format day of the week as ddd
+            }
+            // OPTIONALLY ADD THIS BACK IF NEEDED
+            /* headerRow.append($('<th>').attr('rowspan', 2).text('TEH').css('white-space', 'nowrap'));
+            headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL Hours'));
+            headerRow.append($('<th>').attr('rowspan', 2).text('PUTIL').css('white-space', 'nowrap')); */
+
+            thead.append(headerRow);
+            thead.append(dayOfWeekRow);
+            table.append(thead);
+
+            // Create table body with a single cell containing the textarea
+            var tbody = $('<tbody>').addClass("table-group-divider");
+            var dataRow = $('<tr>');
+            // ADD +4 to daysInMonth to account for the extra columns. +1 for the name column, +3 for the extra columns
+            var textAreaCell = $('<td>').attr('colspan', daysInMonth+1).append(
+                $('<textarea>').attr({
+                    rows: 10,
+                    placeholder: 'Paste your Excel data here',
+                    month: monthName.toLowerCase(),
+                    monthnumber: month,
+                    category: category,
+                    style: 'width: 100%;'
+                })
+            );
+            dataRow.append(textAreaCell);
+            tbody.append(dataRow);
+            table.append(tbody);
+
+            // Append the table to .tab-pane.fade .card-body
+            $('#rota-' + month + ' .card-body').html(table);
+        }
+        function generateRotaTableFromInput(target){ 
+            // var monthName = (monthNames[month - 1]).toLowerCase();
+            var month = target.attr('monthnumber');
+            // Get the number of days in the month
+            var daysInMonth = new Date(currentYear, month, 0).getDate();
+            const data = target.val().trim(); 
+            const rows = data.split('\n').map(row => row.split('\t')); 
+            // let html = '<table class="table table-striped table-hover table-bordered">'; 
+            let html = '';
+            // Generate table rows 
+            rows.forEach(row => {
+                html += '<tr>'; 
+                row.forEach(cell => { html += `<td><input type="text" value="${cell}"></td>`; }); 
+                html += '</tr>'; }
+            ); 
+            // html += '</table>'; 
+            target.closest('tbody').html(html); 
+        }
+        function generateRotaTableFromServer(){
+            // Get the data from the server
+            // Generate the table
+        }
+        function setActiveRota(){
+            let d = new Date();
+            let month = d.getMonth();
+            let rota = '#rota-'+(month+1);
+            let link = '#rotas-page .nav-link[aria-controls="rota-'+(month+1)+'"]';
+            $('#rotas-page .nav-link').removeClass('active').attr('aria-selected', 'false');
+            $('#rotas-page .tab-pane').removeClass('show active');
+            $(link).addClass('active').attr('aria-selected', 'true');
+            $(rota).addClass('show active');
+        }
+        
         
     </script>
 </body>
