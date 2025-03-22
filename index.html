@@ -166,7 +166,6 @@
                         <div class="col-2">
                         </div>
                     </div> 
-                    <button id="saveUsingMSAL">MSAL Get</button>
                 
                 </div>
                 <div class="d-none pt-3 page" id="rotas-page"></div>
@@ -1085,6 +1084,7 @@
                         You can quickly populate the table by <b>copying</b> the contents of your Employee Info table in your template and <b>pasting</b> it on the text field.
                     `;
                     showModal("Tip", html);
+                    $('##employee-info-page .loadingScreen').clear().addClass('d-none');
                     $('#employeeDataInput').removeClass("d-none");
                 }
             }
