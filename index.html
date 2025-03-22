@@ -401,6 +401,7 @@
                                 $('#sub-sl').val(teamInfo.SUBSL);
                                 $('#team-name').val(teamInfo.Team);
                                 $('#wbs').val(teamInfo.WBS);
+                                teamID = teamInfo.id
                             }
                         } else {
                             console.log('Table is empty or does not exist.');
@@ -971,7 +972,7 @@
                     console.log("Items fetched successfully:", result.value);
                     return result.value; // Return the list of items
                 } catch (error) {
-                    console.error("Error retrieving data from SharePoint:", error);
+                    console.error("Error retrieving data from SharePoint:", error.message);
                 }
             } else {
                 throw new Error("Failed to obtain authentication token.");
