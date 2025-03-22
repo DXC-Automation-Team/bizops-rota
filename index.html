@@ -935,7 +935,7 @@
             }
         }
         async function getFromSharePoint(listName, fields, conditions) {
-            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`; // Graph API endpoint for list items
+            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
             const token = await getToken();
 
             if (token) {
@@ -946,19 +946,13 @@
                         filterQuery = conditions.map(cond => `fields/${cond.field} eq '${cond.value}'`).join(" and ");
                     }
 
-                    // Add the select (fields) and filter queries to the URL
+                    // Construct the URL with $expand and $filter
                     let requestUrl = `${url}?$expand=fields`;
-                    if (fields && fields.length > 0) {
-                        requestUrl += `&$select=${fields.map(field => `fields/${field}`).join(",")}`; // Prefix fields/ to each field
-                    }
                     if (filterQuery) {
                         requestUrl += `&$filter=${filterQuery}`;
                     }
 
-
-
-                    console.log(requestUrl)
-                    // Fetch the items from the list
+                    // Fetch items from the SharePoint list
                     const response = await fetch(requestUrl, {
                         method: "GET",
                         headers: {
@@ -972,10 +966,21 @@
                     }
 
                     const result = await response.json();
-                    console.log("Items fetched successfully:", result.value);
-                    return result.value; // Return the list of items
+
+                    // Post-process to return only the specified fields
+                    const filteredItems = result.value.map(item => {
+                        const processedItem = {};
+                        fields.forEach(field => {
+                            processedItem[field] = item.fields[field]; // Extract only the specified fields
+                        });
+                        return processedItem;
+                    });
+
+                    console.log("Filtered Items:", filteredItems);
+                    return filteredItems; // Return the processed items
                 } catch (error) {
-                    console.error("Error retrieving data from SharePoint:", error.message);
+                    console.error("Error retrieving data from SharePoint:", error);
+                    throw error;
                 }
             } else {
                 throw new Error("Failed to obtain authentication token.");
