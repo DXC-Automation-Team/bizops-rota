@@ -1184,7 +1184,10 @@
             }
             $('#employeeForm').attr('source','sharepoint');
             $('#employeeDataInput, #employee-from-excel-buttons, #employee-info-page .loadingScreen').addClass('d-none');
-            $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
+            setTimeout(function(){
+                $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
+            },100)
+            
         }
 
         
