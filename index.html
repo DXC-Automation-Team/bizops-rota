@@ -250,7 +250,7 @@
                                 if (pageStatus || attempts >= maxAttempts) {
                                     clearInterval(checkStatusInterval);
                                     if (!pageStatus) {
-                                        showModal("Error","Failed to load content. Please refresh the page and try again.");
+                                        showModal("Error","Failed to load content. Please refresh the page and try again.",'fail');
                                     } else {
                                         loaded = 'true'; // Update loaded status
                                         listItem.attr('loaded', loaded);
@@ -813,14 +813,15 @@
 
                 // Compare counters and trigger appropriate response
                 if (successCount === totalEntries) {
-                    showModal("Success", "All entries were saved successfully!");
+                    showModal("Success", "All entries were saved successfully!","success");
                 } else if (successCount > 0) {
                     showModal(
                         "Partial Success",
-                        `${successCount} out of ${totalEntries} entries were saved successfully. Check logs for errors.`
+                        `${successCount} out of ${totalEntries} entries were saved successfully. Check logs for errors.`,
+                        'fail'
                     );
                 } else {
-                    showModal("Error", "No entries were saved. Please check the logs for details.");
+                    showModal("Error", "No entries were saved. Please check the logs for details.",'fail');
                 }
             }
         }
@@ -893,7 +894,7 @@
                 location.reload(true);
             } catch (error) {
                 console.error("Login error:", error);
-                showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.");
+                showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.",'fail');
             }
         }
         async function getAccountInfo() {
