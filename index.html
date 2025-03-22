@@ -909,7 +909,7 @@
                         console.error(`Error in batch request: ${response.statusText}`);
                     } else {
                         const result = await response.json();
-                        console.log("Batch saved successfully:", result);
+                        showModal("Success",`Batch saved successfully:${result}`)
                     }
                 }
             }
