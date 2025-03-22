@@ -345,7 +345,7 @@
             .on('click','#saveUsingMSAL',function(){
                 // saveToSharePointBatch('Employees',sampleEmployees)
                 const listName = "Employees";
-                const fields = ["ID", "TeamID", "EID", "Name", "Email"];
+                const fields = ["id", "TeamID", "EID", "Name", "Email"];
                 const conditions = [{ field: "TeamID", value: teamID }];
 
                 getFromSharePoint(listName, fields, conditions)
