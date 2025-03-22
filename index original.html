@@ -304,65 +304,10 @@
             .on('click', '#startStep2', function(){
                 localStorage.setItem('tutorial', '2');
             })
-            .on('click','.list-group-item[target="employee-info-page"]', async function(){
-                $('#employee-info-page .loadingScreen').html(loader()).removeClass('d-none');
-
-
-                await getEmployees()
-                    .then(employees => {
-                        return processEmployees(employees)
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-                
-            })
-            .on('click','#showEmployeeTip',function(){
-                let html = `
-                    <img src="assets/img/tip-employee-info.gif" class="w-100"><br>
-                    You can quickly populate the table by <b>copying</b> the contents of your Employee Info table in your template and <b>pasting</b> it on the text field.
-                `;
-                showModal("Tip", html);
-            })
-            .on('input','#employeeDataInput textarea', function(){
-                console.log('generating employee table')
-                generateEmployeeTable($(this).val().trim())
-            })
-            .on('submit','#employeeForm', async function(e){
-                e.preventDefault();
-                await filterEmployees();
-            })
-            .on('click','#resetEmployees',function(){
-                $('#employeeDataInput textarea').val('')
-                $('#employeeDataInput').removeClass('d-none');
-                $('#employeeInfoCard').addClass('d-none');
-                resetEmployeeFormValidation();
-                
-            })
-            .on('click','#updateEmployees',function(){
-                //call updateEmployees API
-            })
-            .on('click','#refreshEmployees',async function(){
-                spinButton($(this))
-                //load from sharepoint
-                await getEmployees()
-                    .then(employees => {
-                        return processEmployees(employees)
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-                resetEmployeeFormValidation()
-                stopSpinButton($(this),'Reload')
-            })
-            .on('input','#employeeForm input',function(){
-                let source = $('#employeeForm').attr('source');
-                if(source == 'sharepoint')
-                    $(this).closest('tr').find('.employee-actions').removeClass('d-none')
-            })
             .on('click','#saveUsingMSAL',function(){
                 saveToSharePointBatch('Employees',sampleEmployees)
             })
+            
 
             async function init(){
                 
@@ -583,7 +528,17 @@
                 // Generate the table
             }
 
-            
+            function loadContent(elementId, filePath, callback) {
+                $(elementId).load(filePath, function(response, status, xhr) {
+                    if (status == "success") {
+                        $(elementId).show(); // Show the content once loaded
+                        if (callback) callback(true); // Call the callback function if provided
+                    } else if (status == "error") {
+                        $(elementId).html("Failed to load content.");
+                        if (callback) callback(false); // Call the callback function with failure status
+                    }
+                });
+            }
 
             
         });
@@ -623,32 +578,6 @@
             button.html(text);
             button.prop('disabled', false);
         }    
-        function resetTeamFormValidation(){
-            $('#teamForm').removeClass('was-validated');
-            $('#checkTeamInfo').removeClass('d-none');
-            $('#teamInfoMessage').hide();
-            $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
-        }
-        function resetEmployeeFormValidation(){
-            $('#employeeForm').removeClass('was-validated');
-        }
-        function spinButton(button){
-            button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-            button.prop('disabled', true);
-        }
-        function stopSpinButton(button, text){
-            button.html(text);
-            button.prop('disabled', false);
-        }
-        function loader(){
-            return `
-                    <div class="d-flex flex-column flex-grow-1 align-items-center justify-content-center h-100">
-                        <p>Fetching data from server...</p>
-                        <div class="spinner-border" role="status"></div>
-                    </div>`;
-        }
-
-        
         //DATABASE FUNCTIONS
         function checkDatabaseExists(dbName) {
             return new Promise((resolve, reject) => {
@@ -837,12 +766,7 @@
                 };
             });
         }
-        function getItemByKey(contentArray, key) {
-            return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
-        }
-        
-        
-        
+
         //MSAL FUNCTIONS
         async function saveToSharePoint(listName, data) {
             const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
