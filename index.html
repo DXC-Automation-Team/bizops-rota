@@ -909,7 +909,7 @@
             }
         }
         async function getFromSharePoint(listName, fields, conditions) {
-            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items?$expand=fields`; // Graph API endpoint for list items
+            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`; // Graph API endpoint for list items
             const token = await getToken();
 
             if (token) {
@@ -923,7 +923,7 @@
                     // Add the select (fields) and filter queries to the URL
                     let requestUrl = url;
                     if (fields && fields.length > 0) {
-                        requestUrl += `&$select=${fields.map(field => `fields/${field}`).join(",")}`;
+                        requestUrl += `?$select=${fields.join(",")}`;
                     }
                     if (filterQuery) {
                         requestUrl += `&$filter=${filterQuery}`;
