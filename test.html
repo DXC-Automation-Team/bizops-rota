@@ -26,8 +26,9 @@
                         <h1 class="modal-title fs-5" id="modal-title"></h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <p id="modal-message"></p>
+                    <div class="modal-body position-relative" >
+                        <img src="assets/img/robo.svg" alt="" class="position-absolute" id="robot">
+                        <p id="modal-message" class="ps-5"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -126,7 +127,7 @@
         </nav>
         <div class="container-fluid flex-grow-1">
             <div class="container h-100">
-                <div class="d-none page pt-3 d-flex align-items-center " id="home-page">
+                <div class="page pt-3 d-flex align-items-center " id="home-page">
                     <div class="row align-items-center h-100 flex-grow-1">  
                         <div class="col-1"></div>
                         <div class="col-1 h-30">
@@ -150,8 +151,7 @@
                                     <div class="d-flex flex-column align-items-center justify-content-center h-100">
                                         <h1>Welcome to the SPP BizOps Rota</h1>
                                         <p>This is a tool to manage the SPP BizOps Rota. Please sign in to access the features.</p>
-                                        <!-- <button id="fettch">Fetch Data</button>
-                                        <button id="append">Append</button> -->
+                                        <button onclick="showModal('modaltest','Welcome to the SPP BizOps Rota')">click</button>
                                     </div>
                                     
                                     
@@ -233,7 +233,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="h-100 page" id="employee-info-page">
+                <div class="d-none h-100 page" id="employee-info-page">
                     <div class="h-100 loadingScreen"></div>
                     
                     <div class="row h-100 d-none" id="employeeContent">
@@ -298,6 +298,7 @@
     <script>
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         $(document).ready(function() {
+            $('#home-page').css('opacity', '1');
             addFormValidation();
             $(document)
             .on('click','.list-group-item',function(){

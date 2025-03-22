@@ -60,8 +60,9 @@
                             <h1 class="modal-title fs-5" id="modal-title"></h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <p id="modal-message"></p>
+                        <div class="modal-body" class="position-relative">
+                            <img src="assets/img/robo.svg" alt="" class="position-absolute" id="robot">
+                            <p id="modal-message" class="ps-5"></p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -909,7 +910,7 @@
                         console.error(`Error in batch request: ${response.statusText}`);
                     } else {
                         const result = await response.json();
-                        showModal("Success",`Batch saved successfully:${result}`)
+                        showModal("Success",`Data saved successfully`)
                     }
                 }
             }
