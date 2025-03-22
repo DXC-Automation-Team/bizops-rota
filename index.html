@@ -1189,7 +1189,34 @@
             },100)
             
         }
-
+        async function filterEmployees(){
+            
+            let data = [];
+            
+            // Loop through each row in the table (tbody)
+            $('#employeeForm tbody tr').each(function () {
+                const name = ($(this).find('.emp-name').val()).trim(); // Get the value of the name input
+                const email = ($(this).find('.emp-email').val()).trim(); // Get the value of the email input
+                const eid = parseInt(($(this).find('.emp-eid').val()).trim()); // Get the value of the eid input
+                teamID = parseInt(teamID)
+                // Add the row's data into the data array
+                data.push({
+                    name: name,
+                    email: email,
+                    eid: eid,
+                    teamID: teamID
+                });
+            });
+            saveEmployees(data)
+            
+        }
+        
+        async function saveEmployees(data){
+            spinButton($("#saveEmployees"));
+            await saveToSharePointBatch("Employees",data);
+            resetEmployeeFormValidation()
+            stopSpinButton($("#saveEmployees"),'Save')
+        }
         
         //ROTA FUNCTIONS
         function setupRotasPage(){
