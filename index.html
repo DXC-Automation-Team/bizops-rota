@@ -943,17 +943,18 @@
                     // Build the query string for filtering conditions
                     let filterQuery = "";
                     if (conditions && conditions.length > 0) {
-                        filterQuery = conditions.map(cond => `${cond.field} eq '${cond.value}'`).join(" and ");
+                        filterQuery = conditions.map(cond => `fields/${cond.field} eq '${cond.value}'`).join(" and ");
                     }
 
                     // Add the select (fields) and filter queries to the URL
                     let requestUrl = url;
                     if (fields && fields.length > 0) {
-                        requestUrl += `?$select=${fields.join(",")}`;
+                        requestUrl += `?$select=${fields.map(field => `fields/${field}`).join(",")}`; // Prefix fields/ to each field
                     }
                     if (filterQuery) {
                         requestUrl += `&$filter=${filterQuery}`;
                     }
+
                     console.log(requestUrl)
                     // Fetch the items from the list
                     const response = await fetch(requestUrl, {
