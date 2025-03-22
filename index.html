@@ -1057,11 +1057,12 @@
             }
         }
         async function processEmployees(response) {
-            console.log("resp:", response);
 
             if (response) {
                 if (response.length > 0) {
                     try {
+                        loadEmployeeTable(response);
+
                         // Await clearing the table
                         const message = await clearTable(dbName, 'employee-info');
                         console.log(message);
@@ -1071,7 +1072,8 @@
                         await Promise.all(savePromises);
 
                         console.log('All data added successfully!');
-                        loadEmployeeTable(response);
+                        
+
                     } catch (error) {
                         console.error('Error processing employees:', error);
                     }
@@ -1180,8 +1182,8 @@
                     $tbody.append($newRow);
                 });
             }
-            $('#employeeForm').attr('source','sharepoint')
-            $('#employeeDataInput, #employee-from-excel-buttons').addClass('d-none');
+            $('#employeeForm').attr('source','sharepoint');
+            $('#employeeDataInput, #employee-from-excel-buttons, #employee-info-page .loadingScreen').addClass('d-none');
             $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
         }
 
