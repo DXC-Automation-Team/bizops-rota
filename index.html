@@ -946,14 +946,12 @@
                         filterQuery = conditions.map(cond => `fields/${cond.field} eq '${cond.value}'`).join(" and ");
                     }
 
-                    // Add the select (fields) and filter queries to the URL
-                    let requestUrl = url;
-                    if (fields && fields.length > 0) {
-                        requestUrl += `?$select=${fields.map(field => `fields/${field}`).join(",")}`; // Prefix fields/ to each field
-                    }
+                    // Add the filter and expand queries to the URL
+                    let requestUrl = `${url}?$expand=fields`;
                     if (filterQuery) {
                         requestUrl += `&$filter=${filterQuery}`;
                     }
+
 
                     console.log(requestUrl)
                     // Fetch the items from the list
