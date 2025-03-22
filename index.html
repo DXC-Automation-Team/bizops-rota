@@ -474,11 +474,15 @@
                 }
             });
         }
-        function showModal(title, message){
+        function showModal(title, message, type=''){
             $('#modal-title').text(title);
             $('#modal-message').html(message);
+            switch(type){
+                case 'success': $('#robot').attr('src','assets/img/robo-success.svg'); break;
+                case 'fail': $('#robot').attr('src','assets/img/robo-fail.svg'); break;
+                default: $('#robot').attr('src','assets/img/robo.svg'); break;
+            }
             $('#generalModal').modal('show');
-
         }
         function addFormValidation(){
             'use strict'

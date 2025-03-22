@@ -151,7 +151,10 @@
                                     <div class="d-flex flex-column align-items-center justify-content-center h-100">
                                         <h1>Welcome to the SPP BizOps Rota</h1>
                                         <p>This is a tool to manage the SPP BizOps Rota. Please sign in to access the features.</p>
-                                        <button onclick="showModal('modaltest','Welcome to the SPP BizOps Rota')">click</button>
+                                        <button onclick="showModal('Welcome to the SPP BizOps Rota')">normal</button>
+                                        <button onclick="showModal('success','Welcome to the SPP BizOps Rota','success')">success</button>
+                                        <button onclick="showModal('fail','Welcome to the SPP BizOps Rota','fail')">fail</button>
+
                                     </div>
                                     
                                     
@@ -627,11 +630,15 @@
         }
 
         //UTILITIES
-        function showModal(title, message){
+        function showModal(title, message, type=''){
             $('#modal-title').text(title);
             $('#modal-message').html(message);
+            switch(type){
+                case 'success': $('#robot').attr('src','assets/img/robo-success.svg'); break;
+                case 'fail': $('#robot').attr('src','assets/img/robo-fail.svg'); break;
+                default: $('#robot').attr('src','assets/img/robo.svg'); break;
+            }
             $('#generalModal').modal('show');
-
         }
         function addFormValidation(){
             'use strict'
