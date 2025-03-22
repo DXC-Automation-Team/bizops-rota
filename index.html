@@ -1221,17 +1221,11 @@
                 const eid = parseInt(($(this).find('.emp-eid').val()).trim()); // Get the value of the eid input
                 teamID = parseInt(teamID)
                 // Add the row's data into the data array
-                // data.push({
-                //     Name: name,
-                //     Email: email,
-                //     EID: eid,
-                //     TeamID: teamID
-                // });
                 data.push({
-                    name: name,
-                    email: email,
-                    eID: eid,
-                    teamID: teamID
+                    Name: name,
+                    Email: email,
+                    EID: eid,
+                    TeamID: teamID
                 });
             });
             saveEmployees(data)
