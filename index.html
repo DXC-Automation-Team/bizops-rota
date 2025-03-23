@@ -992,6 +992,7 @@
                 
         }
         async function getSiteAndDriveDetails() {
+            console.log("Fetching site and drive details.")
             const account = msalInstance.getAllAccounts()[0];
             tokenResponse = await msalInstance.acquireTokenSilent({
                 scopes: ["Sites.Read.All", "Sites.ReadWrite.All"],
