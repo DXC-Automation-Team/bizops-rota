@@ -903,7 +903,7 @@
 
                 if (redirectResponse) {
                     console.log("Login successful:", redirectResponse);
-                    getAccountInfo(); // Perform any necessary actions post-login
+                    checkLoginStatus();
                 } else {
                     const accounts = msalInstance.getAllAccounts();
 
