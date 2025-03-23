@@ -903,7 +903,6 @@
 
                 if (redirectResponse) {
                     console.log("Login successful:", redirectResponse);
-                    checkLoginStatus();
                 } else {
                     const accounts = msalInstance.getAllAccounts();
 
@@ -912,10 +911,9 @@
                         await msalInstance.loginRedirect({
                             scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"], // Replace with necessary scopes
                         });
-                    } else {
-                        checkLoginStatus();
                     }
                 }
+                checkLoginStatus();
 
                 // Explicitly reload the page after successful login or account check
                 // window.location.reload();
