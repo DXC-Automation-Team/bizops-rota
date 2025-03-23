@@ -905,25 +905,26 @@
 
                 if (redirectResponse) {
                     console.log("Login successful:", redirectResponse);
-                } else {
-                    const accounts = msalInstance.getAllAccounts();
-
-                    if (accounts.length === 0) {
-                        // Initiate login redirect
-                        await msalInstance.loginRedirect({
-                            scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"], // Replace with necessary scopes
-                        });
-                    }
+                    checkLoginStatus(); // Ensure this runs after a successful login
+                    window.location.reload(); // Reload the page here
+                    return; // Stop further execution after reload
                 }
-                checkLoginStatus();
 
-                // Explicitly reload the page after successful login or account check
-                window.location.reload();
+                const accounts = msalInstance.getAllAccounts();
+                if (accounts.length === 0) {
+                    // Initiate login redirect
+                    await msalInstance.loginRedirect({
+                        scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"],
+                    });
+                } else {
+                    checkLoginStatus(); // Account already exists
+                }
             } catch (error) {
                 console.error("Login error:", error);
                 showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.", 'fail');
             }
         }
+
 
         async function getAccountInfo() {
             const token = await getToken();
