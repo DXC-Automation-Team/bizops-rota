@@ -893,25 +893,34 @@
         }
 
         async function signIn() {
-            await msalInstance.handleRedirectPromise();
             try {
-                const accounts = msalInstance.getAllAccounts();
-                if (accounts.length === 0) {
-                    const loginResponse = await msalInstance.loginRedirect({
-                        scopes: ["email","openid","profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"] // Replace with the necessary scopes
-                    });
-                    console.log("Login successful:", loginResponse);
-                    
-                    getAccountInfo();
-                }else{
-                    checkLoginStatus();
+                // Handle the redirect after login
+                const redirectResponse = await msalInstance.handleRedirectPromise();
+
+                if (redirectResponse) {
+                    console.log("Login successful:", redirectResponse);
+                    getAccountInfo(); // Perform any necessary actions post-login
+                } else {
+                    const accounts = msalInstance.getAllAccounts();
+
+                    if (accounts.length === 0) {
+                        // Initiate login redirect
+                        await msalInstance.loginRedirect({
+                            scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"], // Replace with necessary scopes
+                        });
+                    } else {
+                        checkLoginStatus();
+                    }
                 }
-                location.reload(true);
+
+                // Explicitly reload the page after successful login or account check
+                // window.location.reload();
             } catch (error) {
                 console.error("Login error:", error);
-                showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.",'fail');
+                showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.", 'fail');
             }
         }
+
         async function getAccountInfo() {
             const token = await getToken();
             if (token) {
