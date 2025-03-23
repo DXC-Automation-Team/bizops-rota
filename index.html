@@ -916,6 +916,8 @@
                     await msalInstance.loginRedirect({
                         scopes: ["email", "openid", "profile", "user.read", "Sites.Read.All", "Sites.ReadWrite.All"],
                     });
+                    checkLoginStatus(); // Ensure this runs after a successful login
+                    window.location.reload();
                 } else {
                     checkLoginStatus(); // Account already exists
                 }
