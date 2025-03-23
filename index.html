@@ -359,8 +359,12 @@
             async function init(){
                 
                 checkBrowser();
-                checkLoginStatus();
                 $('#home-page').css('opacity', '1');
+                
+                await checkLoginStatus()
+                    .then(status => {
+                        console.log(status)
+                    })
                 let dbExists;
                 siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
                 
@@ -978,9 +982,11 @@
                 $('#signOut, #sidebarToggler, #getAccountInfo').show();
                 accountName = accounts[0].name;
                 email = accounts[0].username;
+                return true;
             } else {
                 $('#signIn').show();
                 $('#signOut, #sidebarToggler, #getAccountInfo').hide();
+                return false;
             }
             
                 
