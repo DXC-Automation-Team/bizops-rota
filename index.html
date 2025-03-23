@@ -1233,15 +1233,19 @@
                     TeamID: teamID
                 });
             });
-            saveEmployees(data)
+            saveEmployees(data);
             
         }
         
         async function saveEmployees(data){
             spinButton($("#saveEmployees"));
             await saveToSharePointBatch("Employees",data);
+            let employees = await getEmployees();
+            loadEmployeeTable(employees);
             resetEmployeeFormValidation()
-            stopSpinButton($("#saveEmployees"),'Save')
+            stopSpinButton($("#saveEmployees"),'Save');
+            //get employees from sharepoint with ID
+
         }
         
         //ROTA FUNCTIONS
