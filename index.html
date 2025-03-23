@@ -363,10 +363,12 @@
                 
                 await checkLoginStatus()
                     .then(status => {
-                        console.log(status)
+                        if(status){
+                            getSiteAndDriveDetails();
+                        }
                     })
                 let dbExists;
-                siteId, driveId, tokenResponse = await getSiteAndDriveDetails();
+                
                 
                 await checkDatabaseExists(dbName)
                     .then(dbExists => {
@@ -916,7 +918,7 @@
                 checkLoginStatus();
 
                 // Explicitly reload the page after successful login or account check
-                // window.location.reload();
+                window.location.reload();
             } catch (error) {
                 console.error("Login error:", error);
                 showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.", 'fail');
