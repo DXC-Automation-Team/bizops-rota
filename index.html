@@ -1172,7 +1172,7 @@
                     const $newRow = $('<tr>');
                     $newRow.append(`
                     <td>
-                        <input type="text" class="form-control emp-name" value="${row.Name}" required>
+                        <input type="text" class="form-control emp-name" value="${row.Name}" initial="${row.Name}" required>
                         <div class="invalid-feedback">
                         Please provide a name.
                         </div>
@@ -1180,7 +1180,7 @@
                     `);
                     $newRow.append(`
                     <td>
-                        <input type="email" class="form-control emp-email" value="${row.Email}" required>
+                        <input type="email" class="form-control emp-email" value="${row.Email}" initial="${row.Email}" required>
                         <div class="invalid-feedback">
                         Please provide a valid email.
                         </div>
@@ -1188,7 +1188,7 @@
                     `);
                     $newRow.append(`
                     <td>
-                        <input type="number" class="form-control emp-eid" value="${row.EID}" step="1" min="1" required>
+                        <input type="number" class="form-control emp-eid" value="${row.EID}" initial="${row.EID}" step="1" min="1" required>
                         <div class="invalid-feedback">
                         Please provide an EID.
                         </div>
