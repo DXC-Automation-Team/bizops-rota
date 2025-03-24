@@ -373,12 +373,6 @@
                 await checkDatabaseExists(dbName)
                     .then(dbExists => {
                         if (!dbExists) {
-                            let step = checkTutorialStatus();
-                            if(step){
-                                continueSetup(step);
-                            }else{
-                                startSetup();
-                            }
                             return createDatabaseAndTable(dbName, storeSchemas);
                         } else {
                             console.log('Database already exists.');
@@ -408,10 +402,14 @@
                                 teamID = parseInt(teamInfo.id)
                             }
                         } else {
-                            console.log('Table is empty or does not exist.');
+                            console.log('Table team-info is empty.');
                         }
                     })
                     .catch(error => console.log(error));
+
+                //check if tutorial is finished or not
+                checkTutorialStatus();
+                
                 // set page text
                 let d = new Date();
                 currentYear = d.getFullYear();
@@ -1056,9 +1054,9 @@
             console.log("Checking tutorial status");
             let tutorial = localStorage.getItem('tutorial');
             if(tutorial){
-                return tutorial;
+                continueSetup(tutorial);
             } else {
-                return null;
+                startSetup();
             }
         }
         function startSetup(){
