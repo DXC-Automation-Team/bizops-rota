@@ -94,7 +94,7 @@
             </div>
             <div class="offcanvas-body">
                 <div class="list-group list-group-flush">
-                    <button type="button" data-bs-dismiss="offcanvas" disabled class="list-group-item list-group-item-action active"  loaded="true" target="home-page">Home</button>
+                    <button type="button" data-bs-dismiss="offcanvas" class="list-group-item list-group-item-action active"  loaded="true" target="home-page" id="homeBtn">Home</button>
                     <button type="button" data-bs-dismiss="offcanvas" disabled class="list-group-item list-group-item-action"  loaded="false" target="rotas-page">Shift ROTAs</button>
                     <button type="button" data-bs-dismiss="offcanvas" disabled class="list-group-item list-group-item-action"  loaded="false" target="standby-rotas-page">Standby ROTAs</button>
                     <button type="button" data-bs-dismiss="offcanvas" disabled class="list-group-item list-group-item-action"  loaded="false" target="team-info-page">Team Info</button>
@@ -320,6 +320,8 @@
                     .then(status => {
                         if(status){
                             getSiteAndDriveDetails();
+                            //check if tutorial is finished or not
+                            checkTutorialStatus();
                         }
                     })
                 let dbExists;
@@ -362,8 +364,7 @@
                     })
                     .catch(error => console.log(error));
 
-                //check if tutorial is finished or not
-                checkTutorialStatus();
+                
                 
                 // set page text
                 let d = new Date();
@@ -498,17 +499,7 @@
                         <div class="spinner-border" role="status"></div>
                     </div>`;
         }
-        function initDataTable(table){
-            $(document).ready(function () {
-                if (!$.fn.DataTable.isDataTable('#employeeForm table')) {
-                    $(table).DataTable({
-                        paging: false, // Disable pagination
-                        ordering: true, // Enable sorting
-                        info: false // Disable the "Showing X of Y entries" info
-                    });
-                }
-            });
-        }
+        
 
         
         //DATABASE FUNCTIONS
@@ -1021,22 +1012,23 @@
             console.log("Continuing setup from step", step);
             switch(step){
                 case '1':
-                    $('#references .list-group-item-action').attr('disabled',true);
+                    $('#references .list-group-item-action').not('#homeBtn').attr('disabled',true).prop('disabled',true);
                     $('#references button[target="team-info-page"]').removeAttr('disabled').removeProp('disabled');
+                    
                     $('#step1Modal').modal('show');
                     break;
                 case '2':
-                    $('#references .list-group-item-action').attr('disabled',true);
+                    $('#references .list-group-item-action').not('#homeBtn').attr('disabled',true).prop('disabled',true);
                     $('#references button[target="team-info-page"]').removeAttr('disabled').removeProp('disabled');
                     showModal('Step 2',`<p>Go to <b>Team Info</b> page on the left sidebar and fill in the required information.</p>`)
                     break;
                 case '3':
-                    $('#references .list-group-item-action').attr('disabled',true);
+                    $('#references .list-group-item-action').not('#homeBtn').attr('disabled',true).prop('disabled',true);
                     $('#references button[target="team-info-page"], #references button[target="employee-info-page"]').removeAttr('disabled').removeProp('disabled');
                     showModal('Step 3',`<p>Now that your team is set up, proceed to the <b>Employee Info</b> page and add or view your team members.</p>`)
                     break;
                 case '4':
-                    $('#references .list-group-item-action').attr('disabled',true);
+                    $('#references .list-group-item-action').not('#homeBtn').attr('disabled',true).prop('disabled',true);
                     $('#references button[target="team-info-page"], #references button[target="employee-info-page"], #references button[target="shift-info-page"]').removeAttr('disabled').removeProp('disabled');
                     showModal('Step 4',`<p>Great! Now you have team members. Next, you have to set up your shift codes in the <b>Shift Info</b> page.</p>`);
                     break;
@@ -1167,7 +1159,6 @@
                 }
             });
             $('#employeeForm').attr('source','excel');
-            initDataTable(table);
             $('#employeeDataInput, #employee-from-sharepoint-buttons').addClass('d-none');
             $('#employeeInfoCard, #employee-from-excel-buttons').removeClass('d-none');
         }
@@ -1210,7 +1201,6 @@
             }
             $('#employeeForm').attr('source','sharepoint');
             $('#employeeDataInput, #employee-from-excel-buttons, #employee-info-page .loadingScreen').addClass('d-none');
-            initDataTable(table);
             setTimeout(function(){
                 $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
             },100);
