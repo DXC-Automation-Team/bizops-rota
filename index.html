@@ -264,6 +264,7 @@
             .on('click', '.start-step', function(){
                 let step = $(this).attr('step');
                 localStorage.setItem('tutorial', step);
+                continueSetup(step);
             })
             .on('click','#showEmployeeTip',function(){
                 let html = `
