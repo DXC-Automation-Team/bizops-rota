@@ -302,17 +302,6 @@
                 let step = $(this).attr('step');
                 localStorage.setItem('tutorial', step);
             })
-            .on('click','.list-group-item[target="employee-info-page"]', async function(){
-                $('#employee-info-page .loadingScreen').html(loader()).removeClass('d-none');
-                await getEmployees()
-                    .then(employees => {
-                        return processEmployees(employees)
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-                
-            })
             .on('click','#showEmployeeTip',function(){
                 let html = `
                     <img src="assets/img/tip-employee-info.gif" class="w-100"><br>
@@ -356,21 +345,7 @@
                 if(source == 'sharepoint')
                     $(this).closest('tr').find('.employee-actions').removeClass('d-none')
             })
-            .on('click','#saveUsingMSAL',function(){
-                // saveToSharePointBatch('Employees',sampleEmployees)
-                const listName = "Employees";
-                const fields = ["id", "TeamID", "EID", "Name", "Email"];
-                const conditions = [{ field: "TeamID", value: teamID }];
-
-                getFromSharePoint(listName, fields, conditions)
-                    .then(items => {
-                        console.log("Fetched Items:", items);
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-
-            })
+            
 
             async function init(){
                 
