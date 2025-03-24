@@ -84,41 +84,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Step 2 Modal -->
-            <div class="modal fade" id="step2Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5">Step 2</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Go to <b>Team Info</b> page on the left sidebar and fill in the required information.<br>
-                            To check your progress, go to the <b>Checklist</b> page.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Step 3 Modal -->
-            <div class="modal fade" id="step3Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5">Step 3</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Now that your team is set up, proceed to the <b>Employee Info</b> page and add or view your team members.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             
         <!-- Sidebar -->  
         <div class="offcanvas offcanvas-start" tabindex="-1" id="references" aria-labelledby="referencesLabel">
@@ -1062,13 +1028,18 @@
                     break;
                 case '2':
                     $('#references .list-group-item-action').attr('disabled',true);
-                    $('#references button[target="team-info-page"], #references button[target="employee-info-page"]').removeAttr('disabled').removeProp('disabled');
-                    $('#step2Modal').modal('show');
+                    $('#references button[target="team-info-page"]').removeAttr('disabled').removeProp('disabled');
+                    showModal('Step 2',`<p>Go to <b>Team Info</b> page on the left sidebar and fill in the required information.</p>`)
                     break;
                 case '3':
                     $('#references .list-group-item-action').attr('disabled',true);
+                    $('#references button[target="team-info-page"], #references button[target="employee-info-page"]').removeAttr('disabled').removeProp('disabled');
+                    showModal('Step 3',`<p>Now that your team is set up, proceed to the <b>Employee Info</b> page and add or view your team members.</p>`)
+                    break;
+                case '4':
+                    $('#references .list-group-item-action').attr('disabled',true);
                     $('#references button[target="team-info-page"], #references button[target="employee-info-page"], #references button[target="shift-info-page"]').removeAttr('disabled').removeProp('disabled');
-                    $('#step3Modal').modal('show');
+                    showModal('Step 4',`<p>Great! Now you have team members. Next, you have to set up your shift codes in the <b>Shift Info</b> page.</p>`);
                     break;
             }
         }
