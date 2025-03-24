@@ -840,6 +840,63 @@
                 throw new Error("Failed to obtain authentication token.");
             }
         }
+        async function updateToSharePoint(listName, data) {
+            const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
+            const token = await getToken();
+
+            if (token) {
+                try {
+                    // Validate that data contains an 'id' column
+                    if (!data.every(item => item.id)) {
+                        throw new Error("Each item in 'data' must have an 'id' field.");
+                    }
+
+                    // Prepare batch request payload
+                    const batchRequest = {
+                        requests: data.map(item => {
+                            const requestUrl = `${url}/${item.id}`; // Use 'id' field for identifying the item
+                            return {
+                                id: item.id, // Unique identifier for batch request
+                                method: "PATCH",
+                                url: requestUrl,
+                                headers: {
+                                    "Authorization": `Bearer ${token}`,
+                                    "Content-Type": "application/json"
+                                },
+                                body: {
+                                    fields: { ...item } // Spread the key-value pairs from the current item
+                                }
+                            };
+                        })
+                    };
+
+                    // Send batch request
+                    const batchResponse = await fetch(`https://graph.microsoft.com/v1.0/$batch`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(batchRequest)
+                    });
+
+                    if (!batchResponse.ok) {
+                        throw new Error(`Error in batch update: ${batchResponse.statusText}`);
+                    }
+
+                    const result = await batchResponse.json();
+                    console.log("Batch update response:", result);
+
+                    console.log("All items updated successfully.");
+                } catch (error) {
+                    console.error("Error updating data to SharePoint:", error);
+                    throw error;
+                }
+            } else {
+                throw new Error("Failed to obtain authentication token.");
+            }
+        }
+
 
         async function signIn() {
             try {
