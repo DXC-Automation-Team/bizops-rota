@@ -712,10 +712,12 @@
 
                 if (!response.ok) {
                     throw new Error(`Error saving to SharePoint: ${response.statusText}`);
+                    return false;
                 }
 
                 const result = await response.json();
                 console.log("Data saved successfully:", result);
+                return result;
             }
         }
         async function saveToSharePointBatch(listName, dataArray) {

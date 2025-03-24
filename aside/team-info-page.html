@@ -56,7 +56,7 @@
                         </div>
                         <div id="teamUpdateButtons" class="d-none">
                             <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo start-step" step="2">I have a different team</button>
-                            <button type="button" class="btn btn-primary float-end ms-2 start-step" id="updateTeamInfo" step="3">Update</button>
+                            <button type="button" class="btn btn-primary float-end ms-2 start-step" disabled id="updateTeamInfo" step="3">Update</button>
                         </div>
                     </div>
                 </form>
@@ -185,7 +185,7 @@
             })
         }
 
-    function saveTeamInfo(){
+    async function saveTeamInfo(){
         let subSl = $('#sub-sl').val();
         let teamName = $('#team-name').val();
         let wbs = $('#wbs').val();
@@ -194,7 +194,31 @@
             Team: teamName,
             WBS: wbs
         };
-        $.ajax({
+        spinButton($('#saveTeamInfo'));
+        await saveToSharepoint("Sub SL Teams",[teamInfo])
+            .then(result=>{
+                if(result){
+                    $('#teamInfoMessage').text("Team registered successfully!");
+                    $('#teamInfoMessage').show();
+                    // $('#checkTeamInfo').removeClass('d-none');
+                    $('#teamUpdateButtons').removeClass('d-none');
+                    $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+                    clearTable(dbName, 'team-info')
+                        .then(message => {
+                            console.log(message);
+                            teamID = parseInt(response["id"]);
+                            teamInfo.id = teamID;
+                            localStorage.setItem('teamID',teamID)
+                            return saveToLocalDB(dbName, 'team-info', teamInfo);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+                stopSpinButton($('#saveTeamInfo'), 'Yes');
+            });
+        
+        /* $.ajax({
             url: 'https://prod-147.westus.logic.azure.com:443/workflows/22112f3877014f419f86892822cb4481/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8nDGiXPHXBcLvxG5sdf_w94zNAlYRkwpKpjvK1WK688',
             type: 'POST',
             contentType: "application/json",
@@ -230,7 +254,8 @@
             error: function(xhr, status, error) {
                 alert("Error triggering flow: " + xhr.responseText);
             }
-        })
+        }) */
+
     }
     
 </script>
