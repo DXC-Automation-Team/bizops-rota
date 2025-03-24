@@ -906,7 +906,6 @@
                 if (redirectResponse) {
                     console.log("Login successful:", redirectResponse);
                     checkLoginStatus(); // Ensure this runs after a successful login
-                    window.location.reload(); // Reload the page here
                     return; // Stop further execution after reload
                 }
 
@@ -977,6 +976,11 @@
         }
         async function checkLoginStatus() {
             console.log("Checking login status");
+            const redirectResponse = await msalInstance.handleRedirectPromise();
+
+            if (redirectResponse) {
+                console.log("Login successful:", redirectResponse);
+            }
             const accounts = msalInstance.getAllAccounts();
             console.log("Accounts:", accounts);
             if (accounts.length > 0) {
