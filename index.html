@@ -797,7 +797,6 @@
                 }
             }
         }
-
         async function getFromSharePoint(listName, fields, conditions) {
             const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
             const token = await getToken();
@@ -878,7 +877,6 @@
                 showModal("Login Error", "There was an error signing in. Please refresh the browser and try again.", 'fail');
             }
         }
-
 
         async function getAccountInfo() {
             const token = await getToken();
@@ -1215,7 +1213,10 @@
             initDataTable(table);
             setTimeout(function(){
                 $('#employeeInfoCard, #employeeContent, #employee-from-sharepoint-buttons').removeClass('d-none')
-            },100)
+            },100);
+            //for team with existing employees, launch step 4 tutorial
+            localStorage.setItem('tutorial', '4');
+            continueSetup('4');
             
         }
         async function filterEmployees(){
@@ -1247,7 +1248,6 @@
             loadEmployeeTable(employees);
             resetEmployeeFormValidation()
             stopSpinButton($("#saveEmployees"),'Save');
-            //get employees from sharepoint with ID
 
         }
         
