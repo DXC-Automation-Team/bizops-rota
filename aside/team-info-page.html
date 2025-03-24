@@ -47,11 +47,12 @@
                         
                         <button type="submit" class="btn btn-primary float-end" id="checkTeamInfo" >Verify</button>
                         <div id="teamSubmitButtons" class="d-none">
-                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">No</button>
-                            <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo">Yes</button>
+                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo start-step" step="2">No</button>
+                            <button type="button" class="btn btn-primary float-end ms-2" id="saveTeamInfo" step="3">Yes</button>
                         </div>
                         <div id="teamChangeButtons" class="d-none">
-                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo">I have a different team</button>
+                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo start-step" step="2">I have a different team</button>
+                            <button type="button" class="btn btn-primary float-end ms-2" id="confirmTeamInfo" step="3">Confirm</button>
                         </div>
                         
                     </div>
@@ -113,6 +114,10 @@
                 .catch(error => {
                     console.error(error);
                 });
+        })
+        .on('click','#confirmTeamInfo',function(){
+            $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+            $('#teamInfoMessage').hide().empty();
         })
         ;
     });

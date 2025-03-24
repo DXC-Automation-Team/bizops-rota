@@ -82,7 +82,7 @@
                             It appears that the database is not set up. Please follow the steps to set up the database.
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#step2Modal" data-bs-dismiss="modal">Start</button>
+                            <button type="button" class="btn btn-primary start-step" step="2" data-bs-toggle="modal" data-bs-target="#step2Modal" data-bs-dismiss="modal">Start</button>
                         </div>
                     </div>
                 </div>
@@ -96,11 +96,28 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Go to <b>Team Info</b>, <b>Employee Info</b>, and <b>Shift Info</b> pages on the left sidebar and fill in the required information.<br>
+                            Go to <b>Team Info</b> page on the left sidebar and fill in the required information.<br>
                             To check your progress, go to the <b>Checklist</b> page.
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="startStep2" data-bs-dismiss="modal">Okay</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Step 3 Modal -->
+            <div class="modal fade" id="step3Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Step 3</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Now that your team is set up, proceed to the <b>Employee Info</b> page and add or view your team members.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
                         </div>
                     </div>
                 </div>
@@ -281,13 +298,12 @@
             .on('input', '.rotapage textarea', function(){
                 generateRotaTableFromInput($(this));
             })
-            .on('click', '#startStep2', function(){
-                localStorage.setItem('tutorial', '2');
+            .on('click', '.start-step', function(){
+                let step = $(this).attr('step');
+                localStorage.setItem('tutorial', step);
             })
             .on('click','.list-group-item[target="employee-info-page"]', async function(){
                 $('#employee-info-page .loadingScreen').html(loader()).removeClass('d-none');
-
-
                 await getEmployees()
                     .then(employees => {
                         return processEmployees(employees)
