@@ -187,15 +187,15 @@
 
     async function saveTeamInfo(){
         let subSl = $('#sub-sl').val();
-        let teamName = $('#team-name').val();
-        let wbs = $('#wbs').val();
+        let teamName = ($('#team-name').val()).trim();
+        let wbs = ($('#wbs').val()).trim();
         let teamInfo = {
             SUBSL: subSl,
             Team: teamName,
             WBS: wbs
         };
         spinButton($('#saveTeamInfo'));
-        await saveToSharepoint("Sub SL Teams",[teamInfo])
+        await saveToSharePoint("Sub SL Teams",[teamInfo])
             .then(result=>{
                 if(result){
                     $('#teamInfoMessage').text("Team registered successfully!");
