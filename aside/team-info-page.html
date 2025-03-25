@@ -348,6 +348,14 @@
 
     function processTeamInfo(response){
         if(response && response.length > 0){
+            let subSl = $('#sub-sl').val();
+            let teamName = ($('#team-name').val()).trim();
+            let wbs = ($('#wbs').val()).trim();
+            let teamInfo = {
+                "SUB_x002d_SL": encodeURIComponent(subSl),
+                Team: teamName,
+                WBS: wbs
+            };
             $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
             $('#teamInfoMessage').show();
             $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
@@ -355,8 +363,9 @@
             clearTable(dbName, 'team-info')
                 .then(message => {
                     console.log(message);
-                    teamInfo.id = response["ID"];
-                    teamID = response["ID"];
+                    teamID = parseInt(response.id);
+                    teamInfo.SUBSL = subSl;
+                    teamInfo.id = teamID;
                     localStorage.setItem('teamID',parseInt(teamID))
                     return saveToLocalDB(dbName, 'team-info', teamInfo);
                 })
