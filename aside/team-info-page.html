@@ -282,7 +282,7 @@
             WBS: wbs
         };
         spinButton($('#saveTeamInfo'));
-        await saveToSharePoint("Sub SL Teams",[teamInfo])
+        await saveToSharePoint("Sub SL Teams",teamInfo)
             .then(result=>{
                 if(result){
                     $('#teamInfoMessage').text("Team registered successfully!");
