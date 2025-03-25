@@ -132,7 +132,9 @@
                         <div class="col-1"></div>
                         <div class="col-1 h-30">
                             <div class="card h-100">
-                                <div class="card-body"></div>
+                                <div class="card-body">
+                                    <button id="isEditing" editing="true">click</button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-1 ps-0 h-40">
@@ -416,6 +418,9 @@
                 let source = $('#employeeForm').attr('source');
                 if(source == 'sharepoint')
                     $(this).closest('tr').find('.employee-actions').removeClass('d-none')
+            })
+            .on('click','#isEditing',function(){
+                alert("This is " + ($(this).is('[editing]') ? "": "not") + "editing")
             })
             ;
         });

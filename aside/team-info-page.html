@@ -134,6 +134,8 @@
             showConfirmModal('Are you sure you want to edit your team info?',()=>{
                 $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
                 $('#teamForm').attr('editing',true);
+                $('#editTeamInfo').addClass('d-none');
+                $('#updateTeamInfo').removeClass('d-none');
             })
         })
         .on('click','#updateTeamInfo',async function(){
