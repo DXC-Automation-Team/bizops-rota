@@ -499,8 +499,17 @@
                         <div class="spinner-border" role="status"></div>
                     </div>`;
         }
-        
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
+        }
 
+        
         
         //DATABASE FUNCTIONS
         function checkDatabaseExists(dbName) {
