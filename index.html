@@ -850,7 +850,7 @@
                     if (filterQuery) {
                         requestUrl += `&$filter=${filterQuery}`;
                     }
-
+                    console.log(requestUrl);
                     // Fetch items from the SharePoint list
                     const response = await fetch(requestUrl, {
                         method: "GET",
