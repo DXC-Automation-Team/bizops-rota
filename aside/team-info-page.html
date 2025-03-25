@@ -76,7 +76,14 @@
             event.preventDefault();
         })
         .on('input', '#sub-sl, #team-name, #wbs', function() {
-            resetTeamFormValidation();
+            if($('#teamInfo').is('[editing]')){
+                $('#editTeamInfo').addClass('d-none');
+                $('#updateTeamInfo').removeClass('d-none');
+
+            }else{
+                resetTeamFormValidation();
+            }
+            
         })
         .on('change', '#sub-sl', function(){
             resetTeamFormValidation();
@@ -126,6 +133,7 @@
         .on('click','#editTeamInfo',function(){
             showConfirmModal('Are you sure you want to edit your team info?',()=>{
                 $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
+                $('#teamForm').attr('editing',true);
             })
         })
         .on('click','#updateTeamInfo',async function(){
@@ -141,7 +149,7 @@
                         data = [{
                             id: teamId,
                             "SUB_x002d_SL": encodeURIComponent(subSl),
-                            Team: teamName,
+                            Team: encodeURIComponent(teamName),
                             WBS: wbs
                         }];
                         updateToSharePoint(listName, data);
