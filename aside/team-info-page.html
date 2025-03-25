@@ -284,7 +284,7 @@
         spinButton($('#saveTeamInfo'));
         await saveToSharePoint("Sub SL Teams",teamInfo)
             .then(result=>{
-                if(result){
+                if(result && result.length == 1){
                     $('#teamInfoMessage').text("Team registered successfully!");
                     $('#teamInfoMessage').show();
                     // $('#checkTeamInfo').removeClass('d-none');
@@ -302,8 +302,11 @@
                         .catch(error => {
                             console.error(error);
                         });
+                    stopSpinButton($('#saveTeamInfo'), 'Yes');
+                }else{
+                    showModal("Oops!","<p>We're having trouble registering your team. Please inform the initiative team.</p>",'fail')
                 }
-                stopSpinButton($('#saveTeamInfo'), 'Yes');
+                
             });
         
         /* $.ajax({
