@@ -178,9 +178,9 @@
         if(content){ // check if there is an existing team info in local DB
             const teamInfo = content[0];
             if(teamInfo){// if there is existing team info, check if input is different 
-                isNotChanged = teamInfo.SUBSL == subSl;
-                isNotChanged = teamInfo.Team == teamName;
-                isNotChanged = teamInfo.WBS == wbs;
+                isNotChanged = isNotChanged && teamInfo.SUBSL == subSl;
+                isNotChanged = isNotChanged && teamInfo.Team == teamName;
+                isNotChanged = isNotChanged && teamInfo.WBS == wbs;
             }
             if(isNotChanged){// if input and local team info is the same, show update buttons
                 $('#checkTeamInfo').addClass('d-none');
