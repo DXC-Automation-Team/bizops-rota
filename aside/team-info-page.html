@@ -168,7 +168,7 @@
         let isNotChanged = true;
         let response;
         let listName = "Sub SL Teams";
-        let fields = ["id","SUB-SL","Team","WBS"];
+        let fields = ["id","SUB_x002d_SL","Team","WBS"];
         if(subSl == '' || teamName == '' || wbs == ''){return;}
         //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
         
@@ -187,7 +187,7 @@
             }else{
                 // check if input is registered in sharepoint
                 let conditions = [
-                    {field: "SUB-SL", value: encodeURIComponent(subSl)},
+                    {field: "SUB_x002d_SL", value: encodeURIComponent(subSl)},
                     {field: "Team", value: teamName}
                 ];
                 response = await getFromSharePoint(listName,fields,conditions);
@@ -196,7 +196,7 @@
             
         }else{
             let inputTeamInfo = {
-                "SUB-SL": encodeURIComponent(subSl),
+                "SUB_x002d_SL": encodeURIComponent(subSl),
                 Team: teamName,
                 WBS: wbs
             };
