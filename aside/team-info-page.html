@@ -277,7 +277,7 @@
         let teamName = ($('#team-name').val()).trim();
         let wbs = ($('#wbs').val()).trim();
         let teamInfo = {
-            "SUB_x002d_SL": subSl,
+            "SUB_x002d_SL": encodeURIComponent(subSl),
             Team: teamName,
             WBS: wbs
         };
