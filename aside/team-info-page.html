@@ -293,6 +293,7 @@
                     // $('#checkTeamInfo').removeClass('d-none');
                     $('#teamUpdateButtons').removeClass('d-none');
                     $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+                    $('#sub-sl, #team-name, #wbs').prop('disabled',true);
                     clearTable(dbName, 'team-info')
                         .then(message => {
                             console.log(message);
