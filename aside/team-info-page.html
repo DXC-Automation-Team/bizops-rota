@@ -223,7 +223,8 @@
                 Team: teamName,
                 WBS: wbs
             }];
-            
+            console.log("Fields:",fields);
+            console.log("Conditions",inputTeamInfo);
             response = await getFromSharePoint(listName,fields,inputTeamInfo);
             processTeamInfo(response);
             /* $.ajax({
