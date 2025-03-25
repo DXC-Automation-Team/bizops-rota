@@ -74,9 +74,12 @@
         .on('submit', '#teamForm', function(event){
             event.preventDefault();
         })
-        .on('input', '#sub-sl, #team-name, #wbs', function(){
+        .on('input', '#sub-sl, #team-name, #wbs', function() {
             resetTeamFormValidation();
-            
+            debounce(async () => {
+                let content = await getTableContents(dbName, 'team-info');
+                console.log(content); // Do something with the retrieved content
+            })();
         })
         .on('change', '#sub-sl', function(){
             resetTeamFormValidation();
