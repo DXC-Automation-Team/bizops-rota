@@ -162,45 +162,43 @@
     //API
     async function checkTeamInfo(){
         let content = await getTableContents(dbName, 'team-info');
-        if(content){
-            $('#checkTeamInfo').addClass('d-none');
-            $('#teamUpdateButtons').removeClass('d-none');
-            $('#sub-sl, #team-name, #wbs').prop('disabled',true);
-        }else{
-            let subSl = $('#sub-sl').val().trim();
-            let teamName = $('#team-name').val().trim();
-            let wbs = $('#wbs').val().trim();
-            if(subSl == '' || teamName == '' || wbs == ''){return;}
-            //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
-            let teamInfo = {
-                SUBSL: subSl,
-                Team: teamName,
-                WBS: wbs
-            };
-            const response = await getFromSharePoint("Sub SL Teams",["id","SUBSL","Team","WBS"],teamInfo);
-            if(response){
-                console.log(response)
-                $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
-                $('#teamInfoMessage').show();
-                $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
-                $('#teamChangeButtons').removeClass('d-none');
-                /* clearTable(dbName, 'team-info')
-                    .then(message => {
-                        console.log(message);
-                        teamInfo.id = response["ID"];
-                        teamID = response["ID"];
-                        localStorage.setItem('teamID',parseInt(teamID))
-                        return saveToLocalDB(dbName, 'team-info', teamInfo);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    }); */
-            } else {
-                $('#teamInfoMessage').text("This team is not yet registered in the database. Would you like to use this team?");
-                $('#teamInfoMessage').show();
-                $('#checkTeamInfo, #teamChangeButtons').addClass('d-none');
-                $('#teamSubmitButtons').removeClass('d-none');
+        let subSl = $('#sub-sl').val().trim();
+        let teamName = $('#team-name').val().trim();
+        let wbs = $('#wbs').val().trim();
+        let isNotChanged = true;
+        let response;
+        let listName = "Sub SL Teams";
+        let fields = ["id","SUBSL","Team","WBS"];
+        if(subSl == '' || teamName == '' || wbs == ''){return;}
+        let teamInfo = {
+            SUBSL: subSl,
+            Team: teamName,
+            WBS: wbs
+        };
+        if(content){ // check if there is an existing team info in local DB
+            const teamInfo = content[0];
+            if(teamInfo){// if there is existing team info, check if input is different 
+                isNotChanged = teamInfo.SUBSL == subSl;
+                isNotChanged = teamInfo.Team == teamName;
+                isNotChanged = teamInfo.WBS == wbs;
             }
+            if(isNotChanged){// if input and local team info is the same, show update buttons
+                $('#checkTeamInfo').addClass('d-none');
+                $('#teamUpdateButtons').removeClass('d-none');
+                $('#sub-sl, #team-name, #wbs').prop('disabled',true);
+            }else{
+                // check if input is registered in sharepoint
+                response = await getFromSharePoint(listName,fields,teamInfo);
+                processTeamInfo(response);
+            }
+            
+        }else{
+            
+            
+            //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
+            
+            response = await getFromSharePoint(listName,fields,teamInfo);
+            processTeamInfo(response);
             /* $.ajax({
                 //url: 'https://prod-15.westus.logic.azure.com:443/workflows/8c8fc6aef9404f4ba7d7c95234f09ab7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wmeO4cY32iIrQBkSv_wavtBPx6OINBJEjvr9Z6T9h9s',
                 url: 'https://prod-08.westus.logic.azure.com:443/workflows/474c521d5db942af8e7ada7e224942f0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=v04lNrvXqT0XCeD952IiA9ts_0wCW0V5Abxoi7xQZX0',
@@ -318,6 +316,32 @@
             }
         }) */
 
+    }
+
+    function processTeamInfo(response){
+        if(response){
+            console.log(response)
+            $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
+            $('#teamInfoMessage').show();
+            $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
+            $('#teamChangeButtons').removeClass('d-none');
+            /* clearTable(dbName, 'team-info')
+                .then(message => {
+                    console.log(message);
+                    teamInfo.id = response["ID"];
+                    teamID = response["ID"];
+                    localStorage.setItem('teamID',parseInt(teamID))
+                    return saveToLocalDB(dbName, 'team-info', teamInfo);
+                })
+                .catch(error => {
+                    console.error(error);
+                }); */
+        } else {
+            $('#teamInfoMessage').text("This team is not yet registered in the database. Would you like to use this team?");
+            $('#teamInfoMessage').show();
+            $('#checkTeamInfo, #teamChangeButtons').addClass('d-none');
+            $('#teamSubmitButtons').removeClass('d-none');
+        }
     }
     
 </script>
