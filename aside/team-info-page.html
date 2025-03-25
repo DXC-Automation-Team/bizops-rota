@@ -190,6 +190,10 @@
                 $('#sub-sl, #team-name, #wbs').prop('disabled',true);
             }else{
                 // check if input is registered in sharepoint
+                let conditions = [
+                    {field: "SUB_x002d_SL", value: subSl},
+                    {field: "Team", value: teamName}
+                ];
                 response = await getFromSharePoint(listName,fields,teamInfo);
                 processTeamInfo(response);
             }
