@@ -171,11 +171,7 @@
         let fields = ["id","SUB_x002d_SL","Team","WBS"];
         if(subSl == '' || teamName == '' || wbs == ''){return;}
         //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
-        let teamInfo = {
-            "SUB_x002d_SL": subSl,
-            Team: teamName,
-            WBS: wbs
-        };
+        
         if(content){ // check if there is an existing team info in local DB
             const teamInfo = content[0];
             if(teamInfo){// if there is existing team info, check if input is different 
@@ -199,11 +195,15 @@
             }
             
         }else{
+            let inputTeamInfo = {
+                "SUB_x002d_SL": encodeURIComponent(subSl),
+                Team: teamName,
+                WBS: wbs
+            };
             
             
             
-            
-            response = await getFromSharePoint(listName,fields,teamInfo);
+            response = await getFromSharePoint(listName,fields,inputTeamInfo);
             processTeamInfo(response);
             /* $.ajax({
                 //url: 'https://prod-15.westus.logic.azure.com:443/workflows/8c8fc6aef9404f4ba7d7c95234f09ab7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wmeO4cY32iIrQBkSv_wavtBPx6OINBJEjvr9Z6T9h9s',
