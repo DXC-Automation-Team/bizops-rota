@@ -123,10 +123,14 @@
             $('#teamInfoMessage').hide().empty();
         })
         .on('click','#editTeamInfo',function(){
+            showConfirmModal('Are you sure you want to edit your team info?',()=>{
+                
+            })
             $('#sub-sl, #team-name, #wbs').removeProp('disabled');
         })
         ;
     });
+
     function resetTeamFormValidation(){
         $('#teamForm').removeClass('was-validated');
         $('#checkTeamInfo').removeClass('d-none');

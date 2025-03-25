@@ -76,12 +76,12 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" class="position-relative">
-                            <img src="assets/img/robo.svg" alt="" class="position-absolute" id="robot">
+                            <img src="assets/img/robo-confirm.svg" alt="" class="position-absolute" id="robot">
                             <p id="confirmMessage" class="ps-5"></p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirmModalBtn">Confirm</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="confirmModalCancel">Close</button>
                         </div>
                     </div>
                 </div>
@@ -277,6 +277,9 @@
                 let month = target.substring(6);
                 generateTableHeaders(month,'shift');
             })
+            .on('click','#confirmModalCancel',function(){
+                $('#confirmModalBtn').off('click');
+            })
             .on('input', '.rotapage textarea', function(){
                 generateRotaTableFromInput($(this));
             })
@@ -450,7 +453,15 @@
             $('#generalModal').modal('show');
         }
         function showConfirmModal(message,func){
-            
+            $('#confirmMessage').html(message);
+            // Remove any previous click event bindings from the button
+            $('#confirmModalBtn').off('click');
+
+            // Bind the provided function to the button's click event
+            $('#confirmModalBtn').on('click', func);
+
+            // Show the modal
+            $('#confirmModal').modal('show');
         }
         function addFormValidation(){
             'use strict'
