@@ -138,6 +138,7 @@
         $('#checkTeamInfo').removeClass('d-none');
         $('#teamInfoMessage').hide();
         $('#teamChangeButtons, #teamSubmitButtons, #teamUpdateButtons').addClass('d-none');
+        $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
     }
     async function initTeamForm(){
         getTableContents(dbName, 'team-info')
