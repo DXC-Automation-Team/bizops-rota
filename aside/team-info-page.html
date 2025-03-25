@@ -369,7 +369,7 @@
             clearTable(dbName, 'team-info')
                 .then(message => {
                     console.log(message);
-                    teamID = parseInt(response.id);
+                    teamID = parseInt(response[0].id);
                     teamInfo.SUBSL = subSl;
                     teamInfo.id = teamID;
                     localStorage.setItem('teamID',parseInt(teamID))
