@@ -211,10 +211,11 @@
                     {field: "SUB_x002d_SL", value: encodeURIComponent(subSl)},
                     {field: "Team", value: teamName}
                 ];
-                console.log("Fields:",fields);
-                console.log("Conditions",conditions);
-                response = await getFromSharePoint(listName,fields,conditions);
-                processTeamInfo(response);
+                await getFromSharePoint(listName,fields,conditions)
+                .then(response=>{
+                    processTeamInfo(response);
+                });
+                
             }
             
         }else{
@@ -223,10 +224,11 @@
                 {field:"Team", value:teamName},
                 {field:"WBS",value: wbs}
             ];
-            console.log("Fields:",fields);
-            console.log("Conditions",inputTeamInfo);
-            response = await getFromSharePoint(listName,fields,inputTeamInfo);
-            processTeamInfo(response);
+            await getFromSharePoint(listName,fields,inputTeamInfo)
+            .then(response =>{
+                processTeamInfo(response);
+            });
+            
             /* $.ajax({
                 //url: 'https://prod-15.westus.logic.azure.com:443/workflows/8c8fc6aef9404f4ba7d7c95234f09ab7/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wmeO4cY32iIrQBkSv_wavtBPx6OINBJEjvr9Z6T9h9s',
                 url: 'https://prod-08.westus.logic.azure.com:443/workflows/474c521d5db942af8e7ada7e224942f0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=v04lNrvXqT0XCeD952IiA9ts_0wCW0V5Abxoi7xQZX0',

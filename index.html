@@ -844,7 +844,7 @@
                     if (conditions && conditions.length > 0) {
                         console.log(conditions)
                         filterQuery = conditions.map(cond => `fields/${cond.field} eq '${cond.value}'`).join(" and ");
-                        console.log(filterQuery)
+                        
                     }
 
                     // Construct the URL with $expand and $filter
