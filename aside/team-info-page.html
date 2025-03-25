@@ -278,7 +278,7 @@
         let wbs = ($('#wbs').val()).trim();
         let teamInfo = {
             "SUB_x002d_SL": encodeURIComponent(subSl),
-            Team: teamName,
+            Team: encodeURIComponent(teamName),
             WBS: wbs
         };
         spinButton($('#saveTeamInfo'));
