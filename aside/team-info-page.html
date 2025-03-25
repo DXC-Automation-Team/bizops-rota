@@ -353,6 +353,7 @@
     }
 
     function processTeamInfo(response){
+        console.log(response);
         if(response && response.length == 1){
             let subSl = $('#sub-sl').val();
             let teamName = ($('#team-name').val()).trim();
