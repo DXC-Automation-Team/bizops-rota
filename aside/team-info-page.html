@@ -194,7 +194,7 @@
                     {field: "SUB_x002d_SL", value: subSl},
                     {field: "Team", value: teamName}
                 ];
-                response = await getFromSharePoint(listName,fields,teamInfo);
+                response = await getFromSharePoint(listName,fields,conditions);
                 processTeamInfo(response);
             }
             
