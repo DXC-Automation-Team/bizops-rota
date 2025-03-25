@@ -937,6 +937,7 @@
                     console.log("Batch update response:", result);
 
                     console.log("All items updated successfully.");
+                    return result;
                 } catch (error) {
                     console.error("Error updating data to SharePoint:", error);
                     throw error;

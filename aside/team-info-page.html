@@ -128,15 +128,26 @@
                 $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
             })
         })
-        .on('click','#updateTeamInfo',function(){
+        .on('click','#updateTeamInfo',async function(){
             let subSl = $('#sub-sl').val().trim();
             let teamName = $('#team-name').val().trim();
             let wbs = $('#wbs').val().trim();
             let listName = 'Sub SL Teams';
-            let data = [{
-                
-            }]
-            updateToSharePoint(listName, data);
+            let data=[];
+            getTeamId()
+                .then(teamId=>{
+                    if(!teamId){return;}
+                    else{
+                        data = [{
+                            id: teamId,
+                            "SUB_x002d_SL": encodeURIComponent(subSl),
+                            Team: teamName,
+                            WBS: wbs
+                        }];
+                        updateToSharePoint(listName, data);
+                    }
+                }) 
+            
 
         })
         ;
