@@ -57,6 +57,7 @@
                         <div id="teamUpdateButtons" class="d-none">
                             <button type="button" class="btn btn-secondary float-start ms-2 cancelSaveTeamInfo start-step" step="2">I have a different team</button>
                             <button type="button" class="btn btn-primary float-end ms-2" id="editTeamInfo">Edit</button>
+                            <button type="button" class="btn btn-primary float-end ms-2 d-none" id="updateTeamInfo">Update</button>
                         </div>
                     </div>
                 </form>
@@ -125,7 +126,7 @@
         .on('click','#editTeamInfo',function(){
             showConfirmModal('Are you sure you want to edit your team info?',()=>{
                 $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
-                console.log("#sub-sl, #team-name, #wbs enabled")
+                
             })
             
         })
@@ -136,7 +137,7 @@
         $('#teamForm').removeClass('was-validated');
         $('#checkTeamInfo').removeClass('d-none');
         $('#teamInfoMessage').hide();
-        $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
+        $('#teamChangeButtons, #teamSubmitButtons, #teamUpdateButtons').addClass('d-none');
     }
     async function initTeamForm(){
         getTableContents(dbName, 'team-info')
