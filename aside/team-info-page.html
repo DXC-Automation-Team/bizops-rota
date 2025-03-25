@@ -152,7 +152,27 @@
                             Team: encodeURIComponent(teamName),
                             WBS: wbs
                         }];
-                        updateToSharePoint(listName, data);
+                        updateToSharePoint(listName, data)
+                            .then(response=>{
+                                if(response){
+                                    console.log(response)
+                                    clearTable(dbName, 'team-info')
+                                        .then(message => {
+                                            showModal('Success','Update successful!','success');
+                                            console.log(message);
+                                            teamID = parseInt(response[0].id);
+                                            let teamInfo = data[0]; 
+                                            teamInfo.SUBSL = subSl;
+                                            teamInfo.Team = teamName;
+                                            return saveToLocalDB(dbName, 'team-info', teamInfo);
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
+                                }else{
+                                    showModal('Oops!','<p>We\'re having trouble updating your team info. Please contact the initiative team.</p>','fail')
+                                }
+                            });
                     }
                 }) 
             
