@@ -503,14 +503,14 @@
             let timeoutId;
             return function (...args) {
                 clearTimeout(timeoutId);
-                timeoutId = setTimeout(() => {
-                    func.apply(this, args);
+                timeoutId = setTimeout(async () => {
+                    await func.apply(this, args); // Handles async functions
                 }, delay);
             };
         }
 
         
-        
+
         //DATABASE FUNCTIONS
         function checkDatabaseExists(dbName) {
             return new Promise((resolve, reject) => {

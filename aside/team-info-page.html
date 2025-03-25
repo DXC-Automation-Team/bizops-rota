@@ -78,7 +78,9 @@
             resetTeamFormValidation();
             debounce(async () => {
                 let content = await getTableContents(dbName, 'team-info');
-                console.log(content); // Do something with the retrieved content
+                if(content){
+                    $('#teamUpdateButtons').removeClass('d-none')
+                }
             })();
         })
         .on('change', '#sub-sl', function(){
