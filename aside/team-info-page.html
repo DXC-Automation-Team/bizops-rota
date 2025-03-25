@@ -55,7 +55,7 @@
                             <button type="button" class="btn btn-primary float-end ms-2 start-step" id="confirmTeamInfo" step="3">Confirm</button>
                         </div>
                         <div id="teamUpdateButtons" class="d-none">
-                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo start-step" step="2">I have a different team</button>
+                            <button type="button" class="btn btn-secondary float-end ms-2 cancelSaveTeamInfo start-step" step="2">Register as new team</button>
                             <button type="button" class="btn btn-primary float-end ms-2 start-step" disabled id="updateTeamInfo" step="3">Update</button>
                         </div>
                     </div>
@@ -76,12 +76,6 @@
         })
         .on('input', '#sub-sl, #team-name, #wbs', function() {
             resetTeamFormValidation();
-            debounce(async () => {
-                let content = await getTableContents(dbName, 'team-info');
-                if(content){
-                    $('#teamUpdateButtons').removeClass('d-none')
-                }
-            })();
         })
         .on('change', '#sub-sl', function(){
             resetTeamFormValidation();
@@ -137,7 +131,11 @@
         $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
     }
     //API
-    function checkTeamInfo(){
+    async function checkTeamInfo(){
+        let content = await getTableContents(dbName, 'team-info');
+        if(content){
+            $('#teamUpdateButtons').removeClass('d-none')
+        }else{
             let subSl = $('#sub-sl').val().trim();
             let teamName = $('#team-name').val().trim();
             let wbs = $('#wbs').val().trim();
@@ -190,6 +188,9 @@
                 }
             })
         }
+
+        
+    }
 
     async function saveTeamInfo(){
         let subSl = $('#sub-sl').val();
