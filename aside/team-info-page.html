@@ -325,7 +325,7 @@
     }
 
     function processTeamInfo(response){
-        if(response){
+        if(response && response.length > 0){
             console.log(response)
             $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
             $('#teamInfoMessage').show();
