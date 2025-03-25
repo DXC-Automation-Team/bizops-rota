@@ -209,7 +209,7 @@
                 // check if input is registered in sharepoint
                 let conditions = [
                     {field: "SUB_x002d_SL", value: encodeURIComponent(subSl)},
-                    {field: "Team", value: teamName}
+                    {field: "Team", value: encodeURIComponent(teamName)}
                 ];
                 await getFromSharePoint(listName,fields,conditions)
                 .then(response=>{
