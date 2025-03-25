@@ -187,7 +187,7 @@
             }else{
                 // check if input is registered in sharepoint
                 let conditions = [
-                    {field: "SUB_x002d_SL", value: encodeURIComponent(subSl)},
+                    {field: "SUBSL", value: encodeURIComponent(subSl)},
                     {field: "Team", value: teamName}
                 ];
                 response = await getFromSharePoint(listName,fields,conditions);
@@ -196,7 +196,7 @@
             
         }else{
             let inputTeamInfo = {
-                "SUB_x002d_SL": encodeURIComponent(subSl),
+                "SUBSL": encodeURIComponent(subSl),
                 Team: teamName,
                 WBS: wbs
             };
