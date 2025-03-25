@@ -211,6 +211,8 @@
                     {field: "SUB_x002d_SL", value: encodeURIComponent(subSl)},
                     {field: "Team", value: teamName}
                 ];
+                console.log("Fields:",fields);
+                console.log("Conditions",conditions);
                 response = await getFromSharePoint(listName,fields,conditions);
                 processTeamInfo(response);
             }
