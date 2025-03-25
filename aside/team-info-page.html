@@ -216,13 +216,11 @@
             }
             
         }else{
-            let inputTeamInfo = {
+            let inputTeamInfo = [{
                 "SUB_x002d_SL": encodeURIComponent(subSl),
                 Team: teamName,
                 WBS: wbs
-            };
-            
-            
+            }];
             
             response = await getFromSharePoint(listName,fields,inputTeamInfo);
             processTeamInfo(response);
