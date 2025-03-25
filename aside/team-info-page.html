@@ -79,7 +79,8 @@
             if($('#teamInfo').is('[editing]')){
                 $('#editTeamInfo').addClass('d-none');
                 $('#updateTeamInfo').removeClass('d-none');
-
+                $('#teamForm').removeClass('was-validated');
+                $('#teamInfoMessage').hide();
             }else{
                 resetTeamFormValidation();
             }
