@@ -218,11 +218,11 @@
             }
             
         }else{
-            let inputTeamInfo = [{
-                "SUB_x002d_SL": encodeURIComponent(subSl),
-                Team: teamName,
-                WBS: wbs
-            }];
+            let inputTeamInfo = [
+                {field:"SUB_x002d_SL", value: encodeURIComponent(subSl)},
+                {field:"Team", value:teamName},
+                {field:"WBS",value: wbs}
+            ];
             console.log("Fields:",fields);
             console.log("Conditions",inputTeamInfo);
             response = await getFromSharePoint(listName,fields,inputTeamInfo);
