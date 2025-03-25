@@ -56,7 +56,7 @@
                         </div>
                         <div id="teamUpdateButtons" class="d-none">
                             <button type="button" class="btn btn-secondary float-start ms-2 cancelSaveTeamInfo start-step" step="2">I have a different team</button>
-                            <button type="button" class="btn btn-primary float-end ms-2 start-step" disabled id="updateTeamInfo" step="3">Update</button>
+                            <button type="button" class="btn btn-primary float-end ms-2 start-step" disabled id="editTeamInfo" step="3">Edit</button>
                         </div>
                     </div>
                 </form>
@@ -134,7 +134,8 @@
     async function checkTeamInfo(){
         let content = await getTableContents(dbName, 'team-info');
         if(content){
-            $('#teamUpdateButtons').removeClass('d-none')
+            $('#teamUpdateButtons').removeClass('d-none');
+            $('#sub-sl, #team-name, #wbs').prop('disabled',true);
         }else{
             let subSl = $('#sub-sl').val().trim();
             let teamName = $('#team-name').val().trim();
