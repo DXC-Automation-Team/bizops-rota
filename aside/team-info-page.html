@@ -277,7 +277,7 @@
         let teamName = ($('#team-name').val()).trim();
         let wbs = ($('#wbs').val()).trim();
         let teamInfo = {
-            SUBSL: subSl,
+            "SUB_x002d_SL": subSl,
             Team: teamName,
             WBS: wbs
         };
@@ -294,6 +294,7 @@
                         .then(message => {
                             console.log(message);
                             teamID = parseInt(response["id"]);
+                            teamInfo.SUBSL = subSl;
                             teamInfo.id = teamID;
                             localStorage.setItem('teamID',teamID)
                             return saveToLocalDB(dbName, 'team-info', teamInfo);
