@@ -719,7 +719,24 @@
         function getItemByKey(contentArray, key) {
             return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
         }
-        
+        async function getTeamId(){
+            if (!teamID || teamID == undefined || teamID == null){
+                const content = await getTableContents(dbName, 'team-info'); // Await the table contents
+                if (content) {
+                    const teamInfo = content[0];
+                    if (teamInfo) {
+                        teamID = parseInt(teamInfo.id);
+                        return teamID;
+                    } else {
+                        continueSetup('2');
+                        return null;
+                    }
+                } else {
+                    continueSetup('2');
+                    return null;
+                }
+            }
+        }
         
         
         //MSAL FUNCTIONS
@@ -868,6 +885,10 @@
                 throw new Error("Failed to obtain authentication token.");
             }
         }
+            /* 
+            listName = name of list in sharepoint
+            data = array of objects to update. each object must have an "id" field
+            */
         async function updateToSharePoint(listName, data) {
             const url = `https://graph.microsoft.com/v1.0/sites/dxcportal.sharepoint.com:/sites/ciROTASchedule:/lists/${listName}/items`;
             const token = await getToken();

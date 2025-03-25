@@ -127,7 +127,17 @@
             showConfirmModal('Are you sure you want to edit your team info?',()=>{
                 $('#sub-sl, #team-name, #wbs').removeAttr('disabled').removeProp('disabled');
             })
-            
+        })
+        .on('click','#updateTeamInfo',function(){
+            let subSl = $('#sub-sl').val().trim();
+            let teamName = $('#team-name').val().trim();
+            let wbs = $('#wbs').val().trim();
+            let listName = 'Sub SL Teams';
+            let data = [{
+                
+            }]
+            updateToSharePoint(listName, data);
+
         })
         ;
     });
@@ -326,12 +336,11 @@
 
     function processTeamInfo(response){
         if(response && response.length > 0){
-            console.log(response)
             $('#teamInfoMessage').text("This team is registered in the database. This will be used for the submission.");
             $('#teamInfoMessage').show();
             $('#checkTeamInfo, #teamSubmitButtons').addClass('d-none');
             $('#teamChangeButtons').removeClass('d-none');
-            /* clearTable(dbName, 'team-info')
+            clearTable(dbName, 'team-info')
                 .then(message => {
                     console.log(message);
                     teamInfo.id = response["ID"];
@@ -341,7 +350,7 @@
                 })
                 .catch(error => {
                     console.error(error);
-                }); */
+                });
         } else {
             $('#teamInfoMessage').text("This team is not yet registered in the database. Would you like to use this team?");
             $('#teamInfoMessage').show();
