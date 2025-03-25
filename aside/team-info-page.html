@@ -69,7 +69,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        // addFormValidation();
+        initTeamForm();
         $(document)
         .on('submit', '#teamForm', function(event){
             event.preventDefault();
@@ -130,10 +130,31 @@
         $('#teamInfoMessage').hide();
         $('#teamChangeButtons, #teamSubmitButtons').addClass('d-none');
     }
+    async function initTeamForm(){
+        getTableContents(dbName, 'team-info')
+            .then(content => {
+                if (content) {
+                    let teamInfo = content[0];
+                    if (teamInfo) {
+                        $('#sub-sl').val(teamInfo.SUBSL);
+                        $('#team-name').val(teamInfo.Team);
+                        $('#wbs').val(teamInfo.WBS);
+                        teamID = parseInt(teamInfo.id);
+                        $('#checkTeamInfo').addClass('d-none');
+                        $('#teamUpdateButtons').removeClass('d-none');
+                        $('#sub-sl, #team-name, #wbs').prop('disabled',true);
+                    }
+                } else {
+                    console.log('Table team-info is empty.');
+                }
+            })
+            .catch(error => console.log(error));
+    }
     //API
     async function checkTeamInfo(){
         let content = await getTableContents(dbName, 'team-info');
         if(content){
+            $('#checkTeamInfo').addClass('d-none');
             $('#teamUpdateButtons').removeClass('d-none');
             $('#sub-sl, #team-name, #wbs').prop('disabled',true);
         }else{
