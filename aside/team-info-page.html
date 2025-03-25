@@ -170,8 +170,9 @@
         let listName = "Sub SL Teams";
         let fields = ["id","SUBSL","Team","WBS"];
         if(subSl == '' || teamName == '' || wbs == ''){return;}
+        //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
         let teamInfo = {
-            SUBSL: subSl,
+            "SUB_x002d_SL": subSl,
             Team: teamName,
             WBS: wbs
         };
@@ -181,6 +182,7 @@
                 isNotChanged = isNotChanged && teamInfo.SUBSL == subSl;
                 isNotChanged = isNotChanged && teamInfo.Team == teamName;
                 isNotChanged = isNotChanged && teamInfo.WBS == wbs;
+                console.log("Team info has "+ (isNotChanged == true ? "not ": "") + "changed");
             }
             if(isNotChanged){// if input and local team info is the same, show update buttons
                 $('#checkTeamInfo').addClass('d-none');
@@ -195,7 +197,7 @@
         }else{
             
             
-            //try SUB_x002d_SL instead of SUBSL in case SUBSL is not recognized
+            
             
             response = await getFromSharePoint(listName,fields,teamInfo);
             processTeamInfo(response);
