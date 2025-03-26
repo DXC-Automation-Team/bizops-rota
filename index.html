@@ -792,7 +792,6 @@
         function getItemByKey(contentArray, key) {
             return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
         }
-        
         async function getTeamId(){
             if (!teamID || teamID == undefined || teamID == null){
                 const content = await getTableContents(dbName, 'team-info'); // Await the table contents
@@ -809,6 +808,9 @@
                     continueSetup('2');
                     return null;
                 }
+            }else{
+                console.log("Team id is ",teamID);
+                return teamID;
             }
         }
         
