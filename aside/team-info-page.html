@@ -147,7 +147,7 @@
             let data=[];
             getTeamId()
                 .then(teamId=>{
-                    if(!teamId){return;}
+                    if(!teamId){console.log("No team ID found"); return;}
                     else{
                         data = [{
                             id: teamId,
