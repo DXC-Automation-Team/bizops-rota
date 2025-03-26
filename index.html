@@ -348,8 +348,8 @@
                     })
                 let dbExists;
                 
-                
-                await checkDatabaseExists(dbName)
+                await setupDatabase();
+               /*  await checkDatabaseExists(dbName)
                     .then(dbExists => {
                         if (!dbExists) {
                             return createDatabaseAndTable(dbName, storeSchemas);
@@ -362,6 +362,33 @@
                                         if (!tableExists) {
                                             return createDatabaseAndTable(dbName, [schema]);
                                         } else {
+                                            //check if necessary info are set up
+                                            switch(schema.name){
+                                                case 'team-info':
+                                                    getTableContents(dbName,'team-info')
+                                                    .then(team=>{
+                                                        if(team){
+                                                            getTableContents(dbName,'employee-info')
+                                                            .then(employees=>{
+                                                                if(employees){
+                                                                    getTableContents(dbName,'shift-info')
+                                                                    .then(shifts=>{
+                                                                        if(shifts){
+                                                                            continueSetup('5');
+                                                                        }else{
+                                                                            continueSetup('4');
+                                                                        }
+                                                                    })
+                                                                }else{
+                                                                    continueSetup('3');
+                                                                }
+                                                            })
+                                                        }
+                                                        else{
+                                                            continueSetup('2');
+                                                        }
+                                                    })
+                                            }
                                             console.log(`Table "${schema.name}" already exists.`);
                                         }
                                     });
@@ -369,7 +396,7 @@
                         }
                     })
                     .catch(error => console.log(error));
-
+                */
                 
                 
                 // set page text
@@ -549,6 +576,52 @@
                 };
             });
         }
+        async function setupDatabase(dbName, storeSchemas) {
+            try {
+                const dbExists = await checkDatabaseExists(dbName);
+                
+                if (!dbExists) {
+                    return await createDatabaseAndTable(dbName, storeSchemas);
+                } else {
+                    console.log('Database already exists.');
+                    let dbIsNew = true;
+                    for (const schema of storeSchemas) {
+                        const tableExists = await checkTableExists(dbName, schema.name);
+                        
+                        if (!tableExists) {
+                            await createDatabaseAndTable(dbName, [schema]);
+                        } else {
+                            dbIsNew = dbIsNew && false;
+                            console.log(`Table "${schema.name}" already exists.`);
+                        }
+                    }
+                    // Check if necessary info is set up
+                    if(!dbIsNew){
+                        const team = await getTableContents(dbName, 'team-info');
+                    
+                        if (team) {
+                            const employees = await getTableContents(dbName, 'employee-info');
+                            
+                            if (employees) {
+                                const shifts = await getTableContents(dbName, 'shift-info');
+                                
+                                if (shifts) {
+                                    continueSetup('5');
+                                } else {
+                                    continueSetup('4');
+                                }
+                            } else {
+                                continueSetup('3');
+                            }
+                        } else {
+                            continueSetup('2');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
         function checkTableExists(dbName, storeName) {
             return new Promise((resolve, reject) => {
                 let request = indexedDB.open(dbName);
@@ -719,6 +792,7 @@
         function getItemByKey(contentArray, key) {
             return contentArray.find(item => item.id === key); // Assuming 'id' is the key path
         }
+        
         async function getTeamId(){
             if (!teamID || teamID == undefined || teamID == null){
                 const content = await getTableContents(dbName, 'team-info'); // Await the table contents
@@ -1139,6 +1213,10 @@
                     $('#references .list-group-item-action').not('#homeBtn').attr('disabled',true).prop('disabled',true);
                     $('#references button[target="team-info-page"], #references button[target="employee-info-page"], #references button[target="shift-info-page"]').removeAttr('disabled').removeProp('disabled');
                     showModal('Step 4',`<p>Great! Now you have team members. Next, you have to set up your shift codes in the <b>Shift Info</b> page.</p>`);
+                    break;
+                case '5':
+                    $('#references .list-group-item-action').removeAttr('disabled').removeAttr('disabled',true);
+                    showModal('',`<p>Setup complete.<p>`);
                     break;
             }
         }
