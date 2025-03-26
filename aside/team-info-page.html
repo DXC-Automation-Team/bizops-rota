@@ -76,7 +76,7 @@
             event.preventDefault();
         })
         .on('input', '#sub-sl, #team-name, #wbs', function() {
-            if($('#teamInfo').is('[editing]')){
+            if($('#teamForm').is('[editing]')){
                 $('#editTeamInfo').addClass('d-none');
                 $('#updateTeamInfo').removeClass('d-none');
                 $('#teamForm').removeClass('was-validated');
